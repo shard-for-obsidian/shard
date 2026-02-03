@@ -7,6 +7,8 @@ import { HttpError } from "./errors.mjs";
 import type {
   ByteArray,
   DockerResponse as DockerResponseInterface,
+  RequestUrlParam,
+  RequestUrlResponse,
 } from "./types.mjs";
 
 // --- API
@@ -15,7 +17,7 @@ interface HttpReqOpts {
   method: string;
   path: string;
   searchParams?: URLSearchParams;
-  headers?: Headers;
+  headers?: Record<string, string>;
   body?: BodyInit;
   retry?: boolean;
   connectTimeout?: number;
@@ -29,44 +31,50 @@ export class DockerJsonClient {
   contentType: string;
   url: string;
   userAgent: string;
+  requestUrl: (request: RequestUrlParam | string) => Promise<RequestUrlResponse>;
 
   constructor(options: {
     name?: string;
     accept?: string;
     contentType?: string;
     url: string;
-    // rejectUnauthorized?: boolean;
     userAgent: string;
+    requestUrl: (request: RequestUrlParam | string) => Promise<RequestUrlResponse>;
   }) {
     this.accept = options.accept ?? "application/json";
     this.name = options.name ?? "DockerJsonClient";
     this.contentType = options.contentType ?? "application/json";
     this.url = options.url;
     this.userAgent = options.userAgent;
+    this.requestUrl = options.requestUrl;
   }
 
   async request(opts: HttpReqOpts): Promise<DockerResponse> {
-    const headers = new Headers(opts.headers);
-    if (!headers.has("accept") && this.accept) {
-      headers.set("accept", this.accept);
+    const headers: Record<string, string> = opts.headers
+      ? { ...opts.headers }
+      : {};
+    if (!headers["accept"] && this.accept) {
+      headers["accept"] = this.accept;
     }
-    headers.set("user-agent", this.userAgent);
+    headers["user-agent"] = this.userAgent;
 
     const url = new URL(opts.path, this.url);
     for (const param of opts.searchParams ?? []) {
       url.searchParams.append(param[0], param[1]);
     }
 
-    const rawResp = await fetch(url, {
+    const rawResp = await this.requestUrl({
+      url: url.toString(),
       method: opts.method,
       headers: headers,
-      redirect: opts.redirect ?? "manual",
-      body: opts.body,
+      body: opts.body as string | ArrayBuffer,
+      throw: false, // Handle errors ourselves
     });
-    const resp = new DockerResponse(rawResp.body, {
+
+    const resp = new DockerResponse({
       headers: rawResp.headers,
       status: rawResp.status,
-      statusText: rawResp.statusText,
+      arrayBuffer: rawResp.arrayBuffer,
     });
 
     const expectStatus = opts.expectStatus ?? [200];
@@ -79,15 +87,28 @@ export class DockerJsonClient {
   }
 }
 
-export class DockerResponse
-  extends Response
-  implements DockerResponseInterface
-{
+export class DockerResponse implements DockerResponseInterface {
+  status: number;
+  statusText: string;
+  headers: Record<string, string>;
+  private _arrayBuffer: ArrayBuffer;
+
   // Cache the body once we decode it once.
-  decodedBody?: ByteArray;
+  private decodedBody?: ByteArray;
+
+  constructor(opts: {
+    headers: Record<string, string>;
+    status: number;
+    arrayBuffer: ArrayBuffer;
+  }) {
+    this.headers = opts.headers;
+    this.status = opts.status;
+    this.statusText = ""; // requestUrl doesn't provide statusText
+    this._arrayBuffer = opts.arrayBuffer;
+  }
 
   async dockerBody(): Promise<ByteArray> {
-    this.decodedBody ??= new Uint8Array(await this.arrayBuffer());
+    this.decodedBody ??= new Uint8Array(this._arrayBuffer);
     return this.decodedBody;
   }
 
@@ -132,8 +153,7 @@ export class DockerResponse
 
   async dockerThrowable(baseMsg: string): Promise<HttpError> {
     // no point trying to parse HTML
-    if (this.headers.get("content-type")?.startsWith("text/html")) {
-      await this.arrayBuffer();
+    if (this.headers["content-type"]?.startsWith("text/html")) {
       return new HttpError(this, [], `${baseMsg} (w/ HTML body)`);
     }
 
@@ -162,10 +182,5 @@ export class DockerResponse
         `${baseMsg} - and failed to parse error body: ${err.message}`,
       );
     }
-  }
-
-  dockerStream(): ReadableStream<ByteArray> {
-    if (!this.body) throw new Error(`No body to stream`);
-    return this.body;
   }
 }

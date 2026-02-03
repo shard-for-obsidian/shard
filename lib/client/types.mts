@@ -1,6 +1,25 @@
 /** An alias for Uint8Array<ArrayBuffer> for Typescript 5.7 */
 export type ByteArray = ReturnType<Uint8Array["slice"]>;
 
+/** Obsidian's requestUrl parameter type */
+export interface RequestUrlParam {
+  url: string;
+  method?: string;
+  contentType?: string;
+  body?: string | ArrayBuffer;
+  headers?: Record<string, string>;
+  throw?: boolean;
+}
+
+/** Obsidian's requestUrl response type */
+export interface RequestUrlResponse {
+  status: number;
+  headers: Record<string, string>;
+  arrayBuffer: ArrayBuffer;
+  json: any;
+  text: string;
+}
+
 export interface RegistryIndex {
   name: string;
   official: boolean;
@@ -127,7 +146,7 @@ export interface RegistryClientOpts {
   acceptManifestLists?: boolean;
   userAgent?: string;
   scopes?: string[];
-  client?: typeof fetch;
+  requestUrl: (request: RequestUrlParam | string) => Promise<RequestUrlResponse>;
 }
 
 export type AuthInfo =
@@ -135,10 +154,13 @@ export type AuthInfo =
   | { type: "Basic"; username: string; password: string }
   | { type: "Bearer"; token: string };
 
-export interface DockerResponse extends Response {
+export interface DockerResponse {
+  status: number;
+  statusText: string;
+  headers: Record<string, string>;
+
   dockerBody(): Promise<ByteArray>;
   dockerJson(): Promise<unknown>;
-  dockerStream(): ReadableStream<ByteArray>;
 
   dockerErrors(): Promise<Array<RegistryError>>;
   dockerThrowable(baseMsg: string): Promise<Error>;

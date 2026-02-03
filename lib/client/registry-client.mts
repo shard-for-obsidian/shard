@@ -4,8 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import crypto from "node:crypto";
-
 import {
   parseRepo,
   urlFromIndex,
@@ -55,16 +53,16 @@ function encodeHex(data: ArrayBuffer) {
  * - Else, if the authorization key exists, then it is removed from headers.
  */
 function _setAuthHeaderFromAuthInfo(
-  headers: Headers,
+  headers: Record<string, string>,
   authInfo: AuthInfo | null,
 ) {
   if (authInfo?.type === "Bearer") {
-    headers.set("authorization", "Bearer " + authInfo.token);
+    headers["authorization"] = "Bearer " + authInfo.token;
   } else if (authInfo?.type === "Basic") {
     const credentials = `${authInfo.username ?? ""}:${authInfo.password ?? ""}`;
-    headers.set("authorization", "Basic " + btoa(credentials));
+    headers["authorization"] = "Basic " + btoa(credentials);
   } else {
-    headers.delete("authorization");
+    delete headers["authorization"];
   }
   return headers;
 }
@@ -163,48 +161,23 @@ function _parseDockerContentDigest(dcd: string) {
     raw: dcd,
     algorithm: parts[0],
     expectedDigest: parts[1],
-    async runHash(inStream: ReadableStream<ByteArray>) {
+    async validate(buffer: ArrayBuffer): Promise<void> {
       switch (this.algorithm) {
         case "sha256": {
-          const hash = crypto.createHash("sha256");
-          const reader = inStream.getReader();
-          try {
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              hash.update(value);
-            }
-            const buffer = hash.digest();
-            return buffer.buffer.slice(
-              buffer.byteOffset,
-              buffer.byteOffset + buffer.byteLength,
+          const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+          const digest = encodeHex(hashBuffer);
+          if (this.expectedDigest !== digest) {
+            throw new e.BadDigestError(
+              `Docker-Content-Digest mismatch (expected: ${this.expectedDigest}, got: ${digest})`,
             );
-          } finally {
-            reader.releaseLock();
           }
+          return;
         }
         default:
           throw new e.BadDigestError(
             `Unsupported hash algorithm ${this.algorithm}`,
           );
       }
-    },
-    validateStream(inStream: ReadableStream<ByteArray>) {
-      const [passthru, hashStream] = inStream.tee();
-      const hashPromise = this.runHash(hashStream);
-      return passthru.pipeThrough(
-        new TransformStream({
-          flush: async (ctlr) => {
-            const digest = encodeHex(await hashPromise);
-            if (this.expectedDigest === digest) return;
-            ctlr.error(
-              new e.BadDigestError(
-                `Docker-Content-Digest (${this.expectedDigest} vs ${digest})`,
-              ),
-            );
-          },
-        }),
-      );
     },
   };
 }
@@ -250,7 +223,7 @@ export class GHCRClient {
   private _loggedIn: boolean;
   private _loggedInScope?: string | null;
   private _authInfo?: AuthInfo | null;
-  private _headers: Headers;
+  private _headers: Record<string, string>;
   private _url: string;
   private _commonHttpClientOpts: {
     userAgent: string;
@@ -258,10 +231,11 @@ export class GHCRClient {
   private readonly _api: DockerJsonClient;
 
   /**
-   * Create a new Docker Registry V2 client for a particular repository.
+   * Create a new GHCR client for a particular repository.
    *
    * @param opts.insecure {Boolean} Optional. Default false. Set to true
    *      to *not* fail on an invalid or this-signed server certificate.
+   * @param opts.requestUrl {Function} Required. Obsidian's requestUrl function.
    * ... TODO: lots more to document
    *
    */
@@ -281,7 +255,7 @@ export class GHCRClient {
     this._loggedIn = false;
     this._loggedInScope = null; // Keeps track of the login type.
     this._authInfo = null;
-    this._headers = new Headers();
+    this._headers = {};
 
     if (opts.token) {
       _setAuthHeaderFromAuthInfo(this._headers, {
@@ -308,6 +282,7 @@ export class GHCRClient {
     this._api = new DockerJsonClient({
       url: this._url,
       ...this._commonHttpClientOpts,
+      requestUrl: opts.requestUrl,
     });
   }
 
@@ -367,7 +342,7 @@ export class GHCRClient {
     //      (&scope=$scope)*
     //      (&account=$username)
     //   Authorization: Basic ...
-    const headers = new Headers();
+    const headers: Record<string, string> = {};
     const query = new URLSearchParams();
     if (opts.service) {
       query.set("service", opts.service);
@@ -490,7 +465,7 @@ export class GHCRClient {
         path,
         headers: this._headers,
       });
-      const links = parseLinkHeader(res.headers.get("link"));
+      const links = parseLinkHeader(res.headers["link"] ?? null);
       const nextLink = links.find((x) => x.rel == "next");
       // If there's no next link then we use a null to end the loop.
       path = nextLink?.url ?? null;
@@ -520,17 +495,18 @@ export class GHCRClient {
       opts.acceptManifestLists ?? this.acceptManifestLists;
 
     await this.login();
-    const headers = new Headers(this._headers);
-    headers.append("accept", MEDIATYPE_MANIFEST_V2);
+    const headers = { ...this._headers };
+    const acceptTypes = [MEDIATYPE_MANIFEST_V2];
     if (acceptManifestLists) {
-      headers.append("accept", MEDIATYPE_MANIFEST_LIST_V2);
+      acceptTypes.push(MEDIATYPE_MANIFEST_LIST_V2);
     }
     if (acceptOCIManifests) {
-      headers.append("accept", MEDIATYPE_OCI_MANIFEST_V1);
+      acceptTypes.push(MEDIATYPE_OCI_MANIFEST_V1);
       if (acceptManifestLists) {
-        headers.append("accept", MEDIATYPE_OCI_MANIFEST_INDEX_V1);
+        acceptTypes.push(MEDIATYPE_OCI_MANIFEST_INDEX_V1);
       }
     }
+    headers["accept"] = acceptTypes.join(", ");
 
     const resp = await this._api.request({
       method: "GET",
@@ -578,7 +554,7 @@ export class GHCRClient {
   async _makeHttpRequest(opts: {
     method: string;
     path: string;
-    headers?: Headers;
+    headers?: Record<string, string>;
     followRedirects?: boolean;
     maxRedirects?: number;
   }): Promise<DockerResponse[]> {
@@ -608,15 +584,13 @@ export class GHCRClient {
       if (!followRedirects) return ress;
       if (!(resp.status === 302 || resp.status === 307)) return ress;
 
-      const location = resp.headers.get("location");
+      const location = resp.headers["location"];
       if (!location) return ress;
 
       const loc = new URL(location, new URL(req.path, this._url));
       // this.log.trace({numRedirs: numRedirs, loc: loc}, 'got redir response');
       req.path = loc.toString();
-      req.headers = new Headers();
-
-      await resp.body?.cancel();
+      req.headers = {};
     }
 
     throw new e.TooManyRedirectsError(
@@ -653,34 +627,34 @@ export class GHCRClient {
    */
   async headBlob(opts: { digest: string }): Promise<DockerResponse[]> {
     const resp = await this._headOrGetBlob("HEAD", opts.digest);
-    // consume the final body - since HEADs don't have meaningful bodies
-    await resp.slice(-1)[0]?.body?.cancel();
+    // No need to cancel body - requestUrl returns complete responses
     return resp;
   }
 
   /**
-   * Get a ReadableStream to the given blob.
+   * Download a blob and return its ArrayBuffer.
    * <https://docs.docker.com/registry/spec/api/#get-blob>
    *
    * @return
-   *      The `stream` is a W3C ReadableStream.
+   *      The `buffer` is the blob's content as an ArrayBuffer.
    *      `ress` (plural of 'res') is an array of responses
-   *      after following redirects. The latest response is where `stream`
-   *      came from. The full set of responses are returned mainly because
+   *      after following redirects. The full set of responses are returned mainly because
    *      headers on both the first, e.g. 'Docker-Content-Digest', and last,
    *      e.g. 'Content-Length', might be interesting.
    */
-  async createBlobReadStream(opts: { digest: string }): Promise<{
+  async downloadBlob(opts: { digest: string }): Promise<{
     ress: DockerResponse[];
-    stream: ReadableStream<ByteArray>;
+    buffer: ArrayBuffer;
   }> {
     const ress = await this._headOrGetBlob("GET", opts.digest);
-    let stream = ress[ress.length - 1]?.dockerStream();
-    if (!stream) {
-      throw new e.BlobReadError(`No stream available for blob ${opts.digest}`);
+    const lastResp = ress[ress.length - 1];
+    if (!lastResp) {
+      throw new e.BlobReadError(`No response available for blob ${opts.digest}`);
     }
 
-    const dcdHeader = ress[0]?.headers.get("docker-content-digest");
+    const buffer = (await lastResp.dockerBody()).buffer;
+
+    const dcdHeader = ress[0]?.headers["docker-content-digest"];
     if (dcdHeader) {
       const dcdInfo = _parseDockerContentDigest(dcdHeader);
       if (dcdInfo.raw !== opts.digest) {
@@ -690,10 +664,11 @@ export class GHCRClient {
         );
       }
 
-      stream = dcdInfo.validateStream(stream);
+      // Validate the digest
+      await dcdInfo.validate(buffer);
     }
 
-    return { ress, stream };
+    return { ress, buffer };
   }
 
   /*
@@ -725,9 +700,9 @@ export class GHCRClient {
         method: "PUT",
         path: `/v2/${encodeURI(this.repo.remoteName)}/manifests/${opts.ref}`,
         headers: _setAuthHeaderFromAuthInfo(
-          new Headers({
+          {
             "content-type": mediaType,
-          }),
+          },
           this._authInfo ?? null,
         ),
         body: opts.manifestData as BufferSource,
@@ -737,8 +712,8 @@ export class GHCRClient {
         Promise.reject(new e.UploadError("Manifest upload failed.", { cause })),
       );
 
-    const digest = response.headers.get("docker-content-digest");
-    const location = response.headers.get("location");
+    const digest = response.headers["docker-content-digest"] ?? null;
+    const location = response.headers["location"] ?? null;
     return { digest, location };
   }
 
@@ -765,7 +740,7 @@ export class GHCRClient {
         method: "POST",
         path: startUploadPath,
         headers: _setAuthHeaderFromAuthInfo(
-          new Headers(),
+          {},
           this._authInfo ?? null,
         ),
         expectStatus: [202],
@@ -773,7 +748,7 @@ export class GHCRClient {
       .catch((cause) =>
         Promise.reject(new e.UploadError("Blob upload rejected.", { cause })),
       );
-    const uploadUrl = sessionResponse.headers.get("location");
+    const uploadUrl = sessionResponse.headers["location"];
     if (!uploadUrl)
       throw new e.UploadError("No registry upload location header returned");
 
@@ -787,10 +762,10 @@ export class GHCRClient {
         method: "PUT",
         path: destinationUrl.toString(),
         headers: _setAuthHeaderFromAuthInfo(
-          new Headers({
+          {
             "content-length": `${opts.contentLength}`,
             "content-type": opts.contentType || "application/octet-stream",
-          }),
+          },
           this._authInfo ?? null,
         ),
         body: opts.stream as BufferSource,
