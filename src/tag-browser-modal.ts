@@ -1,6 +1,7 @@
-import { App, Modal } from "obsidian";
+import { App, Modal, Notice } from "obsidian";
 import type { GHCRPluginSettings, TagMetadata } from "./types";
 import { GHCRWrapper } from "./ghcr-wrapper";
+import { Installer } from "./lib/installer/installer.mjs";
 
 export class TagBrowserModal extends Modal {
   settings: GHCRPluginSettings;
@@ -18,6 +19,12 @@ export class TagBrowserModal extends Modal {
   constructor(app: App, settings: GHCRPluginSettings) {
     super(app);
     this.settings = settings;
+  }
+
+  private async isPluginInstalled(repo: string): Promise<boolean> {
+    const pluginId = repo.replace(/\//g, ".");
+    const pluginDir = `.obsidian/plugins/${pluginId}`;
+    return await this.app.vault.adapter.exists(pluginDir);
   }
 
   onOpen() {
@@ -154,7 +161,7 @@ export class TagBrowserModal extends Modal {
     });
   }
 
-  private renderTagDetails(metadata: TagMetadata) {
+  private async renderTagDetails(metadata: TagMetadata) {
     this.clearPane(this.rightPane);
 
     this.rightPane.createEl("h3", { text: `Tag: ${metadata.tag}` });
@@ -171,6 +178,18 @@ export class TagBrowserModal extends Modal {
     const sizeRow = details.createDiv("ghcr-detail-row");
     sizeRow.createEl("strong", { text: "Size: " });
     sizeRow.createEl("span", { text: this.formatSize(metadata.size) });
+
+    // Install button
+    const buttonRow = details.createDiv("ghcr-detail-row ghcr-install-row");
+    const isInstalled = await this.isPluginInstalled(this.currentRepo);
+    const installButton = buttonRow.createEl("button", {
+      text: isInstalled ? "Reinstall" : "Install",
+      cls: "ghcr-install-button",
+    });
+
+    installButton.addEventListener("click", () =>
+      this.installPlugin(metadata.tag, installButton),
+    );
   }
 
   private showLoading(pane: HTMLElement, message: string) {
@@ -214,6 +233,48 @@ export class TagBrowserModal extends Modal {
     const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  }
+
+  private async installPlugin(tag: string, button: HTMLButtonElement) {
+    // Disable button and show loading state
+    button.disabled = true;
+    const originalText = button.textContent || "Install";
+    button.textContent = "Installing...";
+
+    try {
+      // Get token
+      const token = this.tokenInput.value.trim() || this.settings.githubToken;
+      console.log(`[Modal] Installing with token: ${token ? "present" : "none"}`);
+      console.log(`[Modal] Current repo: ${this.currentRepo}`);
+      console.log(`[Modal] Tag: ${tag}`);
+
+      // Create GHCR client for this repository
+      const ghcrClient = GHCRWrapper.createClient(this.currentRepo, token);
+      console.log(`[Modal] Created GHCR client for repo:`, ghcrClient.repo);
+
+      // Create installer and perform installation
+      const installer = new Installer(this.app, ghcrClient);
+      const result = await installer.install(this.currentRepo, tag);
+
+      // Show success notice
+      new Notice(
+        `Successfully installed plugin: ${result.pluginId} (${result.filesInstalled} files)`,
+      );
+
+      // Close modal
+      this.close();
+    } catch (error) {
+      console.error(`[Modal] Installation error:`, error);
+      // Show error in details pane
+      this.showErrorInPane(
+        this.rightPane,
+        `Installation failed: ${this.formatError(error)}`,
+      );
+
+      // Re-enable button
+      button.disabled = false;
+      button.textContent = originalText;
+    }
   }
 
   private formatError(error: unknown): string {

@@ -17,3 +17,8 @@ export interface ParsedRepo {
 	owner: string;
 	repo: string;
 }
+
+export interface InstallResult {
+	pluginId: string;
+	filesInstalled: number;
+}

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Expect argument of full image ref, e.g.
+# ghcr.io/owner/repo:tag
+IMAGE_REF=$1
+
+
+oras push $IMAGE_REF \
+  ./main.js:application/javascript \
+  ./manifest.json:application/vnd.obsidian.plugin-manifest+json \
+  ./styles.css:text/css
+

@@ -49,11 +49,14 @@ export class GHCRWrapper {
       body: req.body instanceof ArrayBuffer ? req.body : undefined,
     });
 
+    // Create a lazy JSON getter to avoid parsing binary responses as JSON
     return {
       status: response.status,
       headers: response.headers,
       arrayBuffer: response.arrayBuffer,
-      json: response.json,
+      get json() {
+        return response.json;
+      },
       text: response.text,
     };
   }
