@@ -137,7 +137,6 @@ function _makeAuthScope(resource: string, name: string, actions: string[]) {
   return `${resource}:${name}:${actions.join(",")}`;
 }
 
-
 /*
  * Parse the 'Docker-Content-Digest' header.
  *
@@ -286,7 +285,6 @@ export class GHCRClient {
     });
   }
 
-
   /**
    * Login V2
    *
@@ -301,9 +299,7 @@ export class GHCRClient {
    *        See <https://github.com/docker/distribution/blob/master/docs/spec/auth/token.md#requesting-a-token>
    * @return an object with authentication info
    */
-  async performLogin(opts: {
-    scope?: string;
-  }): Promise<AuthInfo> {
+  async performLogin(opts: { scope?: string }): Promise<AuthInfo> {
     return {
       type: "Bearer",
       token: await this._getToken({
@@ -422,7 +418,6 @@ export class GHCRClient {
     _setAuthHeaderFromAuthInfo(this._headers, authInfo);
     // this.log.trace({err: err, loggedIn: this._loggedIn}, 'login: done');
   }
-
 
   async listTags(
     props: { pageSize?: number; startingAfter?: string } = {},
@@ -649,7 +644,9 @@ export class GHCRClient {
     const ress = await this._headOrGetBlob("GET", opts.digest);
     const lastResp = ress[ress.length - 1];
     if (!lastResp) {
-      throw new e.BlobReadError(`No response available for blob ${opts.digest}`);
+      throw new e.BlobReadError(
+        `No response available for blob ${opts.digest}`,
+      );
     }
 
     const buffer = (await lastResp.dockerBody()).buffer;
@@ -739,10 +736,7 @@ export class GHCRClient {
       .request({
         method: "POST",
         path: startUploadPath,
-        headers: _setAuthHeaderFromAuthInfo(
-          {},
-          this._authInfo ?? null,
-        ),
+        headers: _setAuthHeaderFromAuthInfo({}, this._authInfo ?? null),
         expectStatus: [202],
       })
       .catch((cause) =>
