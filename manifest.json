@@ -1,8 +1,8 @@
 {
-  "id": "ghcr.io/gillisandrew/obsidian-ghcr-plugin-manager",
+  "id": "io.ghcr.gillisandrew.obsidian-ghcr-plugin-manager",
   "name": "GHCR Plugin Manager",
-  "version": "0.1.0",
-  "minAppVersion": "1.0.0",
+  "version": "0.1.1",
+  "minAppVersion": "1.11.5",
   "description": "Browse and install Obsidian plugins from GitHub Container Registry repositories",
   "author": "Andrew Gillis",
   "authorUrl": "https://github.com/gillisandrew",

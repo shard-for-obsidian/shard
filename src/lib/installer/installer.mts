@@ -67,8 +67,14 @@ export class Installer {
   }
 
   private getPluginId(repo: string): string {
-    // Convert "ghcr.io/owner/repo" to "ghcr.io.owner.repo"
-    return repo.replace(/\//g, ".");
+    // Convert "ghcr.io/owner/repo" to "io.ghcr.owner.repo" (reverse domain notation)
+    const parts = repo.split("/");
+
+    // Reverse the domain part (ghcr.io → io.ghcr)
+    const domain = parts[0].split(".").reverse().join(".");
+
+    // Join with remaining path parts
+    return [domain, ...parts.slice(1)].join(".");
   }
 
   private getFilenameFromAnnotations(layer: ManifestOCIDescriptor): string {

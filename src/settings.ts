@@ -83,15 +83,17 @@ export class GHCRSettingTab extends PluginSettingTab {
       return;
     }
 
-    // Normalize the URL
+    // Normalize the URL - always ensure ghcr.io prefix
     let normalized = trimmed.replace(/^https?:\/\//, "");
-    if (normalized.startsWith("ghcr.io/")) {
-      normalized = normalized.substring(8); // Remove "ghcr.io/"
+
+    // Add ghcr.io prefix if not present
+    if (!normalized.startsWith("ghcr.io/")) {
+      normalized = `ghcr.io/${normalized}`;
     }
 
-    // Validate format (should be owner/repo)
-    if (!normalized.match(/^[^\/]+\/[^\/]+$/)) {
-      new Notice("Invalid repository format. Expected: owner/repo");
+    // Validate format (should be ghcr.io/owner/repo)
+    if (!normalized.match(/^ghcr\.io\/[^\/]+\/[^\/]+$/)) {
+      new Notice("Invalid repository format. Expected: owner/repo or ghcr.io/owner/repo");
       return;
     }
 
@@ -279,7 +281,11 @@ export class GHCRSettingTab extends PluginSettingTab {
     }
 
     // Pre-select installed tag if applicable
-    const installedInfo = this.plugin.settings.installedPlugins[repo.repoUrl];
+    // Try both normalized and non-normalized keys for backwards compatibility
+    let installedInfo = this.plugin.settings.installedPlugins[repo.repoUrl];
+    if (!installedInfo && !repo.repoUrl.startsWith("ghcr.io/")) {
+      installedInfo = this.plugin.settings.installedPlugins[`ghcr.io/${repo.repoUrl}`];
+    }
     if (installedInfo) {
       dropdown.value = installedInfo.tag;
     }
@@ -364,6 +370,12 @@ export class GHCRSettingTab extends PluginSettingTab {
     try {
       new Notice(`Installing ${repoUrl}@${tag}...`);
 
+      // Normalize repo URL to ensure it has ghcr.io prefix
+      let normalizedRepoUrl = repoUrl;
+      if (!normalizedRepoUrl.startsWith("ghcr.io/")) {
+        normalizedRepoUrl = `ghcr.io/${normalizedRepoUrl}`;
+      }
+
       // Get auth token
       const secretToken = this.plugin.settings.githubToken
         ? await this.app.secretStorage.getSecret(
@@ -373,7 +385,7 @@ export class GHCRSettingTab extends PluginSettingTab {
       const token = secretToken || undefined;
 
       // Create GHCR client
-      const ghcrClient = GHCRWrapper.createClient(repoUrl, token);
+      const ghcrClient = GHCRWrapper.createClient(normalizedRepoUrl, token);
 
       // Fetch manifest to get digest
       const { resp, manifest } = await ghcrClient.getManifest({ ref: tag });
@@ -381,16 +393,23 @@ export class GHCRSettingTab extends PluginSettingTab {
 
       // Create installer and perform installation
       const installer = new Installer(this.app, ghcrClient);
-      const result = await installer.install(repoUrl, tag);
+      const result = await installer.install(normalizedRepoUrl, tag);
 
-      // Update installed plugins settings
-      this.plugin.settings.installedPlugins[repoUrl] = {
+      // Update installed plugins settings (use normalized URL as key)
+      this.plugin.settings.installedPlugins[normalizedRepoUrl] = {
         tag,
         digest,
         installedAt: Date.now(),
         pluginId: result.pluginId,
       };
       await this.plugin.saveSettings();
+
+      // Also update the repository config to use normalized URL if it wasn't already
+      const repoConfig = this.plugin.settings.repositories.find(r => r.repoUrl === repoUrl);
+      if (repoConfig && repoConfig.repoUrl !== normalizedRepoUrl) {
+        repoConfig.repoUrl = normalizedRepoUrl;
+        await this.plugin.saveSettings();
+      }
 
       // Show success notice
       new Notice(
