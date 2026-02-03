@@ -1,9 +1,9 @@
-import { parseRepoAndRef } from "../lib/client/common.mjs";
-import { GHCRClient } from "../lib/client/registry-client.mjs";
+import { parseRepoAndRef } from "./lib/client/common.mjs";
+import { GHCRClient } from "./lib/client/registry-client.mjs";
 import type {
   RequestUrlParam,
   RequestUrlResponse,
-} from "../lib/client/types.mjs";
+} from "./lib/client/types.mjs";
 
 // Mock requestUrl for Node.js environment (in Obsidian, use the real requestUrl)
 async function mockRequestUrl(
