@@ -4,7 +4,7 @@ import { TagBrowserModal } from "./tag-browser-modal";
 import { DEFAULT_SETTINGS, type GHCRPluginSettings } from "./types";
 
 export default class GHCRTagBrowserPlugin extends Plugin {
-  settings: GHCRPluginSettings;
+  settings!: GHCRPluginSettings;
 
   async onload() {
     await this.loadSettings();

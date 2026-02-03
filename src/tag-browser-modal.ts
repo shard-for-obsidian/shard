@@ -5,12 +5,12 @@ import { GHCRWrapper } from "./ghcr-wrapper";
 export class TagBrowserModal extends Modal {
   settings: GHCRPluginSettings;
 
-  private repoInput: HTMLInputElement;
-  private tokenInput: HTMLInputElement;
-  private fetchButton: HTMLButtonElement;
-  private leftPane: HTMLDivElement;
-  private rightPane: HTMLDivElement;
-  private errorContainer: HTMLDivElement;
+  private repoInput!: HTMLInputElement;
+  private tokenInput!: HTMLInputElement;
+  private fetchButton!: HTMLButtonElement;
+  private leftPane!: HTMLDivElement;
+  private rightPane!: HTMLDivElement;
+  private errorContainer!: HTMLDivElement;
 
   private currentRepo: string = "";
   private selectedTag: string | null = null;

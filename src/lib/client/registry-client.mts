@@ -527,17 +527,6 @@ export class GHCRClient {
     return { resp, manifest };
   }
 
-  async deleteManifest(opts: { ref: string }) {
-    await this.login();
-    const resp = await this._api.request({
-      method: "DELETE",
-      path: `/v2/${encodeURI(this.repo.remoteName ?? "")}/manifests/${encodeURI(opts.ref)}`,
-      headers: this._headers,
-      expectStatus: [200, 202],
-    });
-    await resp.dockerBody(); // some registries give JSON, others give 202 with empty body
-  }
-
   /**
    * Makes a http request to the given url, following any redirects, then fires
    * the callback(err, req, responses) with the result.
@@ -672,101 +661,9 @@ export class GHCRClient {
    * Upload an image manifest. `ref` is either a tag or a digest.
    * <https://github.com/opencontainers/distribution-spec/blob/main/spec.md#pushing-manifests>
    */
-  async putManifest(opts: {
-    manifestData: ByteArray;
-    ref: string; // or digest
-    schemaVersion?: number;
-    mediaType?: string;
-  }): Promise<{
-    digest: string | null;
-    location: string | null;
-  }> {
-    await this.login({
-      scope: _makeAuthScope("repository", this.repo.remoteName, [
-        "pull",
-        "push",
-      ]),
-    });
-
-    const mediaType =
-      opts.mediaType ??
-      `application/vnd.docker.distribution.manifest.v${opts.schemaVersion ?? 1}+json`;
-
-    const response = await this._api
-      .request({
-        method: "PUT",
-        path: `/v2/${encodeURI(this.repo.remoteName)}/manifests/${opts.ref}`,
-        headers: _setAuthHeaderFromAuthInfo(
-          {
-            "content-type": mediaType,
-          },
-          this._authInfo ?? null,
-        ),
-        body: opts.manifestData as BufferSource,
-        expectStatus: [201],
-      })
-      .catch((cause) =>
-        Promise.reject(new e.UploadError("Manifest upload failed.", { cause })),
-      );
-
-    const digest = response.headers["docker-content-digest"] ?? null;
-    const location = response.headers["location"] ?? null;
-    return { digest, location };
-  }
 
   /*
    * Upload a blob. The request stream will be used to complete the upload in a single request.
    * <https://github.com/opencontainers/distribution-spec/blob/main/spec.md#post-then-put>
    */
-  async blobUpload(opts: {
-    digest: string;
-    stream: ReadableStream<ByteArray> | ByteArray;
-    contentLength: number;
-    contentType?: string;
-  }) {
-    await this.login({
-      scope: _makeAuthScope("repository", this.repo.remoteName, [
-        "pull",
-        "push",
-      ]),
-    });
-
-    const startUploadPath = `/v2/${encodeURI(this.repo.remoteName)}/blobs/uploads/`;
-    const sessionResponse = await this._api
-      .request({
-        method: "POST",
-        path: startUploadPath,
-        headers: _setAuthHeaderFromAuthInfo({}, this._authInfo ?? null),
-        expectStatus: [202],
-      })
-      .catch((cause) =>
-        Promise.reject(new e.UploadError("Blob upload rejected.", { cause })),
-      );
-    const uploadUrl = sessionResponse.headers["location"];
-    if (!uploadUrl)
-      throw new e.UploadError("No registry upload location header returned");
-
-    const destinationUrl = new URL(
-      uploadUrl,
-      new URL(startUploadPath, this._url),
-    );
-    destinationUrl.searchParams.append("digest", opts.digest);
-    await this._api
-      .request({
-        method: "PUT",
-        path: destinationUrl.toString(),
-        headers: _setAuthHeaderFromAuthInfo(
-          {
-            "content-length": `${opts.contentLength}`,
-            "content-type": opts.contentType || "application/octet-stream",
-          },
-          this._authInfo ?? null,
-        ),
-        body: opts.stream as BufferSource,
-        expectStatus: [201],
-      })
-      .catch((cause) =>
-        Promise.reject(new e.UploadError("Blob upload failed.", { cause })),
-      );
-  }
 }
