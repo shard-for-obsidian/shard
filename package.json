@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "tsx esbuild.config.mjs",
-    "build": "tsx eslint.config.mts production"
+    "dev": "node esbuild.config.mjs",
+    "build": "node esbuild.config.mjs production"
   },
   "dependencies": {
     "builtin-modules": "^5.0.0",
