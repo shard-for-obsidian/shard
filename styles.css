@@ -150,3 +150,160 @@
 	color: var(--text-muted);
 	padding: 20px;
 }
+
+/* Settings Tab Styles */
+
+/* Repository list container */
+.ghcr-repository-list {
+	margin-top: 16px;
+}
+
+/* Repository entry card */
+.ghcr-repo-entry {
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	padding: 16px;
+	margin-bottom: 12px;
+	background-color: var(--background-primary);
+}
+
+.ghcr-repo-entry:hover {
+	background-color: var(--background-modifier-hover);
+}
+
+/* Error state for repository */
+.ghcr-repo-error {
+	border-color: var(--text-error);
+}
+
+/* Repository header */
+.ghcr-repo-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.ghcr-repo-name {
+	font-weight: 600;
+	font-size: 1.1em;
+}
+
+.ghcr-repo-controls {
+	display: flex;
+	gap: 8px;
+}
+
+.ghcr-refresh-button,
+.ghcr-remove-button {
+	padding: 4px 8px;
+	cursor: pointer;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background-color: var(--background-primary);
+	font-size: 1.2em;
+	line-height: 1;
+}
+
+.ghcr-refresh-button:hover:not(:disabled),
+.ghcr-remove-button:hover:not(:disabled) {
+	background-color: var(--background-modifier-hover);
+}
+
+.ghcr-refresh-button:disabled,
+.ghcr-remove-button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Repository content */
+.ghcr-repo-content {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+/* Dropdown row */
+.ghcr-dropdown-row {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+
+.ghcr-tag-dropdown {
+	flex: 1;
+	min-width: 200px;
+}
+
+.ghcr-checkbox-container {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	white-space: nowrap;
+}
+
+.ghcr-checkbox-container label {
+	cursor: pointer;
+	user-select: none;
+}
+
+/* Status row */
+.ghcr-status-row {
+	font-size: 0.9em;
+}
+
+.ghcr-status-installed {
+	color: var(--text-muted);
+	font-family: var(--font-monospace);
+	font-size: 0.85em;
+}
+
+.ghcr-status-not-installed {
+	color: var(--text-muted);
+}
+
+/* Button row */
+.ghcr-button-row {
+	display: flex;
+	gap: 8px;
+}
+
+.ghcr-action-button {
+	padding: 8px 16px;
+	cursor: pointer;
+}
+
+.ghcr-action-button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Error message in repository */
+.ghcr-error-message {
+	color: var(--text-error);
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.ghcr-retry-button {
+	align-self: flex-start;
+	padding: 6px 12px;
+	cursor: pointer;
+}
+
+/* Loading state in repository */
+.ghcr-repo-loading {
+	padding: 12px 0;
+	color: var(--text-muted);
+}
+
+.ghcr-loading-text {
+	display: inline-block;
+	animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.5;  }
+}
