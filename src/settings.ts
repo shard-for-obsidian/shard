@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, SecretComponent, Setting } from "obsidian";
 import type GHCRTagBrowserPlugin from "./main";
 
 export class GHCRSettingTab extends PluginSettingTab {
@@ -16,15 +16,13 @@ export class GHCRSettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("GitHub Token")
       .setDesc("Optional personal access token for private repositories")
-      .addText((text) =>
-        text
-          .setPlaceholder("ghp_...")
+      .addComponent((el) =>
+        new SecretComponent(this.app, el)
           .setValue(this.plugin.settings.githubToken)
-          .onChange(async (value) => {
+          .onChange((value) => {
             this.plugin.settings.githubToken = value;
-            await this.plugin.saveSettings();
-          })
-          .inputEl.setAttribute("type", "password"),
+            this.plugin.saveSettings();
+          }),
       );
   }
 }

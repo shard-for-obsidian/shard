@@ -111,7 +111,11 @@ export class TagBrowserModal extends Modal {
     });
 
     try {
-      const token = this.tokenInput.value.trim() || this.settings.githubToken;
+      const tokenOverride = this.tokenInput.value.trim();
+      const secretToken = this.settings.githubToken
+        ? await this.app.secretStorage.getSecret(this.settings.githubToken)
+        : null;
+      const token = tokenOverride || secretToken || undefined;
       const tags = await GHCRWrapper.getTags(repo, token);
 
       if (tags.length === 0) {
@@ -129,7 +133,11 @@ export class TagBrowserModal extends Modal {
     this.showLoading(this.rightPane, "Loading tag details...");
 
     try {
-      const token = this.tokenInput.value.trim() || this.settings.githubToken;
+      const tokenOverride = this.tokenInput.value.trim();
+      const secretToken = this.settings.githubToken
+        ? await this.app.secretStorage.getSecret(this.settings.githubToken)
+        : null;
+      const token = tokenOverride || secretToken || undefined;
       const metadata = await GHCRWrapper.getTagMetadata(
         this.currentRepo,
         tag,
@@ -243,8 +251,14 @@ export class TagBrowserModal extends Modal {
 
     try {
       // Get token
-      const token = this.tokenInput.value.trim() || this.settings.githubToken;
-      console.log(`[Modal] Installing with token: ${token ? "present" : "none"}`);
+      const tokenOverride = this.tokenInput.value.trim();
+      const secretToken = this.settings.githubToken
+        ? await this.app.secretStorage.getSecret(this.settings.githubToken)
+        : null;
+      const token = tokenOverride || secretToken || undefined;
+      console.log(
+        `[Modal] Installing with token: ${token ? "present" : "none"}`,
+      );
       console.log(`[Modal] Current repo: ${this.currentRepo}`);
       console.log(`[Modal] Tag: ${tag}`);
 
@@ -280,7 +294,7 @@ export class TagBrowserModal extends Modal {
   private formatError(error: unknown): string {
     if (error instanceof Error) {
       const message = error.message.toLowerCase();
-
+      console.log(`[Modal] Formatting error message: ${message}`);
       // Check for specific error types
       if (message.includes("401") || message.includes("unauthorized")) {
         return "Authentication failed. Check your GitHub token in settings.";
