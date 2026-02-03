@@ -17,6 +17,8 @@ import {
   MEDIATYPE_OCI_MANIFEST_INDEX_V1,
 } from "./common.mjs";
 
+import { REALM, SERVICE } from "./ghcr.mjs";
+
 import type {
   Manifest,
   RegistryRepo,
@@ -33,7 +35,6 @@ import {
 
 import * as e from "./errors.mjs";
 
-import { parseWWWAuthenticate } from "./util/www-authenticate.mjs";
 import { parseLinkHeader } from "./util/link-header.mjs";
 
 function encodeHex(data: ArrayBuffer) {
@@ -45,8 +46,6 @@ function encodeHex(data: ArrayBuffer) {
 /*
  * Copyright 2017 Joyent, Inc.
  */
-
-const MAX_REGISTRY_ERROR_LENGTH = 10000;
 
 /*
  * Set the "Authorization" HTTP header into the headers object from the given
@@ -140,56 +139,6 @@ function _makeAuthScope(resource: string, name: string, actions: string[]) {
   return `${resource}:${name}:${actions.join(",")}`;
 }
 
-/**
- * Special handling of JSON body errors from the registry server.
- *
- * POST/PUT endpoints can return an error in the body of the response.
- * We want to check for that and get the error body message and return it.
- *
- * Usage:
- *      var regErr = _getRegistryErrMessage(body));
- */
-function _getRegistryErrMessage(
-  body: string | Record<string, unknown> | null | undefined,
-) {
-  if (!body) {
-    return null;
-  }
-  const obj = body;
-  if (typeof obj === "string" && obj.length <= MAX_REGISTRY_ERROR_LENGTH) {
-    try {
-      return JSON.parse(obj);
-    } catch {
-      // Just return the error as a string.
-      return obj as string;
-    }
-  }
-  if (typeof obj !== "object" || !Object.hasOwnProperty.call(obj, "errors")) {
-    return null;
-  }
-  if (!Array.isArray(obj.errors)) {
-    return null;
-  }
-  // Example obj:
-  // {
-  //     "errors": [
-  //         {
-  //             "code": "MANIFEST_INVALID",
-  //             "message": "manifest invalid",
-  //             "detail": {}
-  //         }
-  //     ]
-  // }
-  if (obj.errors.length === 1) {
-    return obj.errors[0].message;
-  } else {
-    return obj.errors
-      .map(function (o: any) {
-        return o.message;
-      })
-      .join(", ");
-  }
-}
 
 /*
  * Parse the 'Docker-Content-Digest' header.
@@ -289,7 +238,7 @@ export async function digestFromManifestStr(
   return `sha256:${encodeHex(hash)}`;
 }
 
-export class RegistryClientV2 {
+export class GHCRClient {
   readonly version = 2;
   insecure: boolean;
   repo: RegistryRepo;
@@ -362,43 +311,12 @@ export class RegistryClientV2 {
     });
   }
 
-  /**
-   * Ping the base URL.
-   * See: <https://docs.docker.com/registry/spec/api/#base>
-   *
-   * Use `res.status` to infer information:
-   *          404     This registry URL does not support the v2 API.
-   *          401     Authentication is required (or failed). Use the
-   *                  WWW-Authenticate header for the appropriate auth method.
-   *                  This `res` can be passed to `login()` to handle
-   *                  authenticating.
-   *          200     Successful authentication. The response body is `body`
-   *                  if wanted.
-   */
-  async ping(
-    opts: {
-      headers?: Headers;
-      expectStatus?: number[];
-    } = {},
-  ): Promise<DockerResponse> {
-    const resp = await this._api.request({
-      method: "GET",
-      path: "/v2/",
-      headers: opts.headers,
-      expectStatus: opts.expectStatus ?? [200, 401, 404],
-      // Ping should be fast. We don't want 15s of retrying.
-      retry: false,
-      connectTimeout: 10000,
-    });
-    await resp.dockerBody();
-    return resp;
-  }
 
   /**
    * Login V2
    *
    * Typically one does not need to call this function directly because most
-   * methods of a `RegistryClientV2` will automatically login as necessary.
+   * methods of a `GHCRClient` will automatically login as necessary.
    *
    * @param opts {Object}
    *      - opts.scope {String} Optional. A scope string passed in for
@@ -406,53 +324,19 @@ export class RegistryClientV2 {
    *        won't be used, then the empty string (the default) is sufficient.
    *        // JSSTYLED
    *        See <https://github.com/docker/distribution/blob/master/docs/spec/auth/token.md#requesting-a-token>
-   *      - opts.pingRes {Object} Optional. The response object from an earlier
-   *        `ping()` call. This can be used to save re-pinging.
-   *      ...
-   * @return an object with authentication info, examples:
-   *                          {type: 'Basic', username: '...', password: '...'}
-   *                          {type: 'Bearer', token: '...'}
-   *                          {type: 'None'}
+   * @return an object with authentication info
    */
   async performLogin(opts: {
     scope?: string;
-    pingRes?: DockerResponse;
   }): Promise<AuthInfo> {
-    let res = opts.pingRes;
-    if (!res?.headers.get("www-authenticate")) {
-      res = await this.ping({
-        expectStatus: [200, 401],
-      });
-      if (res.status === 200) {
-        // No authorization is necessary.
-        return { type: "None" };
-      }
-    }
-
-    const chalHeader = res.headers.get("www-authenticate");
-    if (!chalHeader)
-      throw await res.dockerThrowable(
-        'missing WWW-Authenticate header from "GET /v2/" (see ' +
-          "https://docs.docker.com/registry/spec/api/#api-version-check)",
-      );
-
-    const authChallenge = parseWWWAuthenticate(chalHeader);
-    if (authChallenge.scheme.toLowerCase() === "basic")
-      return {
-        type: "Basic",
-        username: this.username ?? "",
-        password: this.password ?? "",
-      };
-    if (authChallenge.scheme.toLowerCase() === "bearer")
-      return {
-        type: "Bearer",
-        token: await this._getToken({
-          realm: authChallenge.parms.realm ?? "",
-          service: authChallenge.parms.service,
-          scopes: opts.scope ? [opts.scope] : [],
-        }),
-      };
-    throw new Error(`unsupported auth scheme: "${authChallenge.scheme}"`);
+    return {
+      type: "Bearer",
+      token: await this._getToken({
+        realm: REALM,
+        service: SERVICE,
+        scopes: opts.scope ? [opts.scope] : [],
+      }),
+    };
   }
 
   /**
@@ -535,8 +419,6 @@ export class RegistryClientV2 {
    * methods of a client will automatically login as necessary.
    *
    * @param opts {Object} Optional.
-   *      - opts.pingRes {Object} Optional. The response object from an earlier
-   *        `ping()` call. This can be used to save re-pinging.
    *      - opts.scope {String} Optional. Scope to use in the auth Bearer token.
    *
    * Side-effects:
@@ -545,7 +427,6 @@ export class RegistryClientV2 {
    */
   async login(
     opts: {
-      pingRes?: DockerResponse;
       scope?: string;
     } = {},
   ): Promise<void> {
@@ -558,7 +439,6 @@ export class RegistryClientV2 {
     }
 
     const authInfo = await this.performLogin({
-      pingRes: opts.pingRes,
       scope: scope,
     });
     this._loggedIn = true;
@@ -568,29 +448,6 @@ export class RegistryClientV2 {
     // this.log.trace({err: err, loggedIn: this._loggedIn}, 'login: done');
   }
 
-  /**
-   * Determine if this registry supports the v2 API.
-   * https://docs.docker.com/registry/spec/api/#api-version-check
-   */
-  async supportsV2(): Promise<boolean> {
-    let res: DockerResponse;
-    try {
-      res = await this.ping();
-    } catch (thrown) {
-      const err = thrown as Error & { resp?: Response };
-      if (err.resp) return false;
-      throw err;
-    }
-
-    const header = res.headers.get("docker-distribution-api-version");
-    if (header) {
-      const versions = header.split(/[\s,]+/g);
-      if (versions.includes("registry/2.0")) {
-        return true;
-      }
-    }
-    return [200, 401].includes(res.status);
-  }
 
   async listTags(
     props: { pageSize?: number; startingAfter?: string } = {},

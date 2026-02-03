@@ -1,9 +1,11 @@
 import { parseRepoAndRef } from "../lib/client/common.mjs";
-import { RegistryClientV2 } from "../lib/client/registry-client.mjs";
+import { GHCRClient } from "../lib/client/registry-client.mjs";
 
 // The interesting stuff starts here.
-const rar = parseRepoAndRef("ghcr.io/gillisandrew/dragonglass-poc:latest");
-const client = new RegistryClientV2({
+const rar = parseRepoAndRef(
+  "ghcr.io/gillisandrew/dragonglass-poc/example-plugin:latest",
+);
+const client = new GHCRClient({
   repo: rar,
   // log: log,
   insecure: false,
