@@ -1,4 +1,4 @@
-import { App, Modal, Setting } from "obsidian";
+import { App, Modal } from "obsidian";
 import { filterTags, getActionButtonText } from "./semver-utils";
 
 export class VersionSelectionModal extends Modal {

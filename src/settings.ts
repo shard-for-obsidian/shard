@@ -124,7 +124,7 @@ export class GHCRSettingTab extends PluginSettingTab {
     }
 
     // Validate format (should be ghcr.io/owner/repo)
-    if (!normalized.match(/^ghcr\.io\/[^\/]+\/[^\/]+$/)) {
+    if (!normalized.match(/^ghcr\.io\/[^/]+\/[^/]+$/)) {
       new Notice(
         "Invalid repository format. Expected: owner/repo or ghcr.io/owner/repo",
       );
@@ -330,9 +330,7 @@ export class GHCRSettingTab extends PluginSettingTab {
       statusDiv.style.fontSize = "0.9em";
       statusDiv.style.color = "var(--text-muted)";
       const digestShort = installedInfo.digest.substring(0, 23) + "...";
-      statusDiv.setText(
-        `Installed: ${installedInfo.tag} (${digestShort})`,
-      );
+      statusDiv.setText(`Installed: ${installedInfo.tag} (${digestShort})`);
       statusDiv.title = installedInfo.digest;
     }
 
@@ -436,7 +434,7 @@ export class GHCRSettingTab extends PluginSettingTab {
       const ghcrClient = GHCRWrapper.createClient(normalizedRepoUrl, token);
 
       // Fetch manifest to get digest
-      const { resp, manifest } = await ghcrClient.getManifest({ ref: tag });
+      const { resp } = await ghcrClient.getManifest({ ref: tag });
       const digest = resp.headers["docker-content-digest"] || "unknown";
 
       // Create installer and perform installation
