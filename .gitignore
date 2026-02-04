@@ -4,3 +4,5 @@ node_modules/
 main.js
 annotations.json
 manifest.json
+sbom.json
+dist/

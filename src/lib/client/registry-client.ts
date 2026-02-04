@@ -211,7 +211,7 @@ export async function digestFromManifestStr(
   return `sha256:${encodeHex(hash)}`;
 }
 
-export class GHCRClient {
+export class OciRegistryClient {
   readonly version = 2;
   insecure: boolean;
   repo: RegistryRepo;

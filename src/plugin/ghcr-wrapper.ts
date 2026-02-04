@@ -1,10 +1,10 @@
 import { parseRepoAndRef } from "@/lib/client/common.js";
-import { GHCRClient } from "@/lib/client/registry-client.js";
+import { OciRegistryClient } from "@/lib/client/registry-client.js";
 import type {
   RequestUrlParam,
   RequestUrlResponse,
 } from "@/lib/client/types.js";
-import type { TagMetadata } from "./types";
+import type { TagMetadata } from "@/plugin/types.js";
 import { requestUrl } from "obsidian";
 
 export class GHCRWrapper {
@@ -63,11 +63,11 @@ export class GHCRWrapper {
   /**
    * Create a GHCRClient instance for the given repository
    */
-  static createClient(repoUrl: string, token?: string): GHCRClient {
+  static createClient(repoUrl: string, token?: string): OciRegistryClient {
     const normalized = this.normalizeRepoUrl(repoUrl);
     const repo = parseRepoAndRef(normalized);
 
-    return new GHCRClient({
+    return new OciRegistryClient({
       repo: repo,
       insecure: false,
       username: token ? "github" : undefined,

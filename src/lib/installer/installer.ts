@@ -1,5 +1,5 @@
 import type { App } from "obsidian";
-import type { GHCRClient } from "@/lib/client/registry-client.js";
+import type { OciRegistryClient } from "@/lib/client/registry-client.js";
 
 export interface InstallResult {
   pluginId: string;
@@ -26,7 +26,7 @@ interface ImageConfig {
 export class Installer {
   constructor(
     public app: App,
-    public ghcr: GHCRClient,
+    public ghcr: OciRegistryClient,
   ) {}
 
   async install(repo: string, tag: string): Promise<InstallResult> {
