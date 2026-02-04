@@ -7,7 +7,6 @@ IMAGE_REF=$1
 
 # Parse version from IMAGE_REF
 VERSION=$(echo "$IMAGE_REF" | sed -E 's/.*:(.*)$/\1/')
-
 # Use jq to convert ./manifest.json file into config labels (md.obsidian.plugin.v1.<field>)
 # Also mapping to appropriate org.opencontainers label keys
 # These labels go in the config, which is content-addressed and immutable
@@ -32,7 +31,6 @@ jq -n --arg ver "$VERSION" --slurpfile manifest ./manifest.json '{
     }
   }
 }' > config.json
-
 oras push $IMAGE_REF \
   --artifact-type application/vnd.obsidian.plugin.v1+json \
   --config config.json:application/vnd.oci.image.config.v1+json \

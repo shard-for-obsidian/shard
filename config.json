@@ -1,14 +1,14 @@
 {
-  "created": "2026-02-04T03:38:00Z",
+  "created": "2026-02-04T20:48:23Z",
   "config": {
     "Labels": {
-      "org.opencontainers.image.version": "0.1.2",
+      "org.opencontainers.image.version": "0.1.3",
       "org.opencontainers.image.title": "GHCR Plugin Manager",
       "org.opencontainers.image.description": "Browse and install Obsidian plugins from GitHub Container Registry repositories",
       "org.opencontainers.image.authors": "Andrew Gillis",
       "org.opencontainers.image.url": "https://github.com/gillisandrew",
-      "org.opencontainers.image.created": "2026-02-04T03:38:00Z",
-      "md.obsidian.plugin.v1.id": "io.ghcr.gillisandrew.obsidian-ghcr-plugin-manager",
+      "org.opencontainers.image.created": "2026-02-04T20:48:23Z",
+      "md.obsidian.plugin.v1.id": "gillisandrew.ghcr-plugin-manager",
       "md.obsidian.plugin.v1.name": "GHCR Plugin Manager",
       "md.obsidian.plugin.v1.version": "0.1.2",
       "md.obsidian.plugin.v1.minAppVersion": "1.11.5",

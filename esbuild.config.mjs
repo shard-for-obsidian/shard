@@ -4,14 +4,20 @@ import { copy } from 'esbuild-plugin-copy';
 import { builtinModules } from 'node:module'
 import { cyclonedxEsbuildPlugin } from '@cyclonedx/cyclonedx-esbuild'
 
-const prod = process.argv[2] === "production";
-const outdir = prod && process.env.BUILD_OUTDIR ? process.env.BUILD_OUTDIR : "dist";
+const isProd = process.argv[2] === "production";
+console.log(`Building for ${isProd ? "production" : "development"}...`);
+let outdir = 'dist';
 
-esbuild
-  .build({
+if (!isProd && process.env.LOCAL_PLUGIN_DIR) {
+  console.log(`Local plugin directory set to ${process.env.LOCAL_PLUGIN_DIR}`);
+  outdir = process.env.LOCAL_PLUGIN_DIR;
+}
+
+const context = await esbuild
+  .context({
     entryPoints: ["src/plugin/main.ts"],
     bundle: true,
-    treeShaking: prod,
+    treeShaking: isProd,
     external: [
       "obsidian",
       "electron",
@@ -31,8 +37,8 @@ esbuild
     format: "cjs",
     target: "es2020",
     outfile: `${outdir}/main.js`,
-    sourcemap: prod ? false : "inline",
-    minify: prod,
+    sourcemap: isProd ? false : "inline",
+    minify: isProd,
     logLevel: "info",
     plugins: [
       copy({
@@ -41,7 +47,7 @@ esbuild
           from: ['./src/plugin/styles.css'],
           to: [`${outdir}/styles.css`],
         },
-        watch: !prod,
+        watch: !isProd,
       }),
       copy({
         // this is equal to process.cwd(), which means we use cwd path as base path to resolve `to` path
@@ -51,14 +57,16 @@ esbuild
           from: ['./manifest.json'],
           to: [`${outdir}/manifest.json`],
         },
-        watch: !prod,
+        watch: !isProd,
       }),
-      cyclonedxEsbuildPlugin({
+      ...(isProd ? [cyclonedxEsbuildPlugin({
         specVersion: '1.7',
         outputReproducible: true,
         validateResults: true,
         outputFile: 'sbom.json',
-      })
+      })] : []),
     ]
-  })
-  .catch(() => process.exit(1));
+  });
+
+
+isProd ? await context.rebuild() : await context.watch();
