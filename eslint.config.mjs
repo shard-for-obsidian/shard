@@ -1,10 +1,15 @@
 // eslint.config.mjs
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
+import obsidianmd from "eslint-plugin-obsidianmd";
 
 export default tseslint.config(
   eslint.configs.recommended,
+  ...obsidianmd.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    ignores: ["*.config.mjs", "main.js", "node_modules/**"],
+  },
   {
     languageOptions: {
       parserOptions: {

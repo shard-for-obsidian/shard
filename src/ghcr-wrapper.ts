@@ -3,7 +3,6 @@ import { GHCRClient } from "./lib/client/registry-client.mjs";
 import type {
   RequestUrlParam,
   RequestUrlResponse,
-  RegistryRepo,
 } from "./lib/client/types.mjs";
 import type { TagMetadata } from "./types";
 import { requestUrl } from "obsidian";
@@ -104,9 +103,9 @@ export class GHCRWrapper {
     if (
       (manifest.mediaType ===
         "application/vnd.docker.distribution.manifest.v2+json" &&
-        Array.isArray((manifest as any).layers)) ||
+        Array.isArray((manifest as { layers?: unknown[] }).layers)) ||
       (manifest.mediaType === "application/vnd.oci.image.manifest.v1+json" &&
-        Array.isArray((manifest as any).layers))
+        Array.isArray((manifest as { layers?: unknown[] }).layers))
     ) {
       // ManifestV2 or ManifestOCI
       size = (manifest as { layers: Array<{ size?: number }> }).layers.reduce(

@@ -17,6 +17,12 @@ interface ObsidianManifest {
   isDesktopOnly?: boolean;
 }
 
+interface ImageConfig {
+  config?: {
+    Labels?: Record<string, string>;
+  };
+}
+
 export class Installer {
   constructor(
     public app: App,
@@ -46,7 +52,7 @@ export class Installer {
       digest: manifest.config.digest,
     });
     const configText = new TextDecoder().decode(configBuffer);
-    const config = JSON.parse(configText);
+    const config = JSON.parse(configText) as ImageConfig;
     console.log(`[Installer] Config fetched, labels:`, config.config?.Labels);
 
     // 4. Extract plugin metadata from config labels
@@ -117,7 +123,7 @@ export class Installer {
     return { pluginId, filesInstalled: fileMap.size + 1 }; // +1 for manifest.json
   }
 
-  private extractObsidianManifest(config: any): ObsidianManifest {
+  private extractObsidianManifest(config: ImageConfig): ObsidianManifest {
     const labels = config.config?.Labels || {};
 
     // Extract Obsidian plugin metadata from config labels

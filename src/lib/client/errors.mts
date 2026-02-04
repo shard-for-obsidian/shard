@@ -16,7 +16,7 @@ import type { DockerResponse, RegistryError } from "./types.mjs";
 
 /** Base class for custom error classes. */
 export class ApiError extends Error {
-  constructor(message: string, init?: { cause?: any }) {
+  constructor(message: string, init?: { cause?: unknown }) {
     super(message);
     this.name = new.target.name;
     Error.captureStackTrace?.(this, new.target);

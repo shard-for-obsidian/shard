@@ -23,7 +23,6 @@ import type {
   RegistryClientOpts,
   AuthInfo,
   TagList,
-  ByteArray,
 } from "./types.mjs";
 
 import {
@@ -114,19 +113,24 @@ function _setAuthHeaderFromAuthInfo(
  *   ]
  * }
  */
-function _getRegistryErrorMessage(err: any) {
-  if (err.body && Array.isArray(err.body.errors) && err.body.errors[0]) {
-    return err.body.errors[0].message;
-  } else if (err.body && err.body.details) {
-    return err.body.details;
-  } else if (Array.isArray(err.errors) && err.errors[0].message) {
-    return err.errors[0].message;
-  } else if (err.message) {
-    return err.message;
-  } else if (err.details) {
-    return err.details;
+function _getRegistryErrorMessage(err: unknown) {
+  const e = err as Record<string, unknown>;
+  if (e.body && typeof e.body === 'object' && e.body !== null) {
+    const body = e.body as Record<string, unknown>;
+    if (Array.isArray(body.errors) && body.errors[0]) {
+      return (body.errors[0] as { message?: unknown }).message;
+    } else if (body.details) {
+      return body.details;
+    }
   }
-  return err.toString();
+  if (Array.isArray(e.errors) && e.errors[0]) {
+    return (e.errors[0] as { message?: unknown }).message;
+  } else if (e.message) {
+    return e.message;
+  } else if (e.details) {
+    return e.details;
+  }
+  return String(err);
 }
 
 /**

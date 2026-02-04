@@ -16,7 +16,7 @@ export interface RequestUrlResponse {
   status: number;
   headers: Record<string, string>;
   arrayBuffer: ArrayBuffer;
-  json: any;
+  json: unknown;
   text: string;
 }
 

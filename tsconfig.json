@@ -19,6 +19,6 @@
       "obsidian": ["node_modules/obsidian/obsidian.d.ts"]
     }
   },
-  "include": ["src/**/*.ts", "lib/**/*.mts"],
+  "include": ["src/**/*.ts", "src/**/*.mts", "lib/**/*.mts"],
   "exclude": ["node_modules"]
 }
