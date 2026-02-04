@@ -23,7 +23,7 @@ export class GHCRSettingTab extends PluginSettingTab {
     this.plugin = plugin;
   }
 
-  async display(): Promise<void> {
+  display(): void {
     const { containerEl } = this;
     containerEl.empty();
 
@@ -34,41 +34,41 @@ export class GHCRSettingTab extends PluginSettingTab {
     this.renderAddRepositorySection(containerEl);
 
     // Managed Repositories section
-    await this.renderRepositoriesSection(containerEl);
+    void this.renderRepositoriesSection(containerEl);
   }
 
   private renderTokenSection(containerEl: HTMLElement): void {
     new Setting(containerEl)
-      .setName("GitHub Token")
+      .setName("GitHub token")
       .setDesc("Optional personal access token for private repositories")
       .addComponent((el) =>
         new SecretComponent(this.app, el)
           .setValue(this.plugin.settings.githubToken)
           .onChange((value) => {
             this.plugin.settings.githubToken = value;
-            this.plugin.saveSettings();
+            void this.plugin.saveSettings();
           }),
       );
   }
 
   private renderAddRepositorySection(containerEl: HTMLElement): void {
     new Setting(containerEl)
-      .setName("Add Repository")
+      .setName("Add repository")
       .setDesc("Enter repository URL (e.g., owner/repo or ghcr.io/owner/repo)")
       .addText((text) => {
         text.setPlaceholder("owner/repo or ghcr.io/owner/repo");
         text.inputEl.addEventListener("keypress", (e) => {
           if (e.key === "Enter") {
-            this.addRepository(text.getValue());
+            void this.addRepository(text.getValue());
             text.setValue("");
           }
         });
       })
       .addButton((button) => {
-        button.setButtonText("Add").onClick(async () => {
+        button.setButtonText("Add").onClick(() => {
           const input = button.buttonEl.parentElement?.querySelector("input");
           if (input) {
-            await this.addRepository(input.value);
+            void this.addRepository(input.value);
             input.value = "";
           }
         });
@@ -87,7 +87,7 @@ export class GHCRSettingTab extends PluginSettingTab {
     header.addClass("setting-item-heading");
 
     const headerName = header.createDiv("setting-item-name");
-    headerName.setText("Managed Repositories");
+    headerName.setText("Managed repositories");
 
     const headerControl = header.createDiv("setting-item-control");
 
@@ -180,9 +180,10 @@ export class GHCRSettingTab extends PluginSettingTab {
     if (this.plugin.settings.repositories.length === 0) {
       const emptyState = this.repositoryListContainer.createDiv("setting-item");
       const emptyInfo = emptyState.createDiv("setting-item-info");
-      emptyInfo.createDiv({ text: "No repositories added yet" });
-      emptyInfo.style.fontStyle = "italic";
-      emptyInfo.style.color = "var(--text-muted)";
+      emptyInfo.createDiv({ text: "No repositories added yet" }).setCssProps({
+        fontStyle: "italic",
+        color: "var(--text-muted)",
+      });
       return;
     }
 
@@ -234,14 +235,19 @@ export class GHCRSettingTab extends PluginSettingTab {
     if (!this.repositoryListContainer) return;
 
     const settingItem = this.repositoryListContainer.createDiv("setting-item");
-    settingItem.style.borderLeft = "3px solid var(--text-error)";
+
+    settingItem.setCssProps({
+      borderLeft: "3px solid var(--text-error)",
+    });
 
     const settingInfo = settingItem.createDiv("setting-item-info");
     settingInfo.createDiv("setting-item-name").setText(repo.repoUrl);
     const description = settingInfo.createDiv("setting-item-description");
     const errorDiv = description.createDiv();
     errorDiv.setText(`Failed to fetch tags: ${error}`);
-    errorDiv.style.color = "var(--text-error)";
+    errorDiv.setCssProps({
+      color: "var(--text-error)",
+    });
 
     const settingControl = settingItem.createDiv("setting-item-control");
 
@@ -275,7 +281,9 @@ export class GHCRSettingTab extends PluginSettingTab {
     }
 
     const settingInfo = settingItem.createDiv("setting-item-info");
-    settingInfo.style.cursor = "auto";
+    settingInfo.setCssProps({
+      cursor: "auto",
+    });
 
     // Repository name
     settingInfo.createDiv("setting-item-name").setText(repo.repoUrl);
@@ -285,10 +293,12 @@ export class GHCRSettingTab extends PluginSettingTab {
 
     // Version selection row
     const versionRow = description.createDiv();
-    versionRow.style.display = "flex";
-    versionRow.style.gap = "8px";
-    versionRow.style.alignItems = "center";
-    versionRow.style.marginBottom = "8px";
+    versionRow.setCssProps({
+      display: "flex",
+      gap: "8px",
+      alignItems: "center",
+      marginBottom: "8px",
+    });
 
     // Select version button
     const selectVersionButton = versionRow.createEl("button");
@@ -300,19 +310,21 @@ export class GHCRSettingTab extends PluginSettingTab {
         tags,
         repo.showAllTags,
         installedInfo?.tag || null,
-        async (selectedTag: string) => {
-          await this.installPlugin(repo.repoUrl, selectedTag);
+        (selectedTag: string) => {
+          void this.installPlugin(repo.repoUrl, selectedTag);
         },
       ).open();
     };
 
     // Show all tags checkbox
     const checkboxLabel = versionRow.createEl("label");
-    checkboxLabel.style.display = "flex";
-    checkboxLabel.style.alignItems = "center";
-    checkboxLabel.style.gap = "4px";
-    checkboxLabel.style.cursor = "pointer";
-    checkboxLabel.style.whiteSpace = "nowrap";
+    checkboxLabel.setCssProps({
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+      cursor: "pointer",
+      whiteSpace: "nowrap",
+    });
 
     const checkbox = checkboxLabel.createEl("input", { type: "checkbox" });
     checkbox.checked = repo.showAllTags;
@@ -327,8 +339,10 @@ export class GHCRSettingTab extends PluginSettingTab {
     // Status row
     if (installedInfo) {
       const statusDiv = description.createDiv();
-      statusDiv.style.fontSize = "0.9em";
-      statusDiv.style.color = "var(--text-muted)";
+      statusDiv.setCssProps({
+        fontSize: "0.9em",
+        color: "var(--text-muted)",
+      });
       const digestShort = installedInfo.digest.substring(0, 23) + "...";
       statusDiv.setText(`Installed: ${installedInfo.tag} (${digestShort})`);
       statusDiv.title = installedInfo.digest;
@@ -378,15 +392,17 @@ export class GHCRSettingTab extends PluginSettingTab {
     // Check if installed
     const isInstalled = this.plugin.settings.installedPlugins[repo.repoUrl];
     if (isInstalled) {
-      removeBtn.style.opacity = "0.5";
-      removeBtn.style.cursor = "not-allowed";
+      removeBtn.setCssProps({
+        opacity: "0.5",
+        cursor: "not-allowed",
+      });
       removeBtn.setAttribute(
         "aria-label",
         "Uninstall the plugin before removing",
       );
     } else {
-      removeBtn.onclick = async () => {
-        await this.removeRepository(repo.repoUrl);
+      removeBtn.onclick = () => {
+        void this.removeRepository(repo.repoUrl);
       };
     }
   }
@@ -394,9 +410,7 @@ export class GHCRSettingTab extends PluginSettingTab {
   private async fetchTagsForRepository(repo: RepositoryConfig): Promise<void> {
     try {
       const secretToken = this.plugin.settings.githubToken
-        ? await this.app.secretStorage.getSecret(
-            this.plugin.settings.githubToken,
-          )
+        ? this.app.secretStorage.getSecret(this.plugin.settings.githubToken)
         : null;
       const token = secretToken || undefined;
 
@@ -424,9 +438,7 @@ export class GHCRSettingTab extends PluginSettingTab {
 
       // Get auth token
       const secretToken = this.plugin.settings.githubToken
-        ? await this.app.secretStorage.getSecret(
-            this.plugin.settings.githubToken,
-          )
+        ? this.app.secretStorage.getSecret(this.plugin.settings.githubToken)
         : null;
       const token = secretToken || undefined;
 

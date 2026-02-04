@@ -53,8 +53,8 @@ export class GHCRWrapper {
       status: response.status,
       headers: response.headers,
       arrayBuffer: response.arrayBuffer,
-      get json() {
-        return response.json;
+      get json(): unknown {
+        return response.json as unknown;
       },
       text: response.text,
     };
@@ -73,7 +73,7 @@ export class GHCRWrapper {
       username: token ? "github" : undefined,
       password: token || undefined,
       acceptOCIManifests: true,
-      requestUrl: this.obsidianRequestUrl,
+      requestUrl: (...args) => this.obsidianRequestUrl(...args),
     });
   }
 

@@ -39,7 +39,7 @@ export class VersionSelectionModal extends Modal {
     if (semver.length > 0) {
       // Semantic versions section
       if (other.length > 0 && this.showAllTags) {
-        listContainer.createEl("h3", { text: "Semantic Versions" });
+        listContainer.createEl("h3", { text: "Semantic versions" });
       }
 
       semver.forEach((tag) => {
@@ -49,7 +49,7 @@ export class VersionSelectionModal extends Modal {
 
     if (other.length > 0 && this.showAllTags) {
       // Other tags section
-      listContainer.createEl("h3", { text: "Other Tags" });
+      listContainer.createEl("h3", { text: "Other tags" });
       other.forEach((tag) => {
         this.createVersionItem(listContainer, tag);
       });
@@ -84,8 +84,10 @@ export class VersionSelectionModal extends Modal {
     const actionHint = info.createDiv("ghcr-version-hint");
     const actionText = getActionButtonText(tag, this.currentTag);
     actionHint.setText(actionText);
-    actionHint.style.fontSize = "0.9em";
-    actionHint.style.color = "var(--text-muted)";
+    actionHint.setCssProps({
+      fontSize: "0.9em",
+      color: "var(--text-muted)",
+    });
 
     item.onclick = () => {
       this.onSelect(tag);

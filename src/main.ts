@@ -17,7 +17,7 @@ export default class GHCRTagBrowserPlugin extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData()) as GHCRPluginSettings;
   }
 
   async saveSettings() {
