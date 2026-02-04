@@ -1,5 +1,5 @@
 import type { App } from "obsidian";
-import type { GHCRClient } from "../client/registry-client.mjs";
+import type { GHCRClient } from "@/lib/client/registry-client.js";
 
 export interface InstallResult {
   pluginId: string;

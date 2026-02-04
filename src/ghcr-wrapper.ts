@@ -1,9 +1,9 @@
-import { parseRepoAndRef } from "./lib/client/common.mjs";
-import { GHCRClient } from "./lib/client/registry-client.mjs";
+import { parseRepoAndRef } from "@/lib/client/common.js";
+import { GHCRClient } from "@/lib/client/registry-client.js";
 import type {
   RequestUrlParam,
   RequestUrlResponse,
-} from "./lib/client/types.mjs";
+} from "@/lib/client/types.js";
 import type { TagMetadata } from "./types";
 import { requestUrl } from "obsidian";
 
