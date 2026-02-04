@@ -5,9 +5,35 @@ set -euo pipefail
 # ghcr.io/owner/repo:tag
 IMAGE_REF=$1
 
+# Parse version from IMAGE_REF
+VERSION=$(echo "$IMAGE_REF" | sed -E 's/.*:(.*)$/\1/')
+
+# Use jq to convert ./manifest.json file into namespaced annotations (md.obsidian.plugin.v1.<field>) as an annotation.json file e.g. `{"$manifest": { "org.opencontainers.image.version": "0.1.2" }}`
+# Also mapping to appropriate org.opencontainers annotation keys
+jq -n --arg ver "$VERSION" --slurpfile manifest ./manifest.json '{
+  "$manifest": {
+    "org.opencontainers.image.version": $ver,
+    "org.opencontainers.image.title": $manifest[0].name,
+    "org.opencontainers.image.description": $manifest[0].description,
+    "org.opencontainers.image.authors": $manifest[0].author,
+    "org.opencontainers.image.url": $manifest[0].authorUrl,
+    "md.obsidian.plugin.v1.id": $manifest[0].id,
+    "md.obsidian.plugin.v1.name": $manifest[0].name,
+    "md.obsidian.plugin.v1.version": $manifest[0].version,
+    "md.obsidian.plugin.v1.minAppVersion": $manifest[0].minAppVersion,
+    "md.obsidian.plugin.v1.description": $manifest[0].description,
+    "md.obsidian.plugin.v1.author": $manifest[0].author,
+    "md.obsidian.plugin.v1.authorUrl": $manifest[0].authorUrl,
+    "md.obsidian.plugin.v1.isDesktopOnly": ($manifest[0].isDesktopOnly // false | tostring)
+  }
+}' > annotations.json
+
+
+
 
 oras push $IMAGE_REF \
+  --artifact-type application/vnd.obsidian.plugin.v1+json \
+  --annotation-file annotations.json \
   ./main.js:application/javascript \
-  ./manifest.json:application/vnd.obsidian.plugin-manifest+json \
   ./styles.css:text/css
 
