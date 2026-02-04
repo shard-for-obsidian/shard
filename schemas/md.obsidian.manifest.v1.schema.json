@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Obsidian Plugin Manifest",
+  "description": "Schema for Obsidian plugin manifest.json files.",
+  "type": "object",
+  "required": [
+    "author",
+    "minAppVersion",
+    "name",
+    "version",
+    "description",
+    "id",
+    "isDesktopOnly"
+  ],
+  "properties": {
+    "author": {
+      "type": "string",
+      "description": "The author's name."
+    },
+    "minAppVersion": {
+      "type": "string",
+      "description": "The minimum required Obsidian version.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "name": {
+      "type": "string",
+      "description": "The display name."
+    },
+    "version": {
+      "type": "string",
+      "description": "The version, using Semantic Versioning in the format x.y.z.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "authorUrl": {
+      "type": "string",
+      "description": "A URL to the author's website.",
+      "format": "uri"
+    },
+    "fundingUrl": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "description": "A single URL for funding."
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "Multiple funding URLs as an object."
+        }
+      ],
+      "description": "A URL or multiple URLs to where users can support your project financially."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of your plugin."
+    },
+    "id": {
+      "type": "string",
+      "description": "The ID of your plugin. The ID can't contain 'obsidian'.",
+      "pattern": "^(?!.*obsidian).+$"
+    },
+    "isDesktopOnly": {
+      "type": "boolean",
+      "description": "Whether your plugin uses NodeJS or Electron APIs."
+    }
+  }
+}

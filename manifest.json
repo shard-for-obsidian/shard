@@ -1,5 +1,6 @@
 {
-  "id": "io.ghcr.gillisandrew.obsidian-ghcr-plugin-manager",
+  "$schema": "./schemas/md.obsidian.manifest.v1.schema.json",
+  "id": "gillisandrew.ghcr-plugin-manager",
   "name": "GHCR Plugin Manager",
   "version": "0.1.2",
   "minAppVersion": "1.11.5",
