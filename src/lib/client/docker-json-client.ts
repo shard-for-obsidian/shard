@@ -3,13 +3,13 @@
  * Copyright (c) 2015, Joyent, Inc.
  */
 
-import { HttpError } from "./errors.mjs";
+import { HttpError } from "./errors.js";
 import type {
   ByteArray,
   DockerResponse as DockerResponseInterface,
   RequestUrlParam,
   RequestUrlResponse,
-} from "./types.mjs";
+} from "./types.js";
 
 // --- API
 
@@ -31,7 +31,9 @@ export class DockerJsonClient {
   contentType: string;
   url: string;
   userAgent: string;
-  requestUrl: (request: RequestUrlParam | string) => Promise<RequestUrlResponse>;
+  requestUrl: (
+    request: RequestUrlParam | string,
+  ) => Promise<RequestUrlResponse>;
 
   constructor(options: {
     name?: string;
@@ -39,7 +41,9 @@ export class DockerJsonClient {
     contentType?: string;
     url: string;
     userAgent: string;
-    requestUrl: (request: RequestUrlParam | string) => Promise<RequestUrlResponse>;
+    requestUrl: (
+      request: RequestUrlParam | string,
+    ) => Promise<RequestUrlResponse>;
   }) {
     this.accept = options.accept ?? "application/json";
     this.name = options.name ?? "DockerJsonClient";
@@ -118,7 +122,7 @@ export class DockerResponse implements DockerResponseInterface {
 
     // Parse the body as JSON, if we can.
     try {
-      return JSON.parse(text);
+      return JSON.parse(text) as Tjson;
     } catch (thrown) {
       const err = thrown as Error;
       // res.log.trace(jsonErr, 'Invalid JSON in response');

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import type { RegistryImage, RegistryIndex, RegistryRepo } from "./types.mjs";
+import type { RegistryImage, RegistryIndex, RegistryRepo } from "./types.js";
 
 export const MEDIATYPE_MANIFEST_V2 =
   "application/vnd.docker.distribution.manifest.v2+json";

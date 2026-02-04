@@ -17,6 +17,7 @@ export default tseslint.config(
       },
     },
     rules: {
+      "obsidianmd/hardcoded-config-path": "off",
       "no-console": "off",
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": ["error", { args: "none" }],

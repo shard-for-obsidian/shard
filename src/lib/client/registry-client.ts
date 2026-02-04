@@ -13,9 +13,9 @@ import {
   MEDIATYPE_MANIFEST_LIST_V2,
   MEDIATYPE_OCI_MANIFEST_V1,
   MEDIATYPE_OCI_MANIFEST_INDEX_V1,
-} from "./common.mjs";
+} from "./common.js";
 
-import { REALM, SERVICE } from "./ghcr.mjs";
+import { REALM, SERVICE } from "./ghcr.js";
 
 import type {
   Manifest,
@@ -23,16 +23,13 @@ import type {
   RegistryClientOpts,
   AuthInfo,
   TagList,
-} from "./types.mjs";
+} from "./types.js";
 
-import {
-  DockerJsonClient,
-  type DockerResponse,
-} from "./docker-json-client.mjs";
+import { DockerJsonClient, type DockerResponse } from "./docker-json-client.js";
 
-import * as e from "./errors.mjs";
+import * as e from "./errors.js";
 
-import { parseLinkHeader } from "./util/link-header.mjs";
+import { parseLinkHeader } from "./util/link-header.js";
 
 function encodeHex(data: ArrayBuffer) {
   return [...new Uint8Array(data)]
@@ -115,7 +112,7 @@ function _setAuthHeaderFromAuthInfo(
  */
 function _getRegistryErrorMessage(err: unknown) {
   const e = err as Record<string, unknown>;
-  if (e.body && typeof e.body === 'object' && e.body !== null) {
+  if (e.body && typeof e.body === "object" && e.body !== null) {
     const body = e.body as Record<string, unknown>;
     if (Array.isArray(body.errors) && body.errors[0]) {
       return (body.errors[0] as { message?: unknown }).message;
@@ -196,7 +193,7 @@ export async function digestFromManifestStr(
 ): Promise<string> {
   let manifest: Manifest | { schemaVersion: 1 };
   try {
-    manifest = JSON.parse(manifestStr);
+    manifest = JSON.parse(manifestStr) as Manifest | { schemaVersion: 1 };
   } catch (thrown) {
     const err = thrown as Error;
     throw new Error(`could not parse manifest: ${err.message}\n${manifestStr}`);
@@ -375,7 +372,9 @@ export class GHCRClient {
       // Convert *all* 401 errors to use a generic error constructor
       // with a simple error message.
       const errMsg = _getRegistryErrorMessage(await resp.dockerJson());
-      throw await resp.dockerThrowable("Registry auth failed: " + errMsg);
+      throw await resp.dockerThrowable(
+        `Registry auth failed: ${errMsg as string}`,
+      );
     }
     const body = await resp.dockerJson();
     if (typeof body?.token !== "string") {
@@ -506,7 +505,6 @@ export class GHCRClient {
       }
     }
     headers["accept"] = acceptTypes.join(", ");
-
     const resp = await this._api.request({
       method: "GET",
       path: `/v2/${encodeURI(this.repo.remoteName ?? "")}/manifests/${encodeURI(opts.ref)}`,
@@ -517,7 +515,7 @@ export class GHCRClient {
     if (resp.status === 401) {
       const errMsg = _getRegistryErrorMessage(await resp.dockerJson());
       throw await resp.dockerThrowable(
-        `Manifest ${JSON.stringify(opts.ref)} Not Found: ${errMsg}`,
+        `Manifest ${JSON.stringify(opts.ref)} Not Found: ${errMsg as string}`,
       );
     }
 
