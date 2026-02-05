@@ -2,6 +2,7 @@ import { parseArgs } from "node:util";
 import { pushCommand } from "./commands/push.js";
 import { pullCommand } from "./commands/pull.js";
 import { convertCommand } from "./commands/convert.js";
+import { marketplaceRegisterCommand } from "./commands/marketplace.js";
 import { resolveAuthToken } from "./lib/auth.js";
 import { Logger } from "./lib/logger.js";
 import { NodeFetchAdapter } from "./adapters/node-fetch-adapter.js";
@@ -13,6 +14,7 @@ Commands:
   push <directory> <repository>     Push a plugin to GHCR
   pull <repository>                 Pull a plugin from GHCR
   convert <plugin-id> <repository>  Convert legacy plugin to OCI format
+  marketplace register <repository> Register plugin to marketplace
 
 Push Options:
   <directory>                       Path to plugin build output (e.g., ./dist)
@@ -36,6 +38,12 @@ Convert Options:
   --json                            Output JSON result to stdout
   --help                            Show help
 
+Marketplace Options:
+  <repository>                      Full reference with tag (e.g., ghcr.io/user/plugin:1.0.0)
+  --token <pat>                     GitHub Personal Access Token
+  --json                            Output JSON result to stdout
+  --help                            Show help
+
 Environment Variables:
   GITHUB_TOKEN                      GitHub token (alternative to --token)
   GH_TOKEN                          GitHub token (gh CLI compatibility)
@@ -45,6 +53,7 @@ Examples:
   shard pull ghcr.io/user/my-plugin:1.0.0 --output ./plugin
   shard convert obsidian-git ghcr.io/user/obsidian-git
   shard convert calendar ghcr.io/user/calendar --version 1.5.3
+  shard marketplace register ghcr.io/user/my-plugin:1.0.0
 `;
 
 interface CliArgs {
@@ -172,6 +181,37 @@ async function main() {
         console.log(JSON.stringify(result, null, 2));
       }
       process.exit(0);
+    } else if (command === "marketplace") {
+      // Parse marketplace subcommand
+      const subcommand = args.positionals[1];
+
+      if (subcommand === "register") {
+        // Parse register arguments
+        if (args.positionals.length < 3) {
+          throw new Error("Marketplace register command requires <repository>");
+        }
+
+        const repository = args.positionals[2];
+        const token = resolveAuthToken(args.values.token);
+
+        // Execute marketplace register
+        const result = await marketplaceRegisterCommand({
+          repository,
+          token,
+          logger,
+          adapter,
+        });
+
+        // Output result
+        if (args.values.json) {
+          console.log(JSON.stringify(result, null, 2));
+        }
+        process.exit(0);
+      } else {
+        throw new Error(
+          `Unknown marketplace subcommand: ${subcommand}. Available: register`,
+        );
+      }
     } else {
       throw new Error(`Unknown command: ${command}`);
     }
