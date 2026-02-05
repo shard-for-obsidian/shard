@@ -8,7 +8,7 @@ export default tseslint.config(
   ...obsidianmd.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["*.config.mjs", "main.js", "node_modules/**"],
+    ignores: ["*.config.mjs", "main.js", "node_modules/**", "dist/**", "src/cli/dist/**"],
   },
   {
     languageOptions: {
@@ -24,6 +24,16 @@ export default tseslint.config(
       "@typescript-eslint/ban-ts-comment": "off",
       "no-prototype-builtins": "off",
       "@typescript-eslint/no-empty-function": "off",
+    },
+  },
+  {
+    files: ["src/cli/**/*.ts", "src/lib/client/node-fetch-adapter.ts", "src/lib/client/registry-client.ts", "src/plugin/settings.ts"],
+    rules: {
+      "no-restricted-globals": "off",
+      "import/no-nodejs-modules": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
     },
   }
 );
