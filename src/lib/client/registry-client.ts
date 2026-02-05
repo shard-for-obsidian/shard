@@ -563,7 +563,7 @@ export class OciRegistryClient {
    * Makes a http request to the given url, following any redirects, then fires
    * the callback(err, req, responses) with the result.
    *
-   * Note that 'responses' is an *array* of restify http response objects, with
+   * Note that 'responses' is an *array* of Response objects, with
    * the last response being at the end of the array. When there is more than
    * one response, it means a redirect has been followed.
    */
@@ -573,7 +573,7 @@ export class OciRegistryClient {
     headers?: Record<string, string>;
     followRedirects?: boolean;
     maxRedirects?: number;
-  }): Promise<DockerResponse[]> {
+  }): Promise<Response[]> {
     const followRedirects = opts.followRedirects ?? true;
     const maxRedirects = opts.maxRedirects ?? 3;
     let numRedirs = 0;
@@ -581,29 +581,32 @@ export class OciRegistryClient {
       path: opts.path,
       headers: opts.headers,
     };
-    const ress = new Array<DockerResponse>();
+    const ress = new Array<Response>();
 
     while (numRedirs < maxRedirects) {
       numRedirs += 1;
 
-      const client = this._api;
-      client.accept = ""; // TODO: do better
-      const resp = await client.request({
+      const url = new URL(req.path, this._url);
+      const headers = {
+        ...req.headers,
+        "user-agent": this._userAgent,
+      };
+
+      const resp = await this._adapter.fetch(url.toString(), {
         method: opts.method,
-        path: req.path,
-        headers: req.headers,
+        headers: headers,
         redirect: "manual",
-        expectStatus: [200, 302, 307],
       });
+
       ress.push(resp);
 
       if (!followRedirects) return ress;
       if (!(resp.status === 302 || resp.status === 307)) return ress;
 
-      const location = resp.headers["location"];
+      const location = resp.headers.get("location");
       if (!location) return ress;
 
-      const loc = new URL(location, new URL(req.path, this._url));
+      const loc = new URL(location, url);
       // this.log.trace({numRedirs: numRedirs, loc: loc}, 'got redir response');
       req.path = loc.toString();
       req.headers = {};
