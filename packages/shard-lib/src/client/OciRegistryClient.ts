@@ -13,9 +13,15 @@ import {
   MEDIATYPE_MANIFEST_LIST_V2,
   MEDIATYPE_OCI_MANIFEST_V1,
   MEDIATYPE_OCI_MANIFEST_INDEX_V1,
+  MEDIATYPE_OBSIDIAN_PLUGIN_CONFIG_V1,
 } from "../types/ManifestTypes.js";
 import { REALM, SERVICE } from "../ghcr/GhcrConstants.js";
-import type { Manifest } from "../types/ManifestTypes.js";
+import type {
+  Manifest,
+  ManifestOCI,
+  ManifestOCIDescriptor,
+  ObsidianManifest,
+} from "../types/ManifestTypes.js";
 import type { RegistryRepo, TagList } from "../types/RegistryTypes.js";
 import type { AuthInfo } from "../types/AuthTypes.js";
 import type { RegistryClientOptions } from "./RegistryClientOptions.js";
@@ -794,5 +800,61 @@ export class OciRegistryClient {
     }
 
     return { digest, size: manifestBuffer.byteLength };
+  }
+
+  /**
+   * Push a plugin manifest as a config blob and create an OCI manifest.
+   * This follows the OCI spec where the Obsidian manifest is stored as the config.
+   *
+   * @param opts.ref The tag or digest to push to
+   * @param opts.pluginManifest The Obsidian plugin manifest
+   * @param opts.layers The layer descriptors (main.js, styles.css, etc.)
+   * @param opts.annotations Optional annotations for the OCI manifest
+   * @returns Object with digest, configDigest, and the created manifest
+   */
+  async pushPluginManifest(opts: {
+    ref: string;
+    pluginManifest: ObsidianManifest;
+    layers: ManifestOCIDescriptor[];
+    annotations?: Record<string, string>;
+  }): Promise<{
+    digest: string;
+    configDigest: string;
+    manifest: ManifestOCI;
+  }> {
+    // Step 1: Push plugin manifest as config blob
+    const manifestStr = JSON.stringify(opts.pluginManifest);
+    const manifestBuffer = new TextEncoder().encode(manifestStr);
+
+    const configResult = await this.pushBlob({
+      data: manifestBuffer,
+    });
+
+    // Step 2: Build OCI manifest with plugin manifest as config
+    const manifest: ManifestOCI = {
+      schemaVersion: 2,
+      mediaType: MEDIATYPE_OCI_MANIFEST_V1,
+      artifactType: "application/vnd.obsidian.plugin.v1+json",
+      config: {
+        mediaType: MEDIATYPE_OBSIDIAN_PLUGIN_CONFIG_V1,
+        digest: configResult.digest,
+        size: configResult.size,
+      },
+      layers: opts.layers,
+      annotations: opts.annotations,
+    };
+
+    // Step 3: Push the OCI manifest
+    const manifestResult = await this.pushManifest({
+      ref: opts.ref,
+      manifest,
+      mediaType: MEDIATYPE_OCI_MANIFEST_V1,
+    });
+
+    return {
+      digest: manifestResult.digest,
+      configDigest: configResult.digest,
+      manifest,
+    };
   }
 }
