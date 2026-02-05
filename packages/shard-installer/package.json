@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "build": "node esbuild.config.mjs production",
-    "clean": "rm -rf dist"
+    "clean": "rimraf dist",
+    "ts-check": "tsc --noEmit"
   },
   "dependencies": {
     "shard-lib": "workspace:*",

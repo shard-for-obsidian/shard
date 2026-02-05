@@ -9,7 +9,8 @@
   "scripts": {
     "build": "node esbuild.config.mjs",
     "build:prod": "node esbuild.config.mjs production",
-    "clean": "rm -rf dist"
+    "clean": "rimraf dist",
+    "ts-check": "tsc --noEmit"
   },
   "keywords": [
     "shard",
