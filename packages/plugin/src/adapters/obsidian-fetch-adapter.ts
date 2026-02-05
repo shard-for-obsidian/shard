@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import type { FetchAdapter } from "./fetch-adapter.js";
-import type { RequestUrlParam, RequestUrlResponse } from "./types.js";
+import type { FetchAdapter } from "@plugin-manager/lib";
+import type { RequestUrlParam, RequestUrlResponse } from "@plugin-manager/lib";
 
 /**
  * Adapter for Obsidian's requestUrl API.
