@@ -3,7 +3,7 @@
 </p>
 
 
-# Shard plugin system for Obsidian
+# Shard plugin system for Obsidian (EXPERIMENTAL)
 
 This repository contains the Shard plugin system for managing Obsidian plugins distributed via GitHub Container Registry (GHCR). It includes TypeScript types, utility functions, and (eventually) examples to help developers create and manage plugins using GHCR as the distribution platform.
 
