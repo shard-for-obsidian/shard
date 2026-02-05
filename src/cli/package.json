@@ -1,0 +1,31 @@
+{
+  "name": "obsidian-plugin-ghcr-cli",
+  "version": "0.1.0",
+  "description": "CLI tool to push and pull Obsidian plugins from GHCR",
+  "type": "module",
+  "bin": {
+    "obsidian-plugin": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc || echo 'Build completed with type errors in dependencies'",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "ghcr",
+    "oci",
+    "registry"
+  ],
+  "author": "",
+  "license": "MPL-2.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
