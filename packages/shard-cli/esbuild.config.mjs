@@ -17,4 +17,4 @@ await esbuild.build({
   external: [],
 });
 
-console.log("✓ @plugin-manager/cli built successfully");
+console.log("✓ shard-cli built successfully");
