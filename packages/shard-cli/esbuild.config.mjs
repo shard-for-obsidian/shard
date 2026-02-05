@@ -8,7 +8,7 @@ await esbuild.build({
   outfile: "dist/index.js",
   platform: "node",
   format: "esm",
-  target: "node18",
+  target: "node20",
   sourcemap: !production,
   minify: production,
   banner: {
