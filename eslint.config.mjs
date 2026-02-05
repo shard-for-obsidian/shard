@@ -1,39 +1,31 @@
-// eslint.config.mjs
-import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
-import obsidianmd from "eslint-plugin-obsidianmd";
+import js from "@eslint/js";
+import typescript from "typescript-eslint";
+import obsidianPlugin from "eslint-plugin-obsidianmd";
 
-export default tseslint.config(
-  eslint.configs.recommended,
-  ...obsidianmd.configs.recommended,
-  ...tseslint.configs.recommended,
+export default [
+  js.configs.recommended,
+  ...typescript.configs.recommended,
   {
-    ignores: ["*.config.mjs", "main.js", "node_modules/**", "dist/**", "src/cli/dist/**", ".worktrees/**"],
+    ignores: ["**/dist/**", "**/node_modules/**", ".worktrees/**"]
   },
   {
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-      },
-    },
+    // Plugin-specific rules
+    files: ["packages/plugin/**/*.ts"],
+    plugins: { obsidianmd: obsidianPlugin },
     rules: {
-      "obsidianmd/hardcoded-config-path": "off",
-      "no-console": "off",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["error", { args: "none" }],
+      "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }],
       "@typescript-eslint/ban-ts-comment": "off",
       "no-prototype-builtins": "off",
-      "@typescript-eslint/no-empty-function": "off",
-    },
+      "@typescript-eslint/no-empty-function": "off"
+    }
   },
   {
-    files: ["src/cli/**/*.ts", "src/lib/client/node-fetch-adapter.ts", "src/lib/client/registry-client.ts", "src/plugin/settings.ts"],
+    // CLI and lib rules
+    files: ["packages/{cli,lib}/**/*.ts"],
     rules: {
-      "no-restricted-globals": "off",
-      "import/no-nodejs-modules": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-return": "off",
-    },
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }]
+    }
   }
-);
+];
