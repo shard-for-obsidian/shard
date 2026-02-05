@@ -19,7 +19,7 @@
     "registry",
     "cli"
   ],
-  "license": "MPL-2.0",
+  "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
   },

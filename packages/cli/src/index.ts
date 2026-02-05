@@ -1,10 +1,3 @@
-#!/usr/bin/env node
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import { parseArgs } from "node:util";
 import { pushCommand } from "./commands/push.js";
 import { pullCommand } from "./commands/pull.js";
@@ -66,7 +59,9 @@ async function main() {
       allowPositionals: true,
     }) as CliArgs;
   } catch (err) {
-    console.error(`Error parsing arguments: ${err instanceof Error ? err.message : String(err)}`);
+    console.error(
+      `Error parsing arguments: ${err instanceof Error ? err.message : String(err)}`,
+    );
     console.error(USAGE);
     process.exit(1);
   }
@@ -147,8 +142,8 @@ async function main() {
             error: err instanceof Error ? err.message : String(err),
           },
           null,
-          2
-        )
+          2,
+        ),
       );
     }
     process.exit(1);

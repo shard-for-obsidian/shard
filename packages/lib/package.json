@@ -17,5 +17,5 @@
     "ghcr",
     "container-registry"
   ],
-  "license": "MPL-2.0"
+  "license": "MIT"
 }
