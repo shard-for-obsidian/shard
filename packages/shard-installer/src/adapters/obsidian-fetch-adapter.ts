@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import type { FetchAdapter } from "@plugin-manager/lib";
-import type { RequestUrlParam, RequestUrlResponse } from "@plugin-manager/lib";
+import type { FetchAdapter } from "shard-lib";
+import type { RequestUrlParam, RequestUrlResponse } from "shard-lib";
 
 /**
  * Adapter for Obsidian's requestUrl API.

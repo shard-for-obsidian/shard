@@ -6,7 +6,7 @@ import { Logger } from "./lib/logger.js";
 import { NodeFetchAdapter } from "./adapters/node-fetch-adapter.js";
 
 const USAGE = `
-Usage: obsidian-plugin <command> [options]
+Usage: shard <command> [options]
 
 Commands:
   push <directory> <repository>   Push a plugin to GHCR
@@ -31,8 +31,8 @@ Environment Variables:
   GH_TOKEN                        GitHub token (gh CLI compatibility)
 
 Examples:
-  obsidian-plugin push ./dist ghcr.io/user/my-plugin
-  obsidian-plugin pull ghcr.io/user/my-plugin:1.0.0 --output ./plugin
+  shard push ./dist ghcr.io/user/my-plugin
+  shard pull ghcr.io/user/my-plugin:1.0.0 --output ./plugin
 `;
 
 interface CliArgs {

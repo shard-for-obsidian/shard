@@ -1,5 +1,5 @@
 {
-  "name": "@plugin-manager/plugin",
+  "name": "shard-installer",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,12 +9,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@plugin-manager/lib": "workspace:*",
+    "shard-lib": "workspace:*",
     "obsidian": "^1.11.4"
   },
   "keywords": [
-    "obsidian",
-    "plugin",
+    "shard",
+    "installer",
     "ghcr"
   ],
   "license": "MIT"

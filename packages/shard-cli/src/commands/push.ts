@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { OciRegistryClient, parseRepoAndRef } from "@plugin-manager/lib";
-import type { ManifestOCI, ManifestOCIDescriptor, FetchAdapter } from "@plugin-manager/lib";
+import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
+import type { ManifestOCI, ManifestOCIDescriptor, FetchAdapter } from "shard-lib";
 import { discoverPlugin } from "../lib/plugin.js";
 import { Logger } from "../lib/logger.js";
 

@@ -6,8 +6,8 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { OciRegistryClient, parseRepoAndRef } from "@plugin-manager/lib";
-import type { ManifestOCI, FetchAdapter } from "@plugin-manager/lib";
+import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
+import type { ManifestOCI, FetchAdapter } from "shard-lib";
 import { Logger } from "../lib/logger.js";
 
 export interface PullOptions {

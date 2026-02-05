@@ -1,5 +1,5 @@
 {
-  "name": "@plugin-manager/lib",
+  "name": "shard-lib",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -12,6 +12,8 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "shard",
+    "lib",
     "oci",
     "registry",
     "ghcr",

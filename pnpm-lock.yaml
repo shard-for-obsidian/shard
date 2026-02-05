@@ -51,26 +51,26 @@ importers:
         specifier: ^8.54.0
         version: 8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
 
-  packages/cli:
+  packages/shard-cli:
     dependencies:
-      '@plugin-manager/lib':
+      shard-lib:
         specifier: workspace:*
-        version: link:../lib
+        version: link:../shard-lib
     devDependencies:
       '@types/node':
         specifier: ^25.2.0
         version: 25.2.0
 
-  packages/lib: {}
-
-  packages/plugin:
+  packages/shard-installer:
     dependencies:
-      '@plugin-manager/lib':
-        specifier: workspace:*
-        version: link:../lib
       obsidian:
         specifier: ^1.11.4
         version: 1.11.4(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
+      shard-lib:
+        specifier: workspace:*
+        version: link:../shard-lib
+
+  packages/shard-lib: {}
 
 packages:
 
