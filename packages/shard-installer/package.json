@@ -1,5 +1,6 @@
 {
   "name": "shard-installer",
+  "description": "Browse and install Obsidian plugins from GitHub Container Registry repositories",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -7,7 +8,8 @@
     "dev": "node esbuild.config.mjs",
     "build": "node esbuild.config.mjs production",
     "clean": "rimraf dist",
-    "ts-check": "tsc --noEmit"
+    "ts-check": "tsc --noEmit",
+    "generate-manifest": "node manifest.config.mjs > manifest.json"
   },
   "dependencies": {
     "shard-lib": "workspace:*",

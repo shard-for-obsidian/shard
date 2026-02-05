@@ -1,19 +1,30 @@
 
-# Shard Plugin System
+# Shard plugin system for Obsidian
 
-This repository contains the Shard plugin system for managing plugins distributed via GitHub Container Registry (GHCR). It includes TypeScript types, utility functions, and examples to help developers create and manage plugins using GHCR as the distribution platform.
+This repository contains the Shard plugin system for managing Obsidian plugins distributed via GitHub Container Registry (GHCR). It includes TypeScript types, utility functions, and examples to help developers create and manage plugins using GHCR as the distribution platform.
 
-## Features
+## Shortcomings of the official Obsidian plugin system
+The official Obsidian plugin system has several limitations that Shard aims to address:
 
-- [ ] GitHub Action for republishing Obsidian plugins to GHCR.
-- [ ] Manifest schema for Obsidian plugins.
-- [ ] CLI tool for bundling and publishing plugins.
-- [ ] Configure snyk to scan published images for vulnerabilities.
-- [ ] Attach attestations to published images for supply chain security.
-  - [ ] SLSA attestation v1.2 (https://slsa.dev/)
-  - [ ] SPDX SBOM (https://spdx.dev/) (using in-toto)
-- [/] Plugin manager plugin for Obsidian to install and manage GHCR-hosted plugins.
-  - [ ]
+- **Distribution**: The official system relies on the Obsidian community plugin directory, which can be slow to update and may not support all use cases. Shard allows developers to distribute plugins via GHCR, enabling faster updates and more control over distribution.
+- **Security**: The official system does not provide built-in mechanisms for verifying plugin authenticity or integrity. Shard can leverage GHCR's support for image signing and vulnerability scanning to enhance security.
+- **Privacy**: The official system requires plugins to be publicly listed in the community directory. Shard allows developers to host private plugins in GHCR, providing more control over access.
+
+
+## Components
+
+- **Core Library**: A TypeScript library for interacting with GHCR, including functions for pushing, pulling, and managing plugin packages.
+- **Plugin Installer**: A plugin for Obsidian that allows users to browse, install, and manage plugins from GHCR repositories.
+- **CLI Tool**: A command-line interface for developers to easily push and pull plugins to/from GHCR.
+
+## Feature Roadmap
+- [x] Core library for GHCR interaction
+- [x] Obsidian plugin installer
+- [x] CLI tool for plugin management
+- [ ] GitHub hosted marketplace for Shard plugins
+- [ ] Support for plugin signing and verification
+- [ ] Documentation and examples for developers
+- [ ] GitHub Actions for automated plugin publishing
 
 
 ## Monorepo Structure
