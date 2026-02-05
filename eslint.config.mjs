@@ -6,7 +6,7 @@ export default [
   js.configs.recommended,
   ...typescript.configs.recommended,
   {
-    ignores: ["**/dist/**", "**/node_modules/**", ".worktrees/**"]
+    ignores: ["**/dist/**", "**/node_modules/**", ".worktrees/**", "**/esbuild.config.mjs"]
   },
   {
     // Plugin-specific rules
