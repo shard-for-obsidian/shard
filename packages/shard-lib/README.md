@@ -74,6 +74,4 @@ src/
 
 See TypeScript definitions for complete type information.
 
-## License
 
-MPL 2.0

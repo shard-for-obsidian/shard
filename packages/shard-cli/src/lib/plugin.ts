@@ -1,9 +1,3 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -38,7 +32,7 @@ export interface DiscoveredPlugin {
  * @throws Error if required files are missing or invalid
  */
 export async function discoverPlugin(
-  directory: string
+  directory: string,
 ): Promise<DiscoveredPlugin> {
   // Resolve absolute path
   const absDirectory = path.resolve(directory);
@@ -50,7 +44,12 @@ export async function discoverPlugin(
       throw new Error(`Not a directory: ${directory}`);
     }
   } catch (err) {
-    if (err && typeof err === "object" && "code" in err && err.code === "ENOENT") {
+    if (
+      err &&
+      typeof err === "object" &&
+      "code" in err &&
+      err.code === "ENOENT"
+    ) {
       throw new Error(`Directory not found: ${directory}`);
     }
     throw err;
@@ -65,7 +64,7 @@ export async function discoverPlugin(
     const buffer = await fs.readFile(manifestPath);
     manifestContent = buffer.buffer.slice(
       buffer.byteOffset,
-      buffer.byteOffset + buffer.byteLength
+      buffer.byteOffset + buffer.byteLength,
     );
 
     // Parse and validate manifest
@@ -76,7 +75,12 @@ export async function discoverPlugin(
       throw new Error('manifest.json missing required "version" field');
     }
   } catch (err) {
-    if (err && typeof err === "object" && "code" in err && err.code === "ENOENT") {
+    if (
+      err &&
+      typeof err === "object" &&
+      "code" in err &&
+      err.code === "ENOENT"
+    ) {
       throw new Error(`manifest.json not found in ${directory}`);
     }
     if (err instanceof SyntaxError) {
@@ -93,10 +97,15 @@ export async function discoverPlugin(
     const buffer = await fs.readFile(mainJsPath);
     mainJsContent = buffer.buffer.slice(
       buffer.byteOffset,
-      buffer.byteOffset + buffer.byteLength
+      buffer.byteOffset + buffer.byteLength,
     );
   } catch (err) {
-    if (err && typeof err === "object" && "code" in err && err.code === "ENOENT") {
+    if (
+      err &&
+      typeof err === "object" &&
+      "code" in err &&
+      err.code === "ENOENT"
+    ) {
       throw new Error(`main.js not found in ${directory}`);
     }
     throw err;
@@ -110,10 +119,15 @@ export async function discoverPlugin(
     const buffer = await fs.readFile(stylesCssPath);
     stylesCssContent = buffer.buffer.slice(
       buffer.byteOffset,
-      buffer.byteOffset + buffer.byteLength
+      buffer.byteOffset + buffer.byteLength,
     );
   } catch (err) {
-    if (err && typeof err === "object" && "code" in err && err.code === "ENOENT") {
+    if (
+      err &&
+      typeof err === "object" &&
+      "code" in err &&
+      err.code === "ENOENT"
+    ) {
       // styles.css is optional, ignore error
       stylesCssContent = undefined;
     } else {

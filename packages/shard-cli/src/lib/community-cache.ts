@@ -1,11 +1,8 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import type { FetchAdapter } from "shard-lib";
-import { COMMUNITY_PLUGINS_URL, type CommunityPlugin } from "./community-plugins.js";
+import {
+  COMMUNITY_PLUGINS_URL,
+  type CommunityPlugin,
+} from "./community-plugins.js";
 
 /**
  * Cache for Obsidian community plugins.
@@ -39,7 +36,7 @@ export class CommunityPluginsCache {
       throw new Error(`Failed to fetch community plugins: ${response.status}`);
     }
 
-    const plugins = await response.json() as CommunityPlugin[];
+    const plugins = (await response.json()) as CommunityPlugin[];
     this.plugins = plugins;
     return plugins;
   }

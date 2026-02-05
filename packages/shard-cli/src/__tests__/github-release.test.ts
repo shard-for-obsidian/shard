@@ -1,9 +1,3 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { GitHubReleaseFetcher } from "../lib/github-release.js";
 import type { FetchAdapter } from "shard-lib";
@@ -85,9 +79,9 @@ describe("GitHubReleaseFetcher", () => {
         status: 404,
       } as Response);
 
-      await expect(
-        fetcher.fetchLatestRelease("owner/repo"),
-      ).rejects.toThrow("Failed to fetch latest release: 404");
+      await expect(fetcher.fetchLatestRelease("owner/repo")).rejects.toThrow(
+        "Failed to fetch latest release: 404",
+      );
     });
 
     it("should throw error on network failure", async () => {
@@ -95,9 +89,9 @@ describe("GitHubReleaseFetcher", () => {
         new Error("Network error"),
       );
 
-      await expect(
-        fetcher.fetchLatestRelease("owner/repo"),
-      ).rejects.toThrow("Network error");
+      await expect(fetcher.fetchLatestRelease("owner/repo")).rejects.toThrow(
+        "Network error",
+      );
     });
   });
 

@@ -1,9 +1,3 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import type { FetchAdapter } from "shard-lib";
 
 /**
@@ -64,7 +58,7 @@ export class GitHubReleaseFetcher {
       throw new Error(`Failed to fetch latest release: ${response.status}`);
     }
 
-    return await response.json() as GitHubRelease;
+    return (await response.json()) as GitHubRelease;
   }
 
   /**
@@ -96,6 +90,6 @@ export class GitHubReleaseFetcher {
       throw new Error(`Failed to fetch release ${tag}: ${response.status}`);
     }
 
-    return await response.json() as GitHubRelease;
+    return (await response.json()) as GitHubRelease;
   }
 }

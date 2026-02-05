@@ -1,9 +1,3 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
 import type { FetchAdapter } from "shard-lib";
 import { Logger } from "../lib/logger.js";
@@ -115,9 +109,7 @@ repo: ${repoUrl}
   logger.log(`\nNext steps:`);
   logger.log(`1. Review the generated YAML file`);
   logger.log(`2. Commit and push to the marketplace repository`);
-  logger.log(
-    `3. Submit a pull request to add your plugin to the marketplace`,
-  );
+  logger.log(`3. Submit a pull request to add your plugin to the marketplace`);
 
   return {
     pluginId,

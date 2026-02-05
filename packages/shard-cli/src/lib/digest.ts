@@ -1,9 +1,3 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import { createHash } from "node:crypto";
 
 /**
@@ -27,7 +21,7 @@ export function calculateDigest(data: ArrayBuffer | Uint8Array): string {
  */
 export function verifyDigest(
   data: ArrayBuffer | Uint8Array,
-  expectedDigest: string
+  expectedDigest: string,
 ): boolean {
   const actualDigest = calculateDigest(data);
   return actualDigest === expectedDigest;

@@ -1,10 +1,8 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
-import type { FetchAdapter, ObsidianManifest, ManifestOCIDescriptor } from "shard-lib";
+import type {
+  FetchAdapter,
+  ObsidianManifest,
+  ManifestOCIDescriptor,
+} from "shard-lib";
 import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
 import { CommunityPluginsCache } from "./community-cache.js";
 import { GitHubReleaseFetcher } from "./github-release.js";
@@ -110,7 +108,9 @@ export class PluginConverter {
       : await this.releaseFetcher.fetchLatestRelease(plugin.repo, token);
 
     // Step 3: Find required assets
-    const manifestAsset = release.assets.find((a) => a.name === "manifest.json");
+    const manifestAsset = release.assets.find(
+      (a) => a.name === "manifest.json",
+    );
     const mainJsAsset = release.assets.find((a) => a.name === "main.js");
     const stylesCssAsset = release.assets.find((a) => a.name === "styles.css");
 

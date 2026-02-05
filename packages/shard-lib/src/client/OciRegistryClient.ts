@@ -1,9 +1,3 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import { urlFromIndex } from "../parsing/IndexParser.js";
 import { parseRepo } from "../parsing/RepoParser.js";
 import { splitIntoTwo } from "../utils/ValidationUtils.js";
@@ -29,10 +23,6 @@ import * as e from "../errors/RegistryErrors.js";
 import { parseLinkHeader } from "../parsing/LinkHeaderParser.js";
 
 const DEFAULT_USERAGENT: string = `open-obsidian-plugin-spec/0.1.0`;
-
-/*
- * Copyright 2017 Joyent, Inc.
- */
 
 /*
  * Set the "Authorization" HTTP header into the headers object from the given
