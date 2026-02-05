@@ -372,7 +372,7 @@ export class OciRegistryClient {
       throw new Error(`Unexpected HTTP ${resp.status} from ${tokenUrl}`);
     }
 
-    const body = await resp.json();
+    const body = (await resp.json()) as { token?: string };
     if (typeof body?.token !== "string") {
       console.error("TODO: auth resp:", body);
       throw new Error(
@@ -448,7 +448,10 @@ export class OciRegistryClient {
   }
 
   async listAllTags(props: { pageSize?: number } = {}): Promise<TagList> {
-    const pages = await Array.fromAsync(this.listTagsPaginated(props));
+    const pages: TagList[] = [];
+    for await (const page of this.listTagsPaginated(props)) {
+      pages.push(page);
+    }
     const firstPage = pages.shift()!;
     for (const nextPage of pages) {
       firstPage.tags = [...firstPage.tags, ...nextPage.tags];
@@ -511,7 +514,7 @@ export class OciRegistryClient {
       opts.acceptManifestLists ?? this.acceptManifestLists;
 
     await this.login();
-    const headers = { ...this._headers, "user-agent": this._userAgent };
+    const headers: Record<string, string> = { ...this._headers, "user-agent": this._userAgent };
     const acceptTypes = [MEDIATYPE_MANIFEST_V2];
     if (acceptManifestLists) {
       acceptTypes.push(MEDIATYPE_MANIFEST_LIST_V2);
