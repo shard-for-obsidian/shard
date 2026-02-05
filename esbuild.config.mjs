@@ -68,5 +68,10 @@ const context = await esbuild
     ]
   });
 
-
-isProd ? await context.rebuild() : await context.watch();
+if (isProd) {
+  await context.rebuild();
+  process.exit(0);
+} else {
+  console.log("Watching for changes...");
+  await context.watch();
+}
