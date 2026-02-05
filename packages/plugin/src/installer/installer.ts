@@ -1,5 +1,5 @@
 import type { App } from "obsidian";
-import type { OciRegistryClient } from "@/lib/client/registry-client.js";
+import type { OciRegistryClient } from "@plugin-manager/lib";
 
 export interface InstallResult {
   pluginId: string;
