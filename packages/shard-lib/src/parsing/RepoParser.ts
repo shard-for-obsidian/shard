@@ -5,7 +5,8 @@ import type {
 } from "../types/RegistryTypes.js";
 
 import { splitIntoTwo } from "../utils/ValidationUtils.js";
-import { DEFAULT_TAG } from "../common.js";
+// DEFAULT_TAG is a constant, move to this file or import from a new constants location if needed
+const DEFAULT_TAG = "latest";
 import { parseIndex } from "./IndexParser.js";
 
 /**
@@ -34,6 +35,7 @@ import { parseIndex } from "./IndexParser.js";
  *      If given it may either be a string, e.g. 'https://myreg.example.com',
  *      or parsed index object, as from `parseIndex()`.
  */
+export function parseRepo(
   arg: string,
   defaultIndex?: string | RegistryIndex,
 ): RegistryRepo {
@@ -139,9 +141,7 @@ import { parseIndex } from "./IndexParser.js";
       ? name
       : remoteName
     : `${index.name}/${remoteName}`;
-  const canonicalName = index.official
-    ? `docker.io/${localName}`
-    : localName;
+  const canonicalName = index.official ? `docker.io/${localName}` : localName;
 
   return {
     index,

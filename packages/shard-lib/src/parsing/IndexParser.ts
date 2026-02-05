@@ -1,10 +1,9 @@
 import type { RegistryIndex } from "../types/RegistryTypes.js";
 
-import {
-  DEFAULT_INDEX_NAME,
-  DEFAULT_INDEX_URL,
-  DEFAULT_LOGIN_SERVERNAME,
-} from "../common.js";
+// TODO: Move these to a shared constants file if needed
+const DEFAULT_INDEX_NAME = "docker.io";
+const DEFAULT_INDEX_URL = "https://registry-1.docker.io";
+const DEFAULT_LOGIN_SERVERNAME = "https://index.docker.io/v1/";
 import { isLocalhost } from "../utils/ValidationUtils.js";
 /**
  * Special case: `docker` still refers to "https://index.docker.io/v1/"

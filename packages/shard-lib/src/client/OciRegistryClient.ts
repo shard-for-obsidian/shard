@@ -7,14 +7,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  parseRepo,
-  DEFAULT_USERAGENT,
-  MEDIATYPE_MANIFEST_V2,
-  MEDIATYPE_MANIFEST_LIST_V2,
-  MEDIATYPE_OCI_MANIFEST_V1,
-  MEDIATYPE_OCI_MANIFEST_INDEX_V1,
-} from "../common.js";
+import { parseRepo } from "../parsing/RepoParser.js";
+// TODO: Move these to a shared constants file if needed
+const DEFAULT_USERAGENT = "open-obsidian-plugin-spec/0.1.0";
+const MEDIATYPE_MANIFEST_V2 =
+  "application/vnd.docker.distribution.manifest.v2+json";
+const MEDIATYPE_MANIFEST_LIST_V2 =
+  "application/vnd.docker.distribution.manifest.list.v2+json";
+const MEDIATYPE_OCI_MANIFEST_V1 = "application/vnd.oci.image.manifest.v1+json";
+const MEDIATYPE_OCI_MANIFEST_INDEX_V1 =
+  "application/vnd.oci.image.index.v1+json";
 import { splitIntoTwo } from "../utils/ValidationUtils.js";
 
 import { urlFromIndex } from "../parsing/IndexParser.js";
