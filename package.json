@@ -1,5 +1,5 @@
 {
-  "name": "ghcr-plugin-manager-for-obsidian",
+  "name": "shard-monorepo",
   "private": true,
   "type": "module",
   "workspaces": [

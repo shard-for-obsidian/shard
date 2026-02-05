@@ -43,7 +43,8 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
 
   const client = new OciRegistryClient({
     repo: ref,
-    token,
+    username: "github",
+    password: token,
     adapter,
   });
 

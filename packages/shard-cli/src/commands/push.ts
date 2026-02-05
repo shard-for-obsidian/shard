@@ -52,8 +52,10 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
   const ref = parseRepoAndRef(fullRef);
   const client = new OciRegistryClient({
     repo: ref,
-    token,
+    username: "github",
+    password: token,
     adapter,
+    scopes: ["push", "pull"],
   });
 
   // Step 3: Create and push config blob (empty JSON)
