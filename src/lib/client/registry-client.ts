@@ -25,8 +25,6 @@ import type {
   TagList,
 } from "./types.js";
 
-import { DockerJsonClient, type DockerResponse } from "./docker-json-client.js";
-
 import * as e from "./errors.js";
 
 import { parseLinkHeader } from "./util/link-header.js";
@@ -620,7 +618,7 @@ export class OciRegistryClient {
   async _headOrGetBlob(
     method: "GET" | "HEAD",
     digest: string,
-  ): Promise<DockerResponse[]> {
+  ): Promise<Response[]> {
     await this.login();
     return await this._makeHttpRequest({
       method: method,
@@ -639,14 +637,14 @@ export class OciRegistryClient {
    * to an object CDN, which would then return the raw data.
    *
    * Interesting headers:
-   * - `ress[0].headers['docker-content-digest']` is the digest of the
+   * - `ress[0].headers.get('docker-content-digest')` is the digest of the
    *   content to be downloaded
-   * - `ress[-1].headers['content-length']` is the number of bytes to download
+   * - `ress[-1].headers.get('content-length')` is the number of bytes to download
    * - `ress[-1].headers[*]` as appropriate for HTTP caching, range gets, etc.
    */
-  async headBlob(opts: { digest: string }): Promise<DockerResponse[]> {
+  async headBlob(opts: { digest: string }): Promise<Response[]> {
     const resp = await this._headOrGetBlob("HEAD", opts.digest);
-    // No need to cancel body - requestUrl returns complete responses
+    // No need to cancel body - fetch returns complete responses
     return resp;
   }
 
@@ -662,7 +660,7 @@ export class OciRegistryClient {
    *      e.g. 'Content-Length', might be interesting.
    */
   async downloadBlob(opts: { digest: string }): Promise<{
-    ress: DockerResponse[];
+    ress: Response[];
     buffer: ArrayBuffer;
   }> {
     const ress = await this._headOrGetBlob("GET", opts.digest);
@@ -673,9 +671,9 @@ export class OciRegistryClient {
       );
     }
 
-    const buffer = (await lastResp.dockerBody()).buffer;
+    const buffer = await lastResp.arrayBuffer();
 
-    const dcdHeader = ress[0]?.headers["docker-content-digest"];
+    const dcdHeader = ress[0]?.headers.get("docker-content-digest");
     if (dcdHeader) {
       const dcdInfo = _parseDockerContentDigest(dcdHeader);
       if (dcdInfo.raw !== opts.digest) {

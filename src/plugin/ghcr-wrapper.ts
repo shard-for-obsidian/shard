@@ -115,7 +115,7 @@ export class GHCRWrapper {
     }
 
     // Get digest from header or calculate it
-    const digest = resp.headers["docker-content-digest"] || "unknown";
+    const digest = resp.headers.get("docker-content-digest") || "unknown";
 
     return {
       tag,
