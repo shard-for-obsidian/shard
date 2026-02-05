@@ -1,7 +1,4 @@
-<p align="center">
-  <img src="https://github.com/sharp-for-obsidian/sharp/blob/main/docs/attachments/shard-full-logo.png?raw=true" />
-</p>
-
+<img src="https://github.com/gillisandrew/shard/blob/main/docs/attachments/shard-full-logo.png?raw=true" style="text-align:center;max-width: 256px;" />
 
 # Shard plugin system for Obsidian
 
@@ -36,7 +33,7 @@ The official Obsidian plugin system has several limitations that Shard aims to a
 This repository is organized as a pnpm monorepo with three packages:
 
 - **shard-lib** (`packages/shard-lib/`) - Core OCI registry client library
-- **shard-installer** (`packages/shard-installer/`) - Plugin installer for Obsidian (or other platforms)
+- **shard-installer** (`packages/shard-installer/`) - Plugin installer for Obsidian
 - **shard-cli** (`packages/shard-cli/`) - CLI tool for pushing/pulling plugins to/from GHCR
 
 ### Development
