@@ -4,6 +4,7 @@ const production = process.argv[2] === "production";
 
 await esbuild.build({
   entryPoints: [
+    "src/index.ts",
     "src/registry-client.ts",
     "src/common.ts",
     "src/types.ts",

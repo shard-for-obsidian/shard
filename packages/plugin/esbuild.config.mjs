@@ -15,7 +15,7 @@ if (!isProd && process.env.LOCAL_PLUGIN_DIR) {
 
 const context = await esbuild
   .context({
-    entryPoints: ["src/plugin/main.ts"],
+    entryPoints: ["src/main.ts"],
     bundle: true,
     treeShaking: isProd,
     external: [
@@ -44,7 +44,7 @@ const context = await esbuild
       copy({
         resolveFrom: 'cwd',
         assets: {
-          from: ['./src/plugin/styles.css'],
+          from: ['./src/styles.css'],
           to: [`${outdir}/styles.css`],
         },
         watch: !isProd,
