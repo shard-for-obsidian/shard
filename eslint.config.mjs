@@ -8,7 +8,7 @@ export default tseslint.config(
   ...obsidianmd.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["*.config.mjs", "main.js", "node_modules/**", "dist/**", "src/cli/dist/**"],
+    ignores: ["*.config.mjs", "main.js", "node_modules/**", "dist/**", "src/cli/dist/**", ".worktrees/**"],
   },
   {
     languageOptions: {
