@@ -15,6 +15,9 @@ export const MEDIATYPE_OCI_MANIFEST_V1 =
 export const MEDIATYPE_OCI_MANIFEST_INDEX_V1 =
   "application/vnd.oci.image.index.v1+json";
 
+export const MEDIATYPE_OBSIDIAN_PLUGIN_CONFIG_V1 =
+  "application/vnd.obsidianmd.plugin-manifest.v1+json";
+
 export const DEFAULT_USERAGENT: string = `open-obsidian-plugin-spec/0.1.0`;
 
 // Manifest type discriminated union
