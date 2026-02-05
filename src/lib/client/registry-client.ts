@@ -429,12 +429,24 @@ export class OciRegistryClient {
       searchParams.set("last", props.startingAfter);
 
     await this.login();
-    const res = await this._api.request({
+
+    const url = new URL(
+      `/v2/${encodeURI(this.repo.remoteName)}/tags/list`,
+      this._url,
+    );
+    url.search = searchParams.toString();
+
+    const headers = { ...this._headers, "user-agent": this._userAgent };
+    const resp = await this._adapter.fetch(url.toString(), {
       method: "GET",
-      path: `/v2/${encodeURI(this.repo.remoteName)}/tags/list`,
-      headers: this._headers,
+      headers,
     });
-    return await res.dockerJson<TagList>();
+
+    if (!resp.ok) {
+      throw new Error(`Unexpected HTTP ${resp.status} from ${url.toString()}`);
+    }
+
+    return (await resp.json()) as TagList;
   }
 
   async listAllTags(props: { pageSize?: number } = {}): Promise<TagList> {
