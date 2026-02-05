@@ -1,6 +1,7 @@
 node_modules/
 .claude/*.local.json
 .worktrees/
+.trash/
 main.js
 annotations.json
 manifest.json
