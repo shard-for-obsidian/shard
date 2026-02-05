@@ -1,6 +1,7 @@
-# Obsidian Community Plugin Specification
 
-This repository contains a specification for Obsidian plugins that are hosted on GitHub Container Registry (GHCR). It includes TypeScript types, utility functions, and examples to help developers create and manage Obsidian plugins using GHCR as the distribution platform.
+# Shard Plugin System
+
+This repository contains the Shard plugin system for managing plugins distributed via GitHub Container Registry (GHCR). It includes TypeScript types, utility functions, and examples to help developers create and manage plugins using GHCR as the distribution platform.
 
 ## Features
 
@@ -14,13 +15,14 @@ This repository contains a specification for Obsidian plugins that are hosted on
 - [/] Plugin manager plugin for Obsidian to install and manage GHCR-hosted plugins.
   - [ ]
 
+
 ## Monorepo Structure
 
 This repository is organized as a pnpm monorepo with three packages:
 
-- **@plugin-manager/lib** (`packages/lib/`) - Core OCI registry client library
-- **@plugin-manager/plugin** (`packages/plugin/`) - Obsidian plugin for installing GHCR-hosted plugins
-- **@plugin-manager/cli** (`packages/cli/`) - CLI tool for pushing/pulling plugins to/from GHCR
+- **shard-lib** (`packages/shard-lib/`) - Core OCI registry client library
+- **shard-installer** (`packages/shard-installer/`) - Plugin installer for Obsidian (or other platforms)
+- **shard-cli** (`packages/shard-cli/`) - CLI tool for pushing/pulling plugins to/from GHCR
 
 ### Development
 
@@ -34,9 +36,10 @@ Build all packages:
 pnpm build
 ```
 
+
 Build individual package:
 ```bash
-cd packages/plugin && pnpm build
+cd packages/shard-installer && pnpm build
 ```
 
 Lint:

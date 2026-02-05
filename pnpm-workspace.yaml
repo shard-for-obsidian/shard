@@ -1,4 +1,4 @@
 packages:
-  - 'packages/shard-cli'
-  - 'packages/shard-installer'
-  - 'packages/shard-lib'
+  - "packages/shard-cli"
+  - "packages/shard-installer"
+  - "packages/shard-lib"

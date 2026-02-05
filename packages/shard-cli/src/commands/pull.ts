@@ -54,7 +54,8 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
   const manifest = manifestResult.manifest as ManifestOCI;
 
   // Calculate manifest digest from response
-  const manifestDigest = manifestResult.resp.headers.get("docker-content-digest") || "unknown";
+  const manifestDigest =
+    manifestResult.resp.headers.get("docker-content-digest") || "unknown";
   logger.log(`Manifest digest: ${manifestDigest}`);
 
   // Step 3: Create output directory if needed
@@ -70,7 +71,7 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
     const filename = layer.annotations?.["org.opencontainers.image.title"];
     if (!filename) {
       throw new Error(
-        `Layer ${layer.digest} missing required filename annotation`
+        `Layer ${layer.digest} missing required filename annotation`,
       );
     }
 

@@ -19,11 +19,12 @@ The primary driver is **better dependency management**:
 
 ### Directory Layout
 
+
 ```
 packages/
-  plugin/           - @plugin-manager/plugin (Obsidian plugin)
-  cli/              - @plugin-manager/cli (CLI tool)
-  lib/              - @plugin-manager/lib (Shared library)
+  shard-installer/   - shard-installer (Plugin installer for Obsidian)
+  shard-cli/         - shard-cli (CLI tool)
+  shard-lib/         - shard-lib (Shared library)
 ```
 
 ### Root-level Files
@@ -36,9 +37,9 @@ packages/
 
 ### Package Names
 
-- `@plugin-manager/plugin` - The Obsidian plugin
-- `@plugin-manager/cli` - CLI for push/pull operations
-- `@plugin-manager/lib` - Shared OCI registry client
+- `shard-installer` - The plugin installer (Obsidian or other platforms)
+- `shard-cli` - CLI for push/pull operations
+- `shard-lib` - Shared OCI registry client
 
 ### Dependency Relationships
 
@@ -48,7 +49,8 @@ packages/
 
 ## Package Contents & Responsibilities
 
-### packages/lib/ - @plugin-manager/lib
+
+### packages/shard-lib/ - shard-lib
 
 Core OCI registry client library, platform-agnostic.
 
@@ -67,9 +69,11 @@ Core OCI registry client library, platform-agnostic.
 - `obsidian-fetch-adapter.ts` → moves to Plugin
 - `installer.ts` → moves to Plugin (Obsidian-specific)
 
+
 **Build:** Uses esbuild to output clean ESM modules for import by other packages.
 
-### packages/plugin/ - @plugin-manager/plugin
+
+### packages/shard-installer/ - shard-installer
 
 The Obsidian plugin for installing GHCR-hosted plugins.
 
@@ -80,11 +84,13 @@ The Obsidian plugin for installing GHCR-hosted plugins.
 - esbuild config for bundling
 - manifest.json, styles.css
 
+
 **Build:** Uses esbuild for bundling into single main.js file (current setup).
 
-**Imports from lib:** `import { OciRegistryClient } from "@plugin-manager/lib"`
+**Imports from lib:** `import { OciRegistryClient } from "shard-lib"`
 
-### packages/cli/ - @plugin-manager/cli
+
+### packages/shard-cli/ - shard-cli
 
 CLI tool for pushing/pulling plugins to/from GHCR.
 
@@ -93,9 +99,10 @@ CLI tool for pushing/pulling plugins to/from GHCR.
 - `node-fetch-adapter.ts` (moved from src/lib/client/)
 - CLI-specific utilities (logger, plugin discovery, auth, digest)
 
+
 **Build:** Uses esbuild for bundling/distribution as npm package with CLI entry point.
 
-**Imports from lib:** `import { OciRegistryClient } from "@plugin-manager/lib"`
+**Imports from lib:** `import { OciRegistryClient } from "shard-lib"`
 
 ## Configuration Files
 
@@ -103,11 +110,13 @@ CLI tool for pushing/pulling plugins to/from GHCR.
 
 ```json
 {
-  "name": "obsidian-plugin-manager",
+  "name": "shard-plugin-system",
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/shard-cli",
+    "packages/shard-installer",
+    "packages/shard-lib"
   ],
   "scripts": {
     "build": "pnpm -r build",

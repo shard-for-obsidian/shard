@@ -5,7 +5,11 @@
  */
 
 import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
-import type { ManifestOCI, ManifestOCIDescriptor, FetchAdapter } from "shard-lib";
+import type {
+  ManifestOCI,
+  ManifestOCIDescriptor,
+  FetchAdapter,
+} from "shard-lib";
 import { discoverPlugin } from "../lib/plugin.js";
 import { Logger } from "../lib/logger.js";
 
@@ -40,7 +44,9 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
   logger.log(`Found plugin version ${version}`);
 
   // Step 2: Parse repository and add version tag
-  const fullRef = repository.includes(":") ? repository : `${repository}:${version}`;
+  const fullRef = repository.includes(":")
+    ? repository
+    : `${repository}:${version}`;
   logger.log(`Pushing to ${fullRef}...`);
 
   const ref = parseRepoAndRef(fullRef);
@@ -56,7 +62,9 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
   const configResult = await client.pushBlob({
     data: configContent,
   });
-  logger.log(`Pushed config blob: ${configResult.digest.slice(0, 19)}... (${configResult.size} bytes)`);
+  logger.log(
+    `Pushed config blob: ${configResult.digest.slice(0, 19)}... (${configResult.size} bytes)`,
+  );
 
   // Step 4: Push each file as a blob
   const layers: ManifestOCIDescriptor[] = [];
@@ -74,7 +82,9 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
       "org.opencontainers.image.title": "manifest.json",
     },
   });
-  logger.log(`Pushed manifest.json: ${manifestResult.digest.slice(0, 19)}... (${manifestResult.size} bytes)`);
+  logger.log(
+    `Pushed manifest.json: ${manifestResult.digest.slice(0, 19)}... (${manifestResult.size} bytes)`,
+  );
 
   // Push main.js
   logger.log("Pushing main.js...");
@@ -89,7 +99,9 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
       "org.opencontainers.image.title": "main.js",
     },
   });
-  logger.log(`Pushed main.js: ${mainJsResult.digest.slice(0, 19)}... (${mainJsResult.size} bytes)`);
+  logger.log(
+    `Pushed main.js: ${mainJsResult.digest.slice(0, 19)}... (${mainJsResult.size} bytes)`,
+  );
 
   // Push styles.css if present
   if (plugin.stylesCss) {
@@ -105,7 +117,9 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
         "org.opencontainers.image.title": "styles.css",
       },
     });
-    logger.log(`Pushed styles.css: ${stylesCssResult.digest.slice(0, 19)}... (${stylesCssResult.size} bytes)`);
+    logger.log(
+      `Pushed styles.css: ${stylesCssResult.digest.slice(0, 19)}... (${stylesCssResult.size} bytes)`,
+    );
   }
 
   // Step 5: Build manifest
