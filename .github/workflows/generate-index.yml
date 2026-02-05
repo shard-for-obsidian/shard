@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - 'marketplace/plugins/**'
+      - "marketplace/plugins/**"
   pull_request:
     paths:
-      - 'marketplace/plugins/**'
+      - "marketplace/plugins/**"
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install yq
         run: |
@@ -50,7 +50,4 @@ jobs:
 
       - name: Push changes
         if: github.event_name == 'push'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+        run: git push

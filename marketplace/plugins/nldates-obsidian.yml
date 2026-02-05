@@ -1,0 +1,5 @@
+id: nldates-obsidian.yml
+name: Natural Language Dates
+author: "Argentina Ortega Sainz"
+description: "Create date-links based on natural language."
+repo: "https://github.com/argenos/nldates-obsidian"
