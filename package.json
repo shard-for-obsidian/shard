@@ -2,6 +2,9 @@
   "name": "obsidian-ghcr-plugin-manager",
   "version": "0.1.0",
   "type": "module",
+  "workspaces": [
+    "src/cli"
+  ],
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "build": "node esbuild.config.mjs production",
