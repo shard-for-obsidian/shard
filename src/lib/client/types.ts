@@ -147,7 +147,9 @@ export interface RegistryClientOpts {
   acceptManifestLists?: boolean;
   userAgent?: string;
   scopes?: string[];
-  requestUrl: (request: RequestUrlParam | string) => Promise<RequestUrlResponse>;
+  adapter: {
+    fetch(input: string | Request, init?: RequestInit): Promise<Response>;
+  };
 }
 
 export type AuthInfo =

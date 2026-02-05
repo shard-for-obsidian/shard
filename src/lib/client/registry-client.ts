@@ -225,17 +225,17 @@ export class OciRegistryClient {
   private _authInfo?: AuthInfo | null;
   private _headers: Record<string, string>;
   private _url: string;
-  private _commonHttpClientOpts: {
-    userAgent: string;
+  private _userAgent: string;
+  private readonly _adapter: {
+    fetch(input: string | Request, init?: RequestInit): Promise<Response>;
   };
-  private readonly _api: DockerJsonClient;
 
   /**
    * Create a new GHCR client for a particular repository.
    *
    * @param opts.insecure {Boolean} Optional. Default false. Set to true
    *      to *not* fail on an invalid or this-signed server certificate.
-   * @param opts.requestUrl {Function} Required. Obsidian's requestUrl function.
+   * @param opts.adapter {FetchAdapter} Required. HTTP adapter for making requests.
    * ... TODO: lots more to document
    *
    */
@@ -275,15 +275,8 @@ export class OciRegistryClient {
     }
 
     this._url = urlFromIndex(this.repo.index, opts.scheme);
-    this._commonHttpClientOpts = {
-      userAgent: opts.userAgent || DEFAULT_USERAGENT,
-    };
-
-    this._api = new DockerJsonClient({
-      url: this._url,
-      ...this._commonHttpClientOpts,
-      requestUrl: opts.requestUrl,
-    });
+    this._userAgent = opts.userAgent || DEFAULT_USERAGENT;
+    this._adapter = opts.adapter;
   }
 
   /**
