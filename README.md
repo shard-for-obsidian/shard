@@ -14,6 +14,7 @@ The official Obsidian plugin system has several limitations that Shard aims to a
 - **Security**: The official system does not provide built-in mechanisms for verifying plugin authenticity or integrity. Shard can leverage GHCR's support for image signing and vulnerability scanning to enhance security.
 - **Privacy**: The official system requires plugins to be publicly listed in the community directory. Shard allows developers to host private plugins in GHCR, providing more control over access.
 
+The all or nothing approach of the official Obsidian plugin system forces users to either trust all community plugins or none at all. Shard aims to provide a more granular approach to plugin trust and verification.
 
 ## Components
 
@@ -25,8 +26,17 @@ The official Obsidian plugin system has several limitations that Shard aims to a
 - [x] Core library for GHCR interaction
 - [x] Obsidian plugin installer
 - [x] CLI tool for plugin management
-- [ ] GitHub hosted marketplace for Shard plugins
-- [ ] Support for plugin signing and verification
+  - [x] Push plugins to GHCR
+  - [x] Pull plugins from GHCR
+- [ ] GitHub hosted community marketplace for Shard plugins
+- [ ] Legacy Obsidian community plugin directory integration. Simple cli tooling for fetching an existing community plugin and packaging it as a Shard plugin.
+
+## Planned features
+- [ ] Automated vulnerability scanning for plugin bundles
+- [ ] Static analysis security tools for plugin bundles.
+  - [ ] Enumerate nodejs APIs used in plugins to detect potentially unsafe operations.
+  - [ ] Enumerate remote network calls made by plugins to detect potential data exfiltration.
+- [ ] Plugin signing and verification
 - [ ] Documentation and examples for developers
 - [ ] GitHub Actions for automated plugin publishing
 
