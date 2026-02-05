@@ -504,7 +504,7 @@ export class OciRegistryClient {
     acceptOCIManifests?: boolean;
     followRedirects?: boolean;
   }): Promise<{
-    resp: DockerResponse;
+    resp: Response;
     manifest: Manifest;
   }> {
     const acceptOCIManifests =
@@ -513,7 +513,7 @@ export class OciRegistryClient {
       opts.acceptManifestLists ?? this.acceptManifestLists;
 
     await this.login();
-    const headers = { ...this._headers };
+    const headers = { ...this._headers, "user-agent": this._userAgent };
     const acceptTypes = [MEDIATYPE_MANIFEST_V2];
     if (acceptManifestLists) {
       acceptTypes.push(MEDIATYPE_MANIFEST_LIST_V2);
@@ -525,21 +525,31 @@ export class OciRegistryClient {
       }
     }
     headers["accept"] = acceptTypes.join(", ");
-    const resp = await this._api.request({
+
+    const url = new URL(
+      `/v2/${encodeURI(this.repo.remoteName ?? "")}/manifests/${encodeURI(opts.ref)}`,
+      this._url,
+    );
+
+    const resp = await this._adapter.fetch(url.toString(), {
       method: "GET",
-      path: `/v2/${encodeURI(this.repo.remoteName ?? "")}/manifests/${encodeURI(opts.ref)}`,
       headers: headers,
       redirect: opts.followRedirects == false ? "manual" : "follow",
-      expectStatus: [200, 401],
     });
+
     if (resp.status === 401) {
-      const errMsg = _getRegistryErrorMessage(await resp.dockerJson());
-      throw await resp.dockerThrowable(
+      const body = await resp.json();
+      const errMsg = _getRegistryErrorMessage(body);
+      throw new Error(
         `Manifest ${JSON.stringify(opts.ref)} Not Found: ${errMsg as string}`,
       );
     }
 
-    const manifest = await resp.dockerJson<Manifest>();
+    if (!resp.ok) {
+      throw new Error(`Unexpected HTTP ${resp.status} from ${url.toString()}`);
+    }
+
+    const manifest = (await resp.json()) as Manifest;
     if ((manifest.schemaVersion as number) === 1) {
       throw new Error(
         `schemaVersion 1 is not supported by /x/docker_registry_client.`,
