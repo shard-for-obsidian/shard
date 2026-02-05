@@ -48,25 +48,28 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
     adapter,
   });
 
-  // Step 2: Fetch manifest
+  // Step 2: Fetch manifest and extract plugin manifest from config
   logger.log("Fetching manifest...");
   const refString = ref.tag || ref.digest || "";
-  const manifestResult = await client.getManifest({ ref: refString });
-  const manifest = manifestResult.manifest as ManifestOCI;
+  const pullResult = await client.pullPluginManifest({ ref: refString });
+  const manifest = pullResult.manifest;
 
-  // Calculate manifest digest from response
-  const manifestDigest =
-    manifestResult.resp.headers.get("docker-content-digest") || "unknown";
-  logger.log(`Manifest digest: ${manifestDigest}`);
+  logger.log(`Manifest digest: ${pullResult.manifestDigest}`);
 
   // Step 3: Create output directory if needed
   const absOutput = path.resolve(output);
   logger.log(`Creating output directory: ${absOutput}`);
   await fs.mkdir(absOutput, { recursive: true });
 
-  // Step 4: Download and extract each layer
-  const files: string[] = [];
+  // Step 4: Write manifest.json from config
+  const manifestPath = path.join(absOutput, "manifest.json");
+  const manifestJson = JSON.stringify(pullResult.pluginManifest, null, 2);
+  await fs.writeFile(manifestPath, manifestJson, "utf-8");
+  logger.log(`Wrote manifest.json (${manifestJson.length} bytes)`);
 
+  const files: string[] = ["manifest.json"];
+
+  // Step 5: Download and extract each layer
   for (const layer of manifest.layers) {
     // Extract filename from annotation
     const filename = layer.annotations?.["org.opencontainers.image.title"];
@@ -98,6 +101,6 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
   return {
     files,
     output: absOutput,
-    digest: manifestDigest,
+    digest: pullResult.manifestDigest,
   };
 }
