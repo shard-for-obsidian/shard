@@ -9,11 +9,15 @@
     "build": "node esbuild.config.mjs production",
     "clean": "rimraf dist",
     "ts-check": "tsc --noEmit",
+    "push": "shard push ./dist ghcr.io/gillisandrew/shard/shard-installer-plugin",
     "generate-manifest": "node manifest.config.mjs > manifest.json"
   },
   "dependencies": {
     "shard-lib": "workspace:*",
     "obsidian": "^1.11.4"
+  },
+  "devDependencies": {
+    "shard-cli": "workspace:*"
   },
   "keywords": [
     "shard",

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/gillisandrew/shard/blob/main/docs/attachments/shard-full-logo.png?raw=true" style="width: 256px;height: auto" />
+  <img src="https://github.com/gillisandrew/shard/blob/main/docs/attachments/shard-full-logo.png?raw=true" style="width: 256px;height: auto" alt="Shard for Obsidian logo" />
 </p>
 
 

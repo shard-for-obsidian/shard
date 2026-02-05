@@ -69,6 +69,10 @@ importers:
       shard-lib:
         specifier: workspace:*
         version: link:../shard-lib
+    devDependencies:
+      shard-cli:
+        specifier: workspace:*
+        version: link:../shard-cli
 
   packages/shard-lib:
     devDependencies:
