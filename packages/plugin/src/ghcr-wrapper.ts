@@ -1,10 +1,9 @@
-import { parseRepoAndRef } from "@/lib/client/common.js";
-import { OciRegistryClient } from "@/lib/client/registry-client.js";
-import { ObsidianFetchAdapter } from "@/lib/client/obsidian-fetch-adapter.js";
+import { parseRepoAndRef, OciRegistryClient } from "@plugin-manager/lib";
 import type {
   RequestUrlParam,
   RequestUrlResponse,
-} from "@/lib/client/types.js";
+} from "@plugin-manager/lib";
+import { ObsidianFetchAdapter } from "./adapters/obsidian-fetch-adapter.js";
 import type { TagMetadata } from "@/plugin/types.js";
 import { requestUrl } from "obsidian";
 

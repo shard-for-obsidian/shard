@@ -10,7 +10,7 @@ import type GHCRTagBrowserPlugin from "./main";
 import { TagCache } from "./tag-cache";
 import { GHCRWrapper } from "./ghcr-wrapper";
 import type { RepositoryConfig } from "./types";
-import { Installer } from "@/lib/installer/installer";
+import { Installer } from "./installer/installer.js";
 import { VersionSelectionModal } from "./version-selection-modal";
 
 export class GHCRSettingTab extends PluginSettingTab {
