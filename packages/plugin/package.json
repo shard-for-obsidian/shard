@@ -1,5 +1,6 @@
 {
   "name": "@plugin-manager/plugin",
+  "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
@@ -16,5 +17,5 @@
     "plugin",
     "ghcr"
   ],
-  "license": "MPL-2.0"
+  "license": "MIT"
 }
