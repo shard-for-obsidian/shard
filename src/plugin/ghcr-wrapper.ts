@@ -1,5 +1,6 @@
 import { parseRepoAndRef } from "@/lib/client/common.js";
 import { OciRegistryClient } from "@/lib/client/registry-client.js";
+import { ObsidianFetchAdapter } from "@/lib/client/obsidian-fetch-adapter.js";
 import type {
   RequestUrlParam,
   RequestUrlResponse,
@@ -67,13 +68,17 @@ export class GHCRWrapper {
     const normalized = this.normalizeRepoUrl(repoUrl);
     const repo = parseRepoAndRef(normalized);
 
+    const adapter = new ObsidianFetchAdapter((...args) =>
+      this.obsidianRequestUrl(...args),
+    );
+
     return new OciRegistryClient({
       repo: repo,
       insecure: false,
       username: token ? "github" : undefined,
       password: token || undefined,
       acceptOCIManifests: true,
-      requestUrl: (...args) => this.obsidianRequestUrl(...args),
+      adapter: adapter,
     });
   }
 
