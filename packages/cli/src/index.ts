@@ -10,7 +10,7 @@ import { pushCommand } from "./commands/push.js";
 import { pullCommand } from "./commands/pull.js";
 import { resolveAuthToken } from "./lib/auth.js";
 import { Logger } from "./lib/logger.js";
-import { NodeFetchAdapter } from "./adapters/node-fetch.js";
+import { NodeFetchAdapter } from "./adapters/node-fetch-adapter.js";
 
 const USAGE = `
 Usage: obsidian-plugin <command> [options]
