@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import type { FetchAdapter } from "../../lib/client/fetch-adapter.js";
+import type { FetchAdapter } from "@plugin-manager/lib";
 
 /**
  * Adapter for Node.js native fetch API.
