@@ -55,7 +55,7 @@ export class ObsidianFetchAdapter implements FetchAdapter {
       } else if (init.body instanceof ArrayBuffer) {
         body = init.body;
       } else if (init.body instanceof Uint8Array) {
-        body = init.body.buffer;
+        body = init.body.buffer.slice(0) as ArrayBuffer;
       } else {
         // Convert other body types to ArrayBuffer
         const blob = new Blob([init.body as BlobPart]);
@@ -65,7 +65,7 @@ export class ObsidianFetchAdapter implements FetchAdapter {
       if (input.body instanceof ArrayBuffer) {
         body = input.body;
       } else {
-        const blob = new Blob([input.body as BlobPart]);
+        const blob = new Blob([input.body as unknown as BlobPart]);
         body = await blob.arrayBuffer();
       }
     }

@@ -704,8 +704,10 @@ export class OciRegistryClient {
     await this.login();
 
     // Convert to ArrayBuffer if needed
-    const buffer =
-      opts.data instanceof Uint8Array ? opts.data.buffer : opts.data;
+    const buffer: ArrayBuffer =
+      opts.data instanceof Uint8Array
+        ? new Uint8Array(opts.data).buffer
+        : opts.data;
 
     // Calculate digest
     const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
