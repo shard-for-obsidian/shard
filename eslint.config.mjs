@@ -9,7 +9,15 @@ export default [
     ignores: ["**/dist/**", "**/node_modules/**", ".worktrees/**", "**/esbuild.config.mjs"]
   },
   {
-    // Plugin-specific rules
+    // CLI and lib rules (must come before plugin rules to avoid obsidian plugin loading globally)
+    files: ["packages/{cli,lib}/**/*.ts"],
+    rules: {
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }]
+    }
+  },
+  {
+    // Plugin-specific rules (only load obsidian plugin for plugin package)
     files: ["packages/plugin/**/*.ts"],
     plugins: { obsidianmd: obsidianPlugin },
     rules: {
@@ -18,14 +26,6 @@ export default [
       "@typescript-eslint/ban-ts-comment": "off",
       "no-prototype-builtins": "off",
       "@typescript-eslint/no-empty-function": "off"
-    }
-  },
-  {
-    // CLI and lib rules
-    files: ["packages/{cli,lib}/**/*.ts"],
-    rules: {
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }]
     }
   }
 ];
