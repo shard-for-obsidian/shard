@@ -11,6 +11,11 @@ on:
       - "marketplace/plugins/**"
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   generate-index:
     runs-on: ubuntu-latest
@@ -51,3 +56,21 @@ jobs:
       - name: Push changes
         if: github.event_name == 'push'
         run: git push
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: marketplace/
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: generate-index
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
