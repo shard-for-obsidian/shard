@@ -1,5 +1,5 @@
-<p>
-  <img src="https://github.com/gillisandrew/shard/blob/main/docs/attachments/shard-full-logo.png?raw=true" style="text-align:center;width: 256px;height: 256px;" />
+<p style="text-align:center;">
+  <img src="https://github.com/gillisandrew/shard/blob/main/docs/attachments/shard-full-logo.png?raw=true" style="width: 256px;height: auto" />
 </p>
 
 
