@@ -14,12 +14,16 @@ export interface GHCRPluginSettings {
   githubToken: string; // Secret key ref
   repositories: RepositoryConfig[]; // Managed repos
   installedPlugins: Record<string, InstalledPluginInfo>; // Install tracking
+  marketplaceUrl: string; // URL to marketplace JSON endpoint
+  marketplaceCacheTTL: number; // Cache TTL in milliseconds
 }
 
 export const DEFAULT_SETTINGS: GHCRPluginSettings = {
   githubToken: "",
   repositories: [],
   installedPlugins: {},
+  marketplaceUrl: "https://raw.githubusercontent.com/gillisandrew/shard/main/marketplace/plugins.json",
+  marketplaceCacheTTL: 3600000, // 1 hour
 };
 
 export interface TagMetadata {

@@ -31,6 +31,9 @@ export class GHCRSettingTab extends PluginSettingTab {
     // GitHub Token section
     this.renderTokenSection(containerEl);
 
+    // Marketplace Settings section
+    this.renderMarketplaceSection(containerEl);
+
     // Add Repository section
     this.renderAddRepositorySection(containerEl);
 
@@ -48,6 +51,39 @@ export class GHCRSettingTab extends PluginSettingTab {
           .onChange((value) => {
             this.plugin.settings.githubToken = value;
             void this.plugin.saveSettings();
+          }),
+      );
+  }
+
+  private renderMarketplaceSection(containerEl: HTMLElement): void {
+    new Setting(containerEl)
+      .setName("Marketplace URL")
+      .setDesc("URL to the marketplace plugin index (JSON format)")
+      .addText((text) =>
+        text
+          .setPlaceholder("https://example.com/marketplace/plugins.json")
+          .setValue(this.plugin.settings.marketplaceUrl)
+          .onChange(async (value) => {
+            this.plugin.settings.marketplaceUrl = value;
+            await this.plugin.saveSettings();
+          }),
+      );
+
+    new Setting(containerEl)
+      .setName("Marketplace cache TTL")
+      .setDesc("How long to cache marketplace data (in minutes)")
+      .addText((text) =>
+        text
+          .setPlaceholder("60")
+          .setValue(
+            String(Math.floor(this.plugin.settings.marketplaceCacheTTL / 60000)),
+          )
+          .onChange(async (value) => {
+            const minutes = parseInt(value, 10);
+            if (!isNaN(minutes) && minutes > 0) {
+              this.plugin.settings.marketplaceCacheTTL = minutes * 60000;
+              await this.plugin.saveSettings();
+            }
           }),
       );
   }
