@@ -16,6 +16,7 @@ describe('OciRegistryClient.pushPluginManifest', () => {
 
     client = new OciRegistryClient({
       name: 'ghcr.io/test/plugin',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       adapter: mockAdapter as any,
       token: 'test-token',
     });
