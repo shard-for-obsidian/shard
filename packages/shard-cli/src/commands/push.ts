@@ -6,7 +6,6 @@
 
 import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
 import type {
-  ManifestOCI,
   ManifestOCIDescriptor,
   FetchAdapter,
   ObsidianManifest,

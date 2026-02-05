@@ -41,10 +41,10 @@ describe("CommunityPluginsCache", () => {
   describe("fetch", () => {
     it("should fetch and parse community plugins", async () => {
       // Mock successful fetch
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: true,
         json: async () => mockPlugins,
-      });
+      } as Response);
 
       const plugins = await cache.fetch();
 
@@ -55,10 +55,10 @@ describe("CommunityPluginsCache", () => {
     });
 
     it("should cache plugins after first fetch", async () => {
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: true,
         json: async () => mockPlugins,
-      });
+      } as Response);
 
       // First fetch
       const plugins1 = await cache.fetch();
@@ -72,10 +72,10 @@ describe("CommunityPluginsCache", () => {
     });
 
     it("should throw error on fetch failure", async () => {
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: false,
         status: 404,
-      });
+      } as Response);
 
       await expect(cache.fetch()).rejects.toThrow(
         "Failed to fetch community plugins: 404",
@@ -83,7 +83,7 @@ describe("CommunityPluginsCache", () => {
     });
 
     it("should throw error on network failure", async () => {
-      (mockAdapter.fetch as any).mockRejectedValue(
+      vi.mocked(mockAdapter.fetch).mockRejectedValue(
         new Error("Network error"),
       );
 
@@ -93,10 +93,10 @@ describe("CommunityPluginsCache", () => {
 
   describe("findPlugin", () => {
     beforeEach(async () => {
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: true,
         json: async () => mockPlugins,
-      });
+      } as Response);
       await cache.fetch(); // Pre-populate cache
     });
 
@@ -117,10 +117,10 @@ describe("CommunityPluginsCache", () => {
 
     it("should fetch plugins if not cached", async () => {
       const newCache = new CommunityPluginsCache(mockAdapter);
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: true,
         json: async () => mockPlugins,
-      });
+      } as Response);
 
       const plugin = await newCache.findPlugin("calendar");
       expect(plugin).toEqual(mockPlugins[1]);

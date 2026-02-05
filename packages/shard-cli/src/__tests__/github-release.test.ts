@@ -42,10 +42,10 @@ describe("GitHubReleaseFetcher", () => {
 
   describe("fetchLatestRelease", () => {
     it("should fetch latest release from GitHub API", async () => {
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: true,
         json: async () => mockRelease,
-      });
+      } as Response);
 
       const release = await fetcher.fetchLatestRelease("owner/repo");
 
@@ -61,10 +61,10 @@ describe("GitHubReleaseFetcher", () => {
     });
 
     it("should include auth token when provided", async () => {
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: true,
         json: async () => mockRelease,
-      });
+      } as Response);
 
       await fetcher.fetchLatestRelease("owner/repo", "ghp_test123");
 
@@ -80,10 +80,10 @@ describe("GitHubReleaseFetcher", () => {
     });
 
     it("should throw error on fetch failure", async () => {
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: false,
         status: 404,
-      });
+      } as Response);
 
       await expect(
         fetcher.fetchLatestRelease("owner/repo"),
@@ -91,7 +91,7 @@ describe("GitHubReleaseFetcher", () => {
     });
 
     it("should throw error on network failure", async () => {
-      (mockAdapter.fetch as any).mockRejectedValue(
+      vi.mocked(mockAdapter.fetch).mockRejectedValue(
         new Error("Network error"),
       );
 
@@ -103,10 +103,10 @@ describe("GitHubReleaseFetcher", () => {
 
   describe("fetchReleaseByTag", () => {
     it("should fetch specific release by tag", async () => {
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: true,
         json: async () => mockRelease,
-      });
+      } as Response);
 
       const release = await fetcher.fetchReleaseByTag("owner/repo", "1.2.3");
 
@@ -122,10 +122,10 @@ describe("GitHubReleaseFetcher", () => {
     });
 
     it("should include auth token when provided", async () => {
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: true,
         json: async () => mockRelease,
-      });
+      } as Response);
 
       await fetcher.fetchReleaseByTag("owner/repo", "1.2.3", "ghp_test123");
 
@@ -141,10 +141,10 @@ describe("GitHubReleaseFetcher", () => {
     });
 
     it("should throw error on fetch failure", async () => {
-      (mockAdapter.fetch as any).mockResolvedValue({
+      vi.mocked(mockAdapter.fetch).mockResolvedValue({
         ok: false,
         status: 404,
-      });
+      } as Response);
 
       await expect(
         fetcher.fetchReleaseByTag("owner/repo", "1.2.3"),
@@ -152,7 +152,7 @@ describe("GitHubReleaseFetcher", () => {
     });
 
     it("should throw error on network failure", async () => {
-      (mockAdapter.fetch as any).mockRejectedValue(
+      vi.mocked(mockAdapter.fetch).mockRejectedValue(
         new Error("Network error"),
       );
 

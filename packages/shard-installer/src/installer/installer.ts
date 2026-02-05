@@ -6,17 +6,6 @@ export interface InstallResult {
   filesInstalled: number;
 }
 
-interface ObsidianManifest {
-  id: string;
-  name: string;
-  version: string;
-  minAppVersion: string;
-  description: string;
-  author: string;
-  authorUrl?: string;
-  isDesktopOnly?: boolean;
-}
-
 export class Installer {
   constructor(
     public app: App,

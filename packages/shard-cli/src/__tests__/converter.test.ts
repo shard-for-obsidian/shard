@@ -65,31 +65,31 @@ describe("PluginConverter", () => {
   describe("convertPlugin", () => {
     it("should convert a plugin with all assets", async () => {
       // Mock community plugin lookup
-      (mockAdapter.fetch as any)
+      vi.mocked(mockAdapter.fetch)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => [mockPlugin],
-        })
+        } as Response)
         // Mock GitHub release fetch
         .mockResolvedValueOnce({
           ok: true,
           json: async () => mockRelease,
-        })
+        } as Response)
         // Mock manifest.json download
         .mockResolvedValueOnce({
           ok: true,
           text: async () => mockManifestJson,
-        })
+        } as Response)
         // Mock main.js download
         .mockResolvedValueOnce({
           ok: true,
           text: async () => mockMainJs,
-        })
+        } as Response)
         // Mock styles.css download
         .mockResolvedValueOnce({
           ok: true,
           text: async () => mockStylesCss,
-        });
+        } as Response);
 
       const result = await converter.convertPlugin({
         pluginId: "obsidian-git",
@@ -118,23 +118,23 @@ describe("PluginConverter", () => {
         assets: mockRelease.assets.filter((a) => a.name !== "styles.css"),
       };
 
-      (mockAdapter.fetch as any)
+      vi.mocked(mockAdapter.fetch)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => [mockPlugin],
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => releaseWithoutStyles,
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           text: async () => mockManifestJson,
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           text: async () => mockMainJs,
-        });
+        } as Response);
 
       const result = await converter.convertPlugin({
         pluginId: "obsidian-git",
@@ -146,27 +146,27 @@ describe("PluginConverter", () => {
     });
 
     it("should use specific version if provided", async () => {
-      (mockAdapter.fetch as any)
+      vi.mocked(mockAdapter.fetch)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => [mockPlugin],
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => mockRelease,
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           text: async () => mockManifestJson,
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           text: async () => mockMainJs,
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           text: async () => mockStylesCss,
-        });
+        } as Response);
 
       const result = await converter.convertPlugin({
         pluginId: "obsidian-git",
@@ -179,10 +179,10 @@ describe("PluginConverter", () => {
     });
 
     it("should throw error if plugin not found in community list", async () => {
-      (mockAdapter.fetch as any).mockResolvedValueOnce({
+      vi.mocked(mockAdapter.fetch).mockResolvedValueOnce({
         ok: true,
         json: async () => [],
-      });
+      } as Response);
 
       await expect(
         converter.convertPlugin({
@@ -199,15 +199,15 @@ describe("PluginConverter", () => {
         assets: mockRelease.assets.filter((a) => a.name !== "manifest.json"),
       };
 
-      (mockAdapter.fetch as any)
+      vi.mocked(mockAdapter.fetch)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => [mockPlugin],
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => releaseWithoutManifest,
-        });
+        } as Response);
 
       await expect(
         converter.convertPlugin({
@@ -224,15 +224,15 @@ describe("PluginConverter", () => {
         assets: mockRelease.assets.filter((a) => a.name !== "main.js"),
       };
 
-      (mockAdapter.fetch as any)
+      vi.mocked(mockAdapter.fetch)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => [mockPlugin],
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => releaseWithoutMainJs,
-        });
+        } as Response);
 
       await expect(
         converter.convertPlugin({
@@ -244,19 +244,19 @@ describe("PluginConverter", () => {
     });
 
     it("should throw error if manifest download fails", async () => {
-      (mockAdapter.fetch as any)
+      vi.mocked(mockAdapter.fetch)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => [mockPlugin],
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => mockRelease,
-        })
+        } as Response)
         .mockResolvedValueOnce({
           ok: false,
           status: 404,
-        });
+        } as Response);
 
       await expect(
         converter.convertPlugin({
