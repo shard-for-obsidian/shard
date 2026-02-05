@@ -857,4 +857,47 @@ export class OciRegistryClient {
       manifest,
     };
   }
+
+  /**
+   * Pull a plugin manifest by extracting it from the OCI config blob.
+   * This follows the OCI spec where the Obsidian manifest is stored as the config.
+   *
+   * @param opts.ref The tag or digest to pull
+   * @returns Object with the plugin manifest, OCI manifest, and digests
+   */
+  async pullPluginManifest(opts: { ref: string }): Promise<{
+    pluginManifest: ObsidianManifest;
+    manifest: ManifestOCI;
+    manifestDigest: string;
+    configDigest: string;
+  }> {
+    // Step 1: Pull the OCI manifest
+    const manifestResult = await this.getManifest({ ref: opts.ref });
+    const manifest = manifestResult.manifest;
+
+    // Step 2: Validate manifest has config
+    if (!("config" in manifest) || !manifest.config) {
+      throw new Error("Manifest does not contain a config");
+    }
+
+    const ociManifest = manifest as ManifestOCI;
+    const manifestDigest =
+      manifestResult.resp.headers.get("docker-content-digest") || "";
+
+    // Step 3: Pull the config blob
+    const { buffer: configBuffer } = await this.downloadBlob({
+      digest: ociManifest.config.digest,
+    });
+
+    // Step 4: Parse the plugin manifest from config
+    const configText = new TextDecoder().decode(configBuffer);
+    const pluginManifest = JSON.parse(configText) as ObsidianManifest;
+
+    return {
+      pluginManifest,
+      manifest: ociManifest,
+      manifestDigest,
+      configDigest: ociManifest.config.digest,
+    };
+  }
 }
