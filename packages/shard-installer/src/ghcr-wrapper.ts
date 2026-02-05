@@ -9,6 +9,7 @@ export class GHCRWrapper {
    * Normalize repository URL to full ghcr.io format
    * Examples:
    * - "owner/repo" -> "ghcr.io/owner/repo"
+   * - "owner/repo/subrepo" -> "ghcr.io/owner/repo/subrepo"
    * - "ghcr.io/owner/repo" -> "ghcr.io/owner/repo"
    * - "https://ghcr.io/owner/repo" -> "ghcr.io/owner/repo"
    * - "ghcr.io/owner/repo:tag" -> "ghcr.io/owner/repo:latest"

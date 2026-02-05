@@ -12,6 +12,7 @@ import { GHCRWrapper } from "./ghcr-wrapper";
 import type { RepositoryConfig } from "./types";
 import { Installer } from "./installer/installer.js";
 import { VersionSelectionModal } from "./version-selection-modal";
+import { parseRepoAndRef } from "shard-lib";
 
 export class GHCRSettingTab extends PluginSettingTab {
   plugin: GHCRTagBrowserPlugin;
@@ -54,9 +55,11 @@ export class GHCRSettingTab extends PluginSettingTab {
   private renderAddRepositorySection(containerEl: HTMLElement): void {
     new Setting(containerEl)
       .setName("Add repository")
-      .setDesc("Enter repository URL (e.g., owner/repo or ghcr.io/owner/repo)")
+      .setDesc(
+        "Enter repository URL (e.g., owner/repo or ghcr.io/owner/repo/subrepo)",
+      )
       .addText((text) => {
-        text.setPlaceholder("owner/repo or ghcr.io/owner/repo");
+        text.setPlaceholder("owner/repo or ghcr.io/owner/repo/path");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         text.inputEl.addEventListener("keypress", (e: any) => {
           if (e.key === "Enter") {
@@ -124,11 +127,12 @@ export class GHCRSettingTab extends PluginSettingTab {
       normalized = `ghcr.io/${normalized}`;
     }
 
-    // Validate format (should be ghcr.io/owner/repo)
-    if (!normalized.match(/^ghcr\.io\/[^/]+\/[^/]+$/)) {
-      new Notice(
-        "Invalid repository format. Expected: owner/repo or ghcr.io/owner/repo",
-      );
+    // Validate format using shard-lib parser (supports nested repos)
+    try {
+      parseRepoAndRef(normalized);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Invalid format";
+      new Notice(`Invalid repository format: ${message}`);
       return;
     }
 

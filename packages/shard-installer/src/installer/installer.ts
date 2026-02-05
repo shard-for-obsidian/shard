@@ -201,7 +201,8 @@ export class Installer {
   }
 
   private getPluginId(repo: string): string {
-    // Convert "ghcr.io/owner/repo" to "io.ghcr.owner.repo" (reverse domain notation)
+    // Convert repo path to reverse domain notation
+    // e.g., "ghcr.io/owner/repo/subrepo" -> "io.ghcr.owner.repo.subrepo"
     const parts = repo.split("/");
 
     // Reverse the domain part (ghcr.io → io.ghcr)
