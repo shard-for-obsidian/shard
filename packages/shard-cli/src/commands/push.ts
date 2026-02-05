@@ -58,35 +58,10 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
     scopes: ["push", "pull"],
   });
 
-  // Step 3: Create and push config blob (empty JSON)
-  logger.log("Creating config blob...");
-  const configContent = new TextEncoder().encode("{}");
-  const configResult = await client.pushBlob({
-    data: configContent,
-  });
-  logger.log(
-    `Pushed config blob: ${configResult.digest.slice(0, 19)}... (${configResult.size} bytes)`,
-  );
-
-  // Step 4: Push each file as a blob
+  // Step 3: Push each file as a blob
   const layers: ManifestOCIDescriptor[] = [];
 
-  // Push manifest.json
-  logger.log("Pushing manifest.json...");
-  const manifestResult = await client.pushBlob({
-    data: plugin.manifest.content,
-  });
-  layers.push({
-    mediaType: "application/json",
-    digest: manifestResult.digest,
-    size: manifestResult.size,
-    annotations: {
-      "org.opencontainers.image.title": "manifest.json",
-    },
-  });
-  logger.log(
-    `Pushed manifest.json: ${manifestResult.digest.slice(0, 19)}... (${manifestResult.size} bytes)`,
-  );
+  // No longer need to push manifest.json as a layer - it's now in the config
 
   // Push main.js
   logger.log("Pushing main.js...");
@@ -124,29 +99,15 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
     );
   }
 
-  // Step 5: Build manifest
-  logger.log("Building manifest...");
-  const manifest: ManifestOCI = {
-    schemaVersion: 2,
-    mediaType: "application/vnd.oci.image.manifest.v1+json",
-    artifactType: "application/vnd.obsidian.plugin.v1+json",
-    config: {
-      mediaType: "application/vnd.oci.image.config.v1+json",
-      digest: configResult.digest,
-      size: configResult.size,
-    },
+  // Step 4: Push plugin manifest using new method
+  logger.log("Pushing plugin manifest...");
+  const manifestPushResult = await client.pushPluginManifest({
+    ref: ref.tag || version,
+    pluginManifest: plugin.manifest.parsed,
     layers,
     annotations: {
       "org.opencontainers.image.created": new Date().toISOString(),
     },
-  };
-
-  // Step 6: Push manifest
-  logger.log("Pushing manifest...");
-  const manifestPushResult = await client.pushManifest({
-    ref: ref.tag || version,
-    manifest,
-    mediaType: "application/vnd.oci.image.manifest.v1+json",
   });
 
   logger.success(`Successfully pushed ${fullRef}`);

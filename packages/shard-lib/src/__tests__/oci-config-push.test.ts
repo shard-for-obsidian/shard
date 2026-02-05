@@ -16,7 +16,7 @@ describe('OciRegistryClient.pushPluginManifest', () => {
 
     client = new OciRegistryClient({
       name: 'ghcr.io/test/plugin',
-      adapter: mockAdapter,
+      adapter: mockAdapter as any,
       token: 'test-token',
     });
   });
