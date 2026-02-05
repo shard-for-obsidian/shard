@@ -58,13 +58,13 @@ jobs:
         run: git push
 
       - name: Upload GitHub Pages artifact
-        if: github.event_name == 'push'
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: marketplace/
 
   deploy:
-    if: github.event_name == 'push'
+    if: github.event_name != 'pull_request'
     needs: generate-index
     runs-on: ubuntu-latest
     environment:
