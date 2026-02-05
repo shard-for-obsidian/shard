@@ -10,7 +10,8 @@
     "build": "node esbuild.config.mjs",
     "build:prod": "node esbuild.config.mjs production",
     "clean": "rimraf dist",
-    "ts-check": "tsc --noEmit"
+    "ts-check": "tsc --noEmit",
+    "lint": "eslint ."
   },
   "keywords": [
     "shard",

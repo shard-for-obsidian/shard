@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "pnpm -r build",
-    "lint": "eslint .",
+    "lint": "pnpm -r lint",
     "clean": "pnpm -r clean",
     "ts-check": "pnpm -r ts-check",
     "test": "pnpm -r test"

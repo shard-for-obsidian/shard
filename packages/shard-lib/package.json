@@ -11,6 +11,7 @@
     "build": "node esbuild.config.mjs && tsc",
     "clean": "rimraf dist",
     "ts-check": "tsc --noEmit",
+    "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui"

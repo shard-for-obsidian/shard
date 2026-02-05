@@ -15,13 +15,8 @@ import {
   MEDIATYPE_OCI_MANIFEST_INDEX_V1,
 } from "../types/ManifestTypes.js";
 import { REALM, SERVICE } from "../ghcr/GhcrConstants.js";
-import type {
-  Manifest,
-} from "../types/ManifestTypes.js";
-import type {
-  RegistryRepo,
-  TagList,
-} from "../types/RegistryTypes.js";
+import type { Manifest } from "../types/ManifestTypes.js";
+import type { RegistryRepo, TagList } from "../types/RegistryTypes.js";
 import type { AuthInfo } from "../types/AuthTypes.js";
 import type { RegistryClientOptions } from "./RegistryClientOptions.js";
 import * as e from "../errors/RegistryErrors.js";
@@ -479,7 +474,10 @@ export class OciRegistryClient {
       opts.acceptManifestLists ?? this.acceptManifestLists;
 
     await this.login();
-    const headers: Record<string, string> = { ...this._headers, "user-agent": this._userAgent };
+    const headers: Record<string, string> = {
+      ...this._headers,
+      "user-agent": this._userAgent,
+    };
     const acceptTypes = [MEDIATYPE_MANIFEST_V2];
     if (acceptManifestLists) {
       acceptTypes.push(MEDIATYPE_MANIFEST_LIST_V2);
