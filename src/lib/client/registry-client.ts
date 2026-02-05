@@ -468,16 +468,26 @@ export class OciRegistryClient {
       path += `?n=${props.pageSize}`;
     }
     while (path) {
-      const res = await this._api.request({
+      const url = new URL(path, this._url);
+      const headers = { ...this._headers, "user-agent": this._userAgent };
+
+      const resp = await this._adapter.fetch(url.toString(), {
         method: "GET",
-        path,
-        headers: this._headers,
+        headers,
       });
-      const links = parseLinkHeader(res.headers["link"] ?? null);
+
+      if (!resp.ok) {
+        throw new Error(
+          `Unexpected HTTP ${resp.status} from ${url.toString()}`,
+        );
+      }
+
+      const linkHeader = resp.headers.get("link");
+      const links = parseLinkHeader(linkHeader ?? null);
       const nextLink = links.find((x) => x.rel == "next");
       // If there's no next link then we use a null to end the loop.
       path = nextLink?.url ?? null;
-      yield await res.dockerJson<TagList>();
+      yield (await resp.json()) as TagList;
     }
   }
 
