@@ -1,0 +1,56 @@
+name: Generate Plugin Index
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'marketplace/plugins/**'
+  pull_request:
+    paths:
+      - 'marketplace/plugins/**'
+  workflow_dispatch:
+
+jobs:
+  generate-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Generate plugins.json
+        run: |
+          echo '[]' > marketplace/plugins.json
+          for file in marketplace/plugins/*.yml; do
+            if [ -f "$file" ]; then
+              yq eval -o=json "$file" | jq -s '.' >> /tmp/plugin.json
+              jq -s 'add' marketplace/plugins.json /tmp/plugin.json > /tmp/merged.json
+              mv /tmp/merged.json marketplace/plugins.json
+            fi
+          done
+          jq '.' marketplace/plugins.json > /tmp/formatted.json
+          mv /tmp/formatted.json marketplace/plugins.json
+
+      - name: Commit changes
+        if: github.event_name == 'push'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add marketplace/plugins.json
+          git diff --staged --quiet || git commit -m "chore: update plugin index"
+
+      - name: Push changes
+        if: github.event_name == 'push'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
