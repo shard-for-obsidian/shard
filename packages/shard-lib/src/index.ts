@@ -5,13 +5,15 @@
  */
 
 // Main client
-export { OciRegistryClient, digestFromManifestStr } from "./registry-client.js";
+export {
+  OciRegistryClient,
+  digestFromManifestStr,
+} from "./client/OciRegistryClient.js";
 
 // Common utilities
 export {
   parseRepo,
   parseRepoAndRef,
-  urlFromIndex,
   splitIntoTwo,
   DEFAULT_USERAGENT,
   MEDIATYPE_MANIFEST_V2,
@@ -28,23 +30,25 @@ export type {
   Manifest,
   ManifestOCI,
   ManifestOCIDescriptor,
+} from "./types/ManifestTypes.js";
+export type {
   RegistryRepo,
-  RegistryClientOpts,
-  AuthInfo,
+  RegistryImage,
   TagList,
+} from "./types/RegistryTypes.js";
+export type {
+  AuthInfo,
   RequestUrlParam,
   RequestUrlResponse,
-} from "./types.js";
+} from "./types/AuthTypes.js";
 
 // Errors
-export {
-  BadDigestError,
-  BlobReadError,
-  TooManyRedirectsError,
-} from "./errors.js";
+export { BadDigestError } from "./errors/RegistryErrors.js";
+export { BlobReadError } from "./errors/RegistryErrors.js";
+export { TooManyRedirectsError } from "./errors/RegistryErrors.js";
 
 // Fetch adapter
-export type { FetchAdapter } from "./fetch-adapter.js";
+export type { FetchAdapter } from "./client/adapters/FetchAdapter.js";
 
 // Utilities
-export { parseLinkHeader } from "./util/link-header.js";
+export { parseLinkHeader } from "./parsing/LinkHeaderParser.js";

@@ -1,4 +1,6 @@
+import { encodeHex } from "./utils/DigestUtils.js";
 // ...existing code...
+import type { AuthInfo } from "./types/AuthTypes.js";
 // Add this import if FetchAdapter is used in this file
 // import type { FetchAdapter } from "./client/adapters/FetchAdapter.js";
 /*
@@ -9,14 +11,14 @@
 
 import {
   parseRepo,
-  urlFromIndex,
   DEFAULT_USERAGENT,
-  splitIntoTwo,
   MEDIATYPE_MANIFEST_V2,
   MEDIATYPE_MANIFEST_LIST_V2,
   MEDIATYPE_OCI_MANIFEST_V1,
   MEDIATYPE_OCI_MANIFEST_INDEX_V1,
 } from "./common.js";
+import { splitIntoTwo } from "./utils/ValidationUtils.js";
+import { urlFromIndex } from "./parsing/IndexParser.js";
 
 import { REALM, SERVICE } from "./ghcr.js";
 

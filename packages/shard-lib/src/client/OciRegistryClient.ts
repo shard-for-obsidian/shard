@@ -9,14 +9,15 @@
 
 import {
   parseRepo,
-  urlFromIndex,
   DEFAULT_USERAGENT,
-  splitIntoTwo,
   MEDIATYPE_MANIFEST_V2,
   MEDIATYPE_MANIFEST_LIST_V2,
   MEDIATYPE_OCI_MANIFEST_V1,
   MEDIATYPE_OCI_MANIFEST_INDEX_V1,
 } from "../common.js";
+import { splitIntoTwo } from "../utils/ValidationUtils.js";
+
+import { urlFromIndex } from "../parsing/IndexParser.js";
 
 import { REALM, SERVICE } from "../ghcr.js";
 
@@ -28,11 +29,7 @@ import * as e from "../errors/RegistryErrors.js";
 
 import { parseLinkHeader } from "../parsing/LinkHeaderParser.js";
 
-function encodeHex(data: ArrayBuffer) {
-  return [...new Uint8Array(data)]
-    .map((x) => x.toString(16).padStart(2, "0"))
-    .join("");
-}
+import { encodeHex } from "../utils/DigestUtils.js";
 
 /**
  * Calculate the 'Docker-Content-Digest' header for the given manifest.

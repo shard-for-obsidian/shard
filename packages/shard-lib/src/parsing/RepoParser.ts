@@ -4,7 +4,9 @@ import type {
   RegistryImage,
 } from "../types/RegistryTypes.js";
 
-import { splitIntoTwo, DEFAULT_TAG } from "../common.js";
+import { splitIntoTwo } from "../utils/ValidationUtils.js";
+import { DEFAULT_TAG } from "../common.js";
+import { parseIndex } from "./IndexParser.js";
 
 /**
  * Parse a docker repo and tag string: [INDEX/]REPO[:TAG|@DIGEST]
@@ -32,13 +34,122 @@ import { splitIntoTwo, DEFAULT_TAG } from "../common.js";
  *      If given it may either be a string, e.g. 'https://myreg.example.com',
  *      or parsed index object, as from `parseIndex()`.
  */
-export function parseRepo(
   arg: string,
   defaultIndex?: string | RegistryIndex,
 ): RegistryRepo {
-  // ...implementation moved from common.ts...
-  // This function will need to import parseIndex from IndexParser if split
-  throw new Error("Not yet implemented: see refactor plan");
+  let index: RegistryIndex;
+
+  // Strip off optional leading `INDEX/`, parse it to `info.index` and
+  // leave the rest in `remoteName`.
+  let remoteNameRaw: string;
+  const protoSepIdx = arg.indexOf("://");
+  if (protoSepIdx !== -1) {
+    // (A) repo with a protocol, e.g. 'https://host/repo'.
+    const slashIdx = arg.indexOf("/", protoSepIdx + 3);
+    if (slashIdx === -1) {
+      throw new Error(
+        'invalid repository name, no "/REPO" after ' + "hostame: " + arg,
+      );
+    }
+    const indexName = arg.slice(0, slashIdx);
+    remoteNameRaw = arg.slice(slashIdx + 1);
+    index = parseIndex(indexName);
+  } else {
+    const parts = splitIntoTwo(arg, "/");
+    if (
+      parts.length === 1 ||
+      /* or if parts[0] doesn't look like a hostname or IP */
+      (parts[0].indexOf(".") === -1 &&
+        parts[0].indexOf(":") === -1 &&
+        parts[0] !== "localhost")
+    ) {
+      // (B) repo without leading 'INDEX/'.
+      if (defaultIndex === undefined) {
+        index = parseIndex();
+      } else if (typeof defaultIndex === "string") {
+        index = parseIndex(defaultIndex);
+      } else {
+        index = defaultIndex;
+      }
+      remoteNameRaw = arg;
+    } else {
+      // (C) repo with leading 'INDEX/' (without protocol).
+      index = parseIndex(parts[0]);
+      remoteNameRaw = parts[1];
+    }
+  }
+
+  // Validate remoteName (docker `validateRemoteName`).
+  const nameParts = splitIntoTwo(remoteNameRaw, "/");
+  let ns = "",
+    name: string;
+  if (nameParts.length === 2) {
+    name = nameParts[1];
+
+    // Validate ns.
+    ns = nameParts[0];
+    if (ns.length < 2 || ns.length > 255) {
+      throw new Error(
+        "invalid repository namespace, must be between " +
+          "2 and 255 characters: " +
+          ns,
+      );
+    }
+    if (!/^[a-z0-9._-]*$/.test(ns)) {
+      throw new Error(
+        "invalid repository namespace, may only contain " +
+          "[a-z0-9._-] characters: " +
+          ns,
+      );
+    }
+    if (ns[0] === "-" && ns[ns.length - 1] === "-") {
+      throw new Error(
+        "invalid repository namespace, cannot start or " +
+          "end with a hypen: " +
+          ns,
+      );
+    }
+    if (ns.indexOf("--") !== -1) {
+      throw new Error(
+        "invalid repository namespace, cannot contain " +
+          "consecutive hyphens: " +
+          ns,
+      );
+    }
+  } else {
+    name = remoteNameRaw;
+    if (index.official) {
+      ns = "library";
+    }
+  }
+
+  // Validate name.
+  if (!/^[a-z0-9_/.-]*$/.test(name)) {
+    throw new Error(
+      "invalid repository name, may only contain " +
+        "[a-z0-9_/.-] characters: " +
+        name,
+    );
+  }
+
+  const isLibrary = index.official && ns === "library";
+  const remoteName = ns ? `${ns}/${name}` : name;
+  const localName = index.official
+    ? isLibrary
+      ? name
+      : remoteName
+    : `${index.name}/${remoteName}`;
+  const canonicalName = index.official
+    ? `docker.io/${localName}`
+    : localName;
+
+  return {
+    index,
+    official: isLibrary,
+    remoteName,
+    localName,
+    canonicalName,
+  };
 }
 
 /**
@@ -67,8 +178,37 @@ export function parseRepoAndRef(
   arg: string,
   defaultIndex?: string | RegistryIndex,
 ): RegistryImage {
-  // ...implementation moved from common.ts...
-  throw new Error("Not yet implemented: see refactor plan");
+  // Parse off the tag/digest per
+  // https://github.com/docker/docker/blob/0c7b51089c8cd7ef3510a9b40edaa139a7ca91aa/pkg/parsers/parsers.go#L69
+  let digest: string | null = null;
+  let tag: string | null = null;
+
+  const atIdx = arg.lastIndexOf("@");
+  if (atIdx !== -1) {
+    digest = arg.slice(atIdx + 1);
+    arg = arg.slice(0, atIdx);
+  } else {
+    tag = DEFAULT_TAG;
+  }
+
+  const colonIdx = arg.lastIndexOf(":");
+  const slashIdx = arg.lastIndexOf("/");
+  if (colonIdx !== -1 && colonIdx > slashIdx) {
+    tag = arg.slice(colonIdx + 1);
+    arg = arg.slice(0, colonIdx);
+  }
+
+  const repo = parseRepo(arg, defaultIndex);
+  return {
+    ...repo,
+    digest,
+    tag,
+    canonicalRef: [
+      repo.canonicalName,
+      tag ? `:${tag}` : "",
+      digest ? `@${digest}` : "",
+    ].join(""),
+  };
 }
 
 export const parseRepoAndTag = parseRepoAndRef;
