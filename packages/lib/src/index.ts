@@ -32,6 +32,8 @@ export type {
   RegistryClientOpts,
   AuthInfo,
   TagList,
+  RequestUrlParam,
+  RequestUrlResponse,
 } from "./types.js";
 
 // Errors
