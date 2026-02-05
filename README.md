@@ -1,4 +1,7 @@
+<p>
 <img src="https://github.com/gillisandrew/shard/blob/main/docs/attachments/shard-full-logo.png?raw=true" style="text-align:center;max-width: 256px;" />
+</p>
+
 
 # Shard plugin system for Obsidian
 
