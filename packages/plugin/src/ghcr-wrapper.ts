@@ -4,7 +4,7 @@ import type {
   RequestUrlResponse,
 } from "@plugin-manager/lib";
 import { ObsidianFetchAdapter } from "./adapters/obsidian-fetch-adapter.js";
-import type { TagMetadata } from "@/plugin/types.js";
+import type { TagMetadata } from "./types.js";
 import { requestUrl } from "obsidian";
 
 export class GHCRWrapper {
