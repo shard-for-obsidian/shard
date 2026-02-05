@@ -232,10 +232,16 @@ export class PluginConverter {
       },
     });
 
+    // Calculate total size from manifest
+    const totalSize = manifestPushResult.manifest.layers.reduce(
+      (sum, layer) => sum + layer.size,
+      0,
+    );
+
     return {
       digest: manifestPushResult.digest,
       tag: ref.tag || pluginData.manifest.version,
-      size: manifestPushResult.size,
+      size: totalSize,
       repository,
     };
   }

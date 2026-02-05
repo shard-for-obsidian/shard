@@ -9,6 +9,7 @@ import type {
   ManifestOCI,
   ManifestOCIDescriptor,
   FetchAdapter,
+  ObsidianManifest,
 } from "shard-lib";
 import { discoverPlugin } from "../lib/plugin.js";
 import { Logger } from "../lib/logger.js";
@@ -103,7 +104,7 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
   logger.log("Pushing plugin manifest...");
   const manifestPushResult = await client.pushPluginManifest({
     ref: ref.tag || version,
-    pluginManifest: plugin.manifest.parsed,
+    pluginManifest: plugin.manifest.parsed as unknown as ObsidianManifest,
     layers,
     annotations: {
       "org.opencontainers.image.created": new Date().toISOString(),
@@ -113,10 +114,16 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
   logger.success(`Successfully pushed ${fullRef}`);
   logger.log(`Manifest digest: ${manifestPushResult.digest}`);
 
+  // Calculate total size from manifest
+  const totalSize = manifestPushResult.manifest.layers.reduce(
+    (sum, layer) => sum + layer.size,
+    0,
+  );
+
   return {
     digest: manifestPushResult.digest,
     tag: ref.tag || version,
-    size: manifestPushResult.size,
+    size: totalSize,
     repository: fullRef,
   };
 }
