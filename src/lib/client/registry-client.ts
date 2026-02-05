@@ -355,24 +355,29 @@ export class OciRegistryClient {
     }
     // log.trace({tokenUrl: tokenUrl}, '_getToken: url');
 
-    const resp = await this._api.request({
+    headers["user-agent"] = this._userAgent;
+
+    const resp = await this._adapter.fetch(tokenUrl, {
       method: "GET",
-      path: tokenUrl,
       headers: headers,
-      expectStatus: [200, 401],
     });
+
     if (resp.status === 401) {
       // Convert *all* 401 errors to use a generic error constructor
       // with a simple error message.
-      const errMsg = _getRegistryErrorMessage(await resp.dockerJson());
-      throw await resp.dockerThrowable(
-        `Registry auth failed: ${errMsg as string}`,
-      );
+      const body = await resp.json();
+      const errMsg = _getRegistryErrorMessage(body);
+      throw new Error(`Registry auth failed: ${errMsg as string}`);
     }
-    const body = await resp.dockerJson();
+
+    if (resp.status !== 200) {
+      throw new Error(`Unexpected HTTP ${resp.status} from ${tokenUrl}`);
+    }
+
+    const body = await resp.json();
     if (typeof body?.token !== "string") {
       console.error("TODO: auth resp:", body);
-      throw await resp.dockerThrowable(
+      throw new Error(
         "authorization " + "server did not include a token in the response",
       );
     }
