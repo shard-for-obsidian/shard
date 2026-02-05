@@ -99,6 +99,7 @@ export interface ManifestV2List {
 export interface ManifestOCI {
   schemaVersion: 2;
   mediaType?: "application/vnd.oci.image.manifest.v1+json";
+  artifactType?: string;
   config: ManifestOCIDescriptor;
   layers: Array<ManifestOCIDescriptor>;
   annotations?: Record<string, string>;
