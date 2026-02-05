@@ -690,13 +690,141 @@ export class OciRegistryClient {
     return { ress, buffer };
   }
 
-  /*
-   * Upload an image manifest. `ref` is either a tag or a digest.
-   * <https://github.com/opencontainers/distribution-spec/blob/main/spec.md#pushing-manifests>
-   */
-
-  /*
-   * Upload a blob. The request stream will be used to complete the upload in a single request.
+  /**
+   * Upload a blob using POST then PUT workflow.
    * <https://github.com/opencontainers/distribution-spec/blob/main/spec.md#post-then-put>
+   *
+   * @param opts.data The blob data as ArrayBuffer or Uint8Array
+   * @param opts.digest Optional digest. If not provided, it will be calculated.
+   * @returns Object with digest and size of the uploaded blob
    */
+  async pushBlob(opts: {
+    data: ArrayBuffer | Uint8Array;
+  }): Promise<{ digest: string; size: number }> {
+    await this.login();
+
+    // Convert to ArrayBuffer if needed
+    const buffer =
+      opts.data instanceof Uint8Array ? opts.data.buffer : opts.data;
+
+    // Calculate digest
+    const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+    const digest = `sha256:${encodeHex(hashBuffer)}`;
+
+    // Step 1: POST to initiate upload
+    const postUrl = new URL(
+      `/v2/${encodeURI(this.repo.remoteName)}/blobs/uploads/`,
+      this._url,
+    );
+
+    const postHeaders = {
+      ...this._headers,
+      "user-agent": this._userAgent,
+      "content-length": "0",
+    };
+
+    const postResp = await this._adapter.fetch(postUrl.toString(), {
+      method: "POST",
+      headers: postHeaders,
+    });
+
+    if (postResp.status !== 202) {
+      throw new Error(
+        `Failed to initiate blob upload: HTTP ${postResp.status}`,
+      );
+    }
+
+    // Get upload URL from Location header
+    const uploadLocation = postResp.headers.get("location");
+    if (!uploadLocation) {
+      throw new Error("No Location header in POST response");
+    }
+
+    // Step 2: PUT to upload blob
+    const uploadUrl = new URL(uploadLocation, this._url);
+    uploadUrl.searchParams.set("digest", digest);
+
+    const putHeaders = {
+      ...this._headers,
+      "user-agent": this._userAgent,
+      "content-type": "application/octet-stream",
+      "content-length": buffer.byteLength.toString(),
+    };
+
+    const putResp = await this._adapter.fetch(uploadUrl.toString(), {
+      method: "PUT",
+      headers: putHeaders,
+      body: buffer,
+    });
+
+    if (putResp.status !== 201) {
+      throw new Error(`Failed to upload blob: HTTP ${putResp.status}`);
+    }
+
+    // Verify digest from response
+    const returnedDigest = putResp.headers.get("docker-content-digest");
+    if (returnedDigest && returnedDigest !== digest) {
+      throw new e.BadDigestError(
+        `Digest mismatch: expected ${digest}, got ${returnedDigest}`,
+      );
+    }
+
+    return { digest, size: buffer.byteLength };
+  }
+
+  /**
+   * Upload an image manifest.
+   * <https://github.com/opencontainers/distribution-spec/blob/main/spec.md#pushing-manifests>
+   *
+   * @param opts.ref The tag or digest to push to
+   * @param opts.manifest The manifest object to upload
+   * @param opts.mediaType Optional media type (defaults to OCI manifest type)
+   * @returns Object with digest and size of the uploaded manifest
+   */
+  async pushManifest(opts: {
+    ref: string;
+    manifest: Manifest;
+    mediaType?: string;
+  }): Promise<{ digest: string; size: number }> {
+    await this.login();
+
+    const manifestStr = JSON.stringify(opts.manifest);
+    const manifestBuffer = new TextEncoder().encode(manifestStr);
+
+    // Calculate digest
+    const digest = await digestFromManifestStr(manifestStr);
+
+    const url = new URL(
+      `/v2/${encodeURI(this.repo.remoteName)}/manifests/${encodeURI(opts.ref)}`,
+      this._url,
+    );
+
+    const headers = {
+      ...this._headers,
+      "user-agent": this._userAgent,
+      "content-type":
+        opts.mediaType || "application/vnd.oci.image.manifest.v1+json",
+      "content-length": manifestBuffer.byteLength.toString(),
+    };
+
+    const resp = await this._adapter.fetch(url.toString(), {
+      method: "PUT",
+      headers,
+      body: manifestBuffer,
+    });
+
+    if (resp.status !== 201) {
+      throw new Error(`Failed to push manifest: HTTP ${resp.status}`);
+    }
+
+    // Verify digest from response
+    const returnedDigest = resp.headers.get("docker-content-digest");
+    if (returnedDigest && returnedDigest !== digest) {
+      throw new e.BadDigestError(
+        `Digest mismatch: expected ${digest}, got ${returnedDigest}`,
+      );
+    }
+
+    return { digest, size: manifestBuffer.byteLength };
+  }
 }
