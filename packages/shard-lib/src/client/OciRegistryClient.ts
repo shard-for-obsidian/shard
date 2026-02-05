@@ -17,10 +17,6 @@ import {
 import { REALM, SERVICE } from "../ghcr/GhcrConstants.js";
 import type {
   Manifest,
-  ManifestV2,
-  ManifestV2List,
-  ManifestOCI,
-  ManifestOCIIndex,
 } from "../types/ManifestTypes.js";
 import type {
   RegistryRepo,

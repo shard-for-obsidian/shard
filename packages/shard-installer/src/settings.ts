@@ -57,7 +57,8 @@ export class GHCRSettingTab extends PluginSettingTab {
       .setDesc("Enter repository URL (e.g., owner/repo or ghcr.io/owner/repo)")
       .addText((text) => {
         text.setPlaceholder("owner/repo or ghcr.io/owner/repo");
-        text.inputEl.addEventListener("keypress", (e) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        text.inputEl.addEventListener("keypress", (e: any) => {
           if (e.key === "Enter") {
             void this.addRepository(text.getValue());
             text.setValue("");
@@ -447,7 +448,7 @@ export class GHCRSettingTab extends PluginSettingTab {
 
       // Fetch manifest to get digest
       const { resp } = await ghcrClient.getManifest({ ref: tag });
-      const digest = resp.headers["docker-content-digest"] || "unknown";
+      const digest = resp.headers.get("docker-content-digest") || "unknown";
 
       // Create installer and perform installation
       const installer = new Installer(this.app, ghcrClient);

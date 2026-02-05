@@ -58,14 +58,16 @@ export class ObsidianFetchAdapter implements FetchAdapter {
         body = init.body.buffer.slice(0) as ArrayBuffer;
       } else {
         // Convert other body types to ArrayBuffer
-        const blob = new Blob([init.body as BlobPart]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const blob = new Blob([init.body as any]);
         body = await blob.arrayBuffer();
       }
     } else if (typeof input !== "string" && input.body) {
       if (input.body instanceof ArrayBuffer) {
         body = input.body;
       } else {
-        const blob = new Blob([input.body as unknown as BlobPart]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const blob = new Blob([input.body as any]);
         body = await blob.arrayBuffer();
       }
     }
