@@ -11,7 +11,8 @@
     "build": "pnpm -r build",
     "lint": "eslint .",
     "clean": "pnpm -r clean",
-    "ts-check": "pnpm -r ts-check"
+    "ts-check": "pnpm -r ts-check",
+    "test": "pnpm -r test"
   },
   "devDependencies": {
     "@cyclonedx/cyclonedx-esbuild": "^1.0.0",
