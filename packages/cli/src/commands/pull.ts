@@ -6,11 +6,9 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { OciRegistryClient } from "../../lib/client/registry-client.js";
-import type { ManifestOCI } from "../../lib/client/types.js";
-import { parseRepoAndRef } from "../../lib/client/common.js";
+import { OciRegistryClient, parseRepoAndRef } from "@plugin-manager/lib";
+import type { ManifestOCI, FetchAdapter } from "@plugin-manager/lib";
 import { Logger } from "../lib/logger.js";
-import type { FetchAdapter } from "../../lib/client/fetch-adapter.js";
 
 export interface PullOptions {
   repository: string;
