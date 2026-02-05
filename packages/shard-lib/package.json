@@ -10,7 +10,10 @@
   "scripts": {
     "build": "node esbuild.config.mjs && tsc",
     "clean": "rimraf dist",
-    "ts-check": "tsc --noEmit"
+    "ts-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "keywords": [
     "shard",
@@ -20,5 +23,9 @@
     "ghcr",
     "container-registry"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@vitest/ui": "^4.0.18",
+    "vitest": "^4.0.18"
+  }
 }
