@@ -4,31 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import type { RegistryImage, RegistryIndex, RegistryRepo } from "./types.js";
-
-export const MEDIATYPE_MANIFEST_V2 =
-  "application/vnd.docker.distribution.manifest.v2+json";
-export const MEDIATYPE_MANIFEST_LIST_V2 =
-  "application/vnd.docker.distribution.manifest.list.v2+json";
-
-export const MEDIATYPE_OCI_MANIFEST_V1 =
-  "application/vnd.oci.image.manifest.v1+json";
-export const MEDIATYPE_OCI_MANIFEST_INDEX_V1 =
-  "application/vnd.oci.image.index.v1+json";
-
-/*
- * Copyright 2016 Joyent, Inc.
- */
-
-// --- globals
-
-export const DEFAULT_USERAGENT: string = `open-obsidian-plugin-spec/0.1.0`;
-
-// See `INDEXNAME` in docker/docker.git:registry/config.go.
-export const DEFAULT_INDEX_NAME = "docker.io";
-export const DEFAULT_INDEX_URL = "https://registry-1.docker.io";
-
-export const DEFAULT_LOGIN_SERVERNAME = "https://index.docker.io/v1/";
+import type {
+  RegistryImage,
+  RegistryIndex,
+  RegistryRepo,
+} from "../types/RegistryTypes.js";
+import { parseIndex } from "./IndexParser.js";
+import { splitIntoTwo } from "../utils/ValidationUtils.js";
 
 // JSSTYLED
 // 'DEFAULTTAG' from https://github.com/docker/docker/blob/0c7b51089c8cd7ef3510a9b40edaa139a7ca91aa/graph/tags.go#L25
@@ -36,107 +18,6 @@ export const DEFAULT_TAG = "latest";
 
 const VALID_NS = /^[a-z0-9._-]*$/;
 const VALID_REPO = /^[a-z0-9_/.-]*$/;
-
-// --- exports
-
-export function splitIntoTwo(
-  str: string,
-  sep: string,
-): [string] | [string, string] {
-  const slashIdx = str.indexOf(sep);
-  return slashIdx == -1
-    ? [str]
-    : [str.slice(0, slashIdx), str.slice(slashIdx + 1)];
-}
-
-/**
- * Parse a docker index name or index URL.
- *
- * Examples:
- *      docker.io               (no scheme implies 'https')
- *      index.docker.io         (normalized to docker.io)
- *      https://docker.io
- *      http://localhost:5000
- *      https://index.docker.io/v1/  (special case)
- *
- * Special case: `docker` still refers to "https://index.docker.io/v1/"
- * when dealing with auth (including in its json file).
- *
- * @param {String} arg: Optional. Index name (optionally with leading scheme).
- */
-export function parseIndex(arg?: string): RegistryIndex {
-  if (!arg || arg === DEFAULT_LOGIN_SERVERNAME) {
-    // Default index.
-    return {
-      scheme: "https",
-      name: DEFAULT_INDEX_NAME,
-      official: true,
-    };
-  }
-
-  // Optional protocol/scheme.
-  let indexName: string;
-  let scheme: "https" | "http" = "https";
-  const protoSepIdx = arg.indexOf("://");
-  if (protoSepIdx !== -1) {
-    const foundScheme = arg.slice(0, protoSepIdx);
-    if (foundScheme !== "http" && foundScheme !== "https") {
-      throw new Error(
-        "invalid index scheme, must be " + '"http" or "https": ' + arg,
-      );
-    }
-    scheme = foundScheme;
-    indexName = arg.slice(protoSepIdx + 3);
-  } else {
-    scheme = isLocalhost(arg) ? "http" : "https";
-    indexName = arg;
-  }
-
-  if (!indexName) {
-    throw new Error("invalid index, empty host: " + arg);
-  } else if (
-    indexName.indexOf(".") === -1 &&
-    indexName.indexOf(":") === -1 &&
-    indexName !== "localhost"
-  ) {
-    throw new Error(
-      `invalid index, "${indexName}" does not look like a valid host: ${arg}`,
-    );
-  } else {
-    // Allow a trailing '/' as from some URL builder functions that
-    // add a default '/' path to a URL, e.g. 'https://docker.io/'.
-    if (indexName[indexName.length - 1] === "/") {
-      indexName = indexName.slice(0, indexName.length - 1);
-    }
-
-    // Ensure no trailing repo.
-    if (indexName.indexOf("/") !== -1) {
-      throw new Error("invalid index, trailing repo: " + arg);
-    }
-  }
-
-  // Per docker.git's `ValidateIndexName`.
-  if (indexName === "index." + DEFAULT_INDEX_NAME) {
-    indexName = DEFAULT_INDEX_NAME;
-  }
-
-  const index: RegistryIndex = {
-    name: indexName,
-    official: indexName === DEFAULT_INDEX_NAME,
-    scheme,
-  };
-
-  // Disallow official and 'http'.
-  if (index.official && index.scheme === "http") {
-    throw new Error(
-      "invalid index, plaintext HTTP to official index " +
-        "is disallowed: " +
-        arg,
-    );
-  }
-
-  return index;
-}
 
 /**
  * Parse a docker repo and tag string: [INDEX/]REPO[:TAG|@DIGEST]
@@ -271,7 +152,7 @@ export function parseRepo(
       : remoteName
     : `${index.name}/${remoteName}`;
   const canonicalName = index.official
-    ? `${DEFAULT_INDEX_NAME}/${localName}`
+    ? `${parseIndex().name}/${localName}`
     : localName;
 
   return {
@@ -343,35 +224,3 @@ export function parseRepoAndRef(
 }
 
 export const parseRepoAndTag = parseRepoAndRef;
-
-/**
- * Similar in spirit to docker.git:registry/endpoint.go#NewEndpoint().
- */
-export function urlFromIndex(
-  index: RegistryIndex,
-  scheme?: "http" | "https",
-): string {
-  if (index.official) {
-    // v1
-    if (scheme != null && scheme !== "https")
-      throw new Error(
-        `Unencrypted communication with docker.io is not allowed`,
-      );
-    return DEFAULT_INDEX_URL;
-  } else {
-    if (scheme != null && scheme !== "https" && scheme !== "http")
-      throw new Error(
-        `Non-HTTP communication with docker registries is not allowed`,
-      );
-    return `${scheme ?? index.scheme}://${index.name}`;
-  }
-}
-
-export function isLocalhost(host: string): boolean {
-  const lead = host.split(":")[0];
-  if (lead === "localhost" || lead === "127.0.0.1" || host.includes("::1")) {
-    return true;
-  } else {
-    return false;
-  }
-}

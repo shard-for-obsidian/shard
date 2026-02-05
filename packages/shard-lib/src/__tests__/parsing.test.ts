@@ -1,6 +1,7 @@
 // packages/shard-lib/src/__tests__/parsing.test.ts
 import { describe, it, expect } from 'vitest';
-import { parseIndex, parseRepo, parseRepoAndRef } from '../common.js';
+import { parseIndex } from '../parsing/IndexParser.js';
+import { parseRepo, parseRepoAndRef } from '../parsing/RepoParser.js';
 
 describe('parseIndex', () => {
   it('should parse default index', () => {

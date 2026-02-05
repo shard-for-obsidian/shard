@@ -5,13 +5,6 @@ const production = process.argv[2] === "production";
 await esbuild.build({
   entryPoints: [
     "src/index.ts",
-    "src/registry-client.ts",
-    "src/common.ts",
-    "src/types.ts",
-    "src/errors.ts",
-    "src/fetch-adapter.ts",
-    "src/ghcr.ts",
-    "src/util/link-header.ts",
   ],
   bundle: false,
   outdir: "dist",

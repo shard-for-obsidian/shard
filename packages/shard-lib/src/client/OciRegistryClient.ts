@@ -4,36 +4,34 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { urlFromIndex } from "../parsing/IndexParser.js";
+import { parseRepo } from "../parsing/RepoParser.js";
+import { splitIntoTwo } from "../utils/ValidationUtils.js";
+import { encodeHex, digestFromManifestStr } from "../utils/DigestUtils.js";
 import {
-  parseRepo,
-  urlFromIndex,
-  DEFAULT_USERAGENT,
-  splitIntoTwo,
   MEDIATYPE_MANIFEST_V2,
   MEDIATYPE_MANIFEST_LIST_V2,
   MEDIATYPE_OCI_MANIFEST_V1,
   MEDIATYPE_OCI_MANIFEST_INDEX_V1,
-} from "./common.js";
-
-import { REALM, SERVICE } from "./ghcr.js";
-
+} from "../types/ManifestTypes.js";
+import { REALM, SERVICE } from "../ghcr/GhcrConstants.js";
 import type {
   Manifest,
+  ManifestV2,
+  ManifestV2List,
+  ManifestOCI,
+  ManifestOCIIndex,
+} from "../types/ManifestTypes.js";
+import type {
   RegistryRepo,
-  RegistryClientOpts,
-  AuthInfo,
   TagList,
-} from "./types.js";
+} from "../types/RegistryTypes.js";
+import type { AuthInfo } from "../types/AuthTypes.js";
+import type { RegistryClientOptions } from "./RegistryClientOptions.js";
+import * as e from "../errors/RegistryErrors.js";
+import { parseLinkHeader } from "../parsing/LinkHeaderParser.js";
 
-import * as e from "./errors.js";
-
-import { parseLinkHeader } from "./util/link-header.js";
-
-function encodeHex(data: ArrayBuffer) {
-  return [...new Uint8Array(data)]
-    .map((x) => x.toString(16).padStart(2, "0"))
-    .join("");
-}
+const DEFAULT_USERAGENT: string = `open-obsidian-plugin-spec/0.1.0`;
 
 /*
  * Copyright 2017 Joyent, Inc.
@@ -180,35 +178,6 @@ function _parseDockerContentDigest(dcd: string) {
   };
 }
 
-/**
- * Calculate the 'Docker-Content-Digest' header for the given manifest.
- *
- * @returns {Promise<String>} The docker digest string.
- * @throws {InvalidContentError} if there is a problem parsing the manifest.
- */
-export async function digestFromManifestStr(
-  manifestStr: string,
-): Promise<string> {
-  let manifest: Manifest | { schemaVersion: 1 };
-  try {
-    manifest = JSON.parse(manifestStr) as Manifest | { schemaVersion: 1 };
-  } catch (thrown) {
-    const err = thrown as Error;
-    throw new Error(`could not parse manifest: ${err.message}\n${manifestStr}`);
-  }
-  if (manifest.schemaVersion === 1) {
-    throw new Error(
-      `schemaVersion 1 is not supported by /x/docker_registry_client.`,
-    );
-  }
-
-  const hash = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(manifestStr),
-  );
-  return `sha256:${encodeHex(hash)}`;
-}
-
 export class OciRegistryClient {
   readonly version = 2;
   insecure: boolean;
@@ -237,7 +206,7 @@ export class OciRegistryClient {
    * ... TODO: lots more to document
    *
    */
-  constructor(opts: RegistryClientOpts) {
+  constructor(opts: RegistryClientOptions) {
     this.insecure = Boolean(opts.insecure);
     if (opts.repo) {
       this.repo = opts.repo;
