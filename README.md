@@ -1,4 +1,4 @@
-<p style="text-align:center;">
+<p align="center">
   <img src="https://github.com/gillisandrew/shard/blob/main/docs/attachments/shard-full-logo.png?raw=true" style="width: 256px;height: auto" />
 </p>
 
