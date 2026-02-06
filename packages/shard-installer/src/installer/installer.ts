@@ -1,5 +1,5 @@
 import type { App } from "obsidian";
-import type { OciRegistryClient } from "shard-lib";
+import type { OciRegistryClient } from "@shard-for-obsidian/lib";
 
 export interface InstallResult {
   pluginId: string;

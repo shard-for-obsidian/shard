@@ -12,7 +12,7 @@ import { GHCRWrapper } from "./ghcr-wrapper";
 import type { RepositoryConfig } from "./types";
 import { Installer } from "./installer/installer.js";
 import { VersionSelectionModal } from "./version-selection-modal";
-import { parseRepoAndRef } from "shard-lib";
+import { parseRepoAndRef } from "@shard-for-obsidian/lib";
 
 export class GHCRSettingTab extends PluginSettingTab {
   plugin: GHCRTagBrowserPlugin;

@@ -1,5 +1,5 @@
-import type { FetchAdapter } from "shard-lib";
-import type { RequestUrlParam, RequestUrlResponse } from "shard-lib";
+import type { FetchAdapter } from "@shard-for-obsidian/lib";
+import type { RequestUrlParam, RequestUrlResponse } from "@shard-for-obsidian/lib";
 
 /**
  * Adapter for Obsidian's requestUrl API.
