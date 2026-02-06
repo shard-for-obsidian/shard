@@ -1,0 +1,13 @@
+/* Base styles for shard-installer */
+
+.shard-view {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.shard-view__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--shard-space-lg);
+}

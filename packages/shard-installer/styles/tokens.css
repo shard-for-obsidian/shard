@@ -1,0 +1,33 @@
+/* Design Tokens - Maps to Obsidian theme variables */
+
+:root {
+  /* Colors */
+  --shard-bg-primary: var(--background-primary);
+  --shard-bg-secondary: var(--background-secondary);
+  --shard-bg-elevated: var(--background-primary-alt);
+  --shard-border: var(--background-modifier-border);
+  --shard-text-normal: var(--text-normal);
+  --shard-text-muted: var(--text-muted);
+  --shard-text-accent: var(--text-accent);
+  --shard-text-error: var(--text-error);
+  --shard-interactive-hover: var(--background-modifier-hover);
+
+  /* Spacing */
+  --shard-space-xs: 4px;
+  --shard-space-sm: 8px;
+  --shard-space-md: 12px;
+  --shard-space-lg: 16px;
+  --shard-space-xl: 24px;
+  --shard-space-2xl: 32px;
+
+  /* Typography */
+  --shard-font-size-sm: 0.85em;
+  --shard-font-size-base: 1em;
+  --shard-font-size-lg: 1.1em;
+  --shard-font-mono: var(--font-monospace);
+
+  /* Borders & Radius */
+  --shard-radius-sm: 4px;
+  --shard-radius-md: 6px;
+  --shard-border-width: 1px;
+}
