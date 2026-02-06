@@ -41,9 +41,6 @@ importers:
       rimraf:
         specifier: ^6.1.2
         version: 6.1.2
-      shard-cli:
-        specifier: workspace:*
-        version: link:packages/shard-cli
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
