@@ -12,7 +12,10 @@
     "lint": "pnpm -r lint",
     "clean": "pnpm -r clean",
     "ts-check": "pnpm -r ts-check",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
