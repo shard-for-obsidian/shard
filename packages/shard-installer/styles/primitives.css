@@ -53,3 +53,174 @@
   padding: var(--shard-space-md) var(--shard-space-xl);
   font-size: var(--shard-font-size-lg);
 }
+
+/* Card Component */
+
+.shard-card {
+  padding: var(--shard-space-lg);
+  border: var(--shard-border-width) solid var(--shard-border);
+  border-radius: var(--shard-radius-md);
+  background-color: var(--shard-bg-primary);
+}
+
+.shard-card--elevated {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shard-card--outlined {
+  border-width: 2px;
+}
+
+.shard-card--clickable {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.shard-card--clickable:hover {
+  background-color: var(--shard-interactive-hover);
+}
+
+.shard-card__header {
+  margin-bottom: var(--shard-space-md);
+}
+
+.shard-card__body {
+  margin-bottom: var(--shard-space-md);
+}
+
+.shard-card__footer {
+  margin-top: var(--shard-space-md);
+}
+
+/* Hide empty sections */
+.shard-card__header:empty,
+.shard-card__body:empty,
+.shard-card__footer:empty {
+  display: none;
+  margin: 0;
+}
+
+/* IconButton Component */
+
+.shard-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.shard-icon-button--sm {
+  width: 20px;
+  height: 20px;
+}
+
+.shard-icon-button--lg {
+  width: 32px;
+  height: 32px;
+}
+
+/* LoadingSpinner Component */
+
+.shard-loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--shard-space-md);
+  padding: var(--shard-space-2xl);
+  text-align: center;
+}
+
+.shard-loading-spinner__icon {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--shard-border);
+  border-top-color: var(--interactive-accent);
+  border-radius: 50%;
+  animation: shard-spin 1s linear infinite;
+}
+
+.shard-loading-spinner--sm .shard-loading-spinner__icon {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.shard-loading-spinner--lg .shard-loading-spinner__icon {
+  width: 48px;
+  height: 48px;
+  border-width: 4px;
+}
+
+.shard-loading-spinner__text {
+  color: var(--shard-text-muted);
+  font-size: var(--shard-font-size-base);
+}
+
+@keyframes shard-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ErrorBanner Component */
+
+.shard-error-banner {
+  padding: var(--shard-space-lg);
+  background-color: var(--background-modifier-error);
+  border-radius: var(--shard-radius-md);
+  color: var(--shard-text-error);
+}
+
+.shard-error-banner__title {
+  display: block;
+  margin-bottom: var(--shard-space-sm);
+}
+
+.shard-error-banner__message {
+  margin-top: var(--shard-space-sm);
+  font-size: var(--shard-font-size-sm);
+}
+
+.shard-error-banner__actions {
+  margin-top: var(--shard-space-md);
+}
+
+/* EmptyState Component */
+
+.shard-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--shard-space-md);
+  padding: var(--shard-space-2xl);
+  text-align: center;
+}
+
+.shard-empty-state__icon {
+  width: 48px;
+  height: 48px;
+  color: var(--shard-text-muted);
+}
+
+.shard-empty-state__message {
+  color: var(--shard-text-muted);
+  font-style: italic;
+}
+
+/* List Component */
+
+.shard-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--shard-space-md);
+}
+
+.shard-list--gap-sm {
+  gap: var(--shard-space-sm);
+}
+
+.shard-list--gap-lg {
+  gap: var(--shard-space-lg);
+}
