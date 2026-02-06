@@ -19,10 +19,10 @@ pnpm add shard-lib
 ## Usage
 
 ```typescript
-import { OciRegistryClient, parseRepoAndRef } from 'shard-lib';
+import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
 
 // Parse a repository reference
-const repo = parseRepoAndRef('ghcr.io/owner/repo:latest');
+const repo = parseRepoAndRef("ghcr.io/owner/repo:latest");
 console.log(repo.index.name); // 'ghcr.io'
 console.log(repo.tag); // 'latest'
 
@@ -30,15 +30,15 @@ console.log(repo.tag); // 'latest'
 const client = new OciRegistryClient({
   repo: repo,
   adapter: { fetch },
-  username: 'user',
-  password: 'token',
+  username: "user",
+  password: "token",
 });
 
 // List tags
 const tags = await client.listTags();
 
 // Get manifest
-const manifest = await client.getManifest('latest');
+const manifest = await client.getManifest("latest");
 ```
 
 ## Project Structure
@@ -73,5 +73,3 @@ src/
 ### Types
 
 See TypeScript definitions for complete type information.
-
-

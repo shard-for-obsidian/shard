@@ -16,11 +16,11 @@ Migrate Shard packages from unscoped names (`shard-lib`, `shard-cli`) to scoped 
 
 ## Package Naming
 
-| Current | New | Status |
-|---------|-----|--------|
-| `shard-lib` | `@shard-for-obsidian/lib` | Public, published |
-| `shard-cli` | `@shard-for-obsidian/cli` | Public, published |
-| `shard-installer` | `shard-installer` | Private, not published |
+| Current           | New                       | Status                 |
+| ----------------- | ------------------------- | ---------------------- |
+| `shard-lib`       | `@shard-for-obsidian/lib` | Public, published      |
+| `shard-cli`       | `@shard-for-obsidian/cli` | Public, published      |
+| `shard-installer` | `shard-installer`         | Private, not published |
 
 ## Key Principles
 
@@ -99,15 +99,18 @@ Trusted Publishers only work for packages that already exist in the npm registry
 ### Documentation Updates
 
 **Root README:**
+
 - Installation: `npm install -g @shard-for-obsidian/cli`
 - Package references updated to scoped names
 
 **Package READMEs:**
+
 - `packages/shard-lib/README.md`: Update installation instructions
 - `packages/shard-cli/README.md`: Update installation instructions
 - Update example code showing import statements
 
 **Out of Scope:**
+
 - GitHub workflow names (remain "Publish to NPM")
 - Internal code comments referencing "shard" generically
 - Git history or commit messages
@@ -116,6 +119,7 @@ Trusted Publishers only work for packages that already exist in the npm registry
 ## GitHub Actions Workflow
 
 **No workflow changes needed** - existing configuration works with scoped packages:
+
 - ✓ Has `id-token: write` permission
 - ✓ Uses npm registry URL
 - ✓ Runs on main branch

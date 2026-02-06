@@ -97,6 +97,7 @@ pnpm changeset init
 ```
 
 Key settings:
+
 - `ignore: ["shard-installer"]` - Never version shard-installer
 - `updateInternalDependencies: "patch"` - Auto-bump shard-cli when shard-lib updates
 - `linked: []` - Independent versioning (not lockstep)
@@ -115,6 +116,7 @@ Key settings:
 Manually triggered or auto-triggered when changesets exist on main.
 
 Creates a "Version Packages" PR that:
+
 - Runs `changeset version` to bump package.json versions
 - Updates CHANGELOG.md files
 - Removes consumed changeset files
@@ -126,6 +128,7 @@ This PR is reviewable before merging.
 Triggered when version changes are detected on main branch.
 
 Steps:
+
 1. Install dependencies (`pnpm install --frozen-lockfile`)
 2. Build all packages (`pnpm build`)
 3. Run type checks (`pnpm ts-check`)
@@ -147,6 +150,7 @@ Workflow only runs if all validation passes.
 ### Setup (One-time per package)
 
 On npmjs.com:
+
 1. Go to package settings (create placeholder if first publish)
 2. Navigate to Publishing → Trusted Publishers
 3. Add GitHub trusted publisher:
@@ -197,6 +201,7 @@ pnpm test
 Only `dist/` directory is published (via `files: ["dist"]`).
 
 Excluded from publication:
+
 - Source files (`src/`)
 - Config files (esbuild, tsconfig, etc.)
 - Tests
@@ -234,6 +239,7 @@ Verify locally: `pnpm pack --dry-run`
 ### If Package Names Are Taken
 
 Verified available as of 2026-02-05:
+
 - ✅ `shard-cli` - available
 - ✅ `shard-lib` - available
 
@@ -242,6 +248,7 @@ Fallback if needed: Use scoped names like `@shard-for-obsidian/shard-cli`
 ## Package Name Verification
 
 As of 2026-02-05, both package names are available on npm registry:
+
 - `shard-cli` - 404 (available)
 - `shard-lib` - 404 (available)
 

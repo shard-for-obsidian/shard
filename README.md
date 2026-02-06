@@ -2,12 +2,12 @@
   <img src="https://github.com/gillisandrew/shard/blob/main/docs/attachments/shard-full-logo.png?raw=true" style="width: 256px;height: auto" alt="Shard for Obsidian logo" />
 </p>
 
-
 # Shard plugin system for Obsidian (EXPERIMENTAL)
 
 This repository contains the Shard plugin system for managing Obsidian plugins distributed via GitHub Container Registry (GHCR). It includes TypeScript types, utility functions, and (eventually) examples to help developers create and manage plugins using GHCR as the distribution platform.
 
 ## Shortcomings of the official Obsidian plugin system
+
 The official Obsidian plugin system has several limitations that Shard aims to address:
 
 - **Distribution**: The official system relies on the Obsidian community plugin directory, which can be slow to update and may not support all use cases. Shard allows developers to distribute plugins via GHCR, enabling faster updates and more control over distribution.
@@ -23,6 +23,7 @@ The all or nothing approach of the official Obsidian plugin system forces users 
 - **CLI Tool**: A command-line interface for developers to easily push and pull plugins to/from GHCR.
 
 ## Feature Roadmap
+
 - [x] Core library for GHCR interaction
 - [x] Obsidian plugin installer
 - [x] CLI tool for plugin management
@@ -32,6 +33,7 @@ The all or nothing approach of the official Obsidian plugin system forces users 
 - [x] Legacy Obsidian community plugin directory integration. Simple cli tooling for fetching an existing community plugin and packaging it as a Shard plugin.
 
 ## Planned features
+
 - [ ] Automated vulnerability scanning for plugin bundles
 - [ ] Static analysis security tools for plugin bundles.
   - [ ] Enumerate nodejs APIs used in plugins to detect potentially unsafe operations.
@@ -39,7 +41,6 @@ The all or nothing approach of the official Obsidian plugin system forces users 
 - [ ] Plugin signing and verification
 - [ ] Documentation and examples for developers
 - [ ] GitHub Actions for automated plugin publishing
-
 
 ## Monorepo Structure
 
@@ -61,11 +62,13 @@ See [NPM_PUBLICATION.md](docs/NPM_PUBLICATION.md) for details on versioning and 
 ### Installation
 
 Install the CLI globally:
+
 ```bash
 npm install -g @shard-for-obsidian/cli
 ```
 
 Or use the library in your project:
+
 ```bash
 npm install @shard-for-obsidian/lib
 ```
@@ -73,22 +76,25 @@ npm install @shard-for-obsidian/lib
 ### Development
 
 Install dependencies:
+
 ```bash
 pnpm install
 ```
 
 Build all packages:
+
 ```bash
 pnpm build
 ```
 
-
 Build individual package:
+
 ```bash
 cd packages/shard-installer && pnpm build
 ```
 
 Lint:
+
 ```bash
 pnpm lint
-``` 
+```

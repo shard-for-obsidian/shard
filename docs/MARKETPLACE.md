@@ -5,6 +5,7 @@ The Shard marketplace provides a centralized registry for discovering and sharin
 ## Overview
 
 The marketplace is hosted on GitHub Pages and provides:
+
 - Plugin discovery and browsing
 - Plugin metadata display
 - Direct installation links
@@ -13,6 +14,7 @@ The marketplace is hosted on GitHub Pages and provides:
 ## Marketplace Structure
 
 The marketplace consists of:
+
 - **Registry**: JSON files stored in `marketplace/registry/`
 - **Static Site**: Generated HTML hosted on GitHub Pages
 - **CLI Integration**: Commands for publishing and browsing plugins
@@ -20,6 +22,7 @@ The marketplace consists of:
 ## Publishing to the Marketplace
 
 ### Prerequisites
+
 - Plugin must be published to GHCR
 - Plugin must have valid manifest.json
 - GitHub repository must be public (for marketplace listing)
@@ -27,16 +30,19 @@ The marketplace consists of:
 ### Publishing Steps
 
 1. Publish your plugin to GHCR:
+
 ```bash
 shard push path/to/plugin
 ```
 
 2. Add your plugin to the marketplace:
+
 ```bash
 shard marketplace add ghcr.io/owner/plugin:tag
 ```
 
 This will:
+
 - Fetch plugin metadata from GHCR
 - Generate registry entry
 - Create pull request to marketplace repository
@@ -44,6 +50,7 @@ This will:
 ### Plugin Metadata
 
 The marketplace displays the following metadata:
+
 - Plugin name and description
 - Author information
 - Version
@@ -60,6 +67,7 @@ The marketplace displays the following metadata:
 Visit the marketplace at: `https://gillisandrew.github.io/shard/`
 
 Features:
+
 - Browse all available plugins
 - Search plugins by name, description, author, or tags (real-time filtering)
 - View plugin details including version, license, and requirements
@@ -68,6 +76,7 @@ Features:
 - Built with Hugo static site generator
 
 **Technology:**
+
 - Static site generated with Hugo
 - Real-time JavaScript search (no server required)
 - Loads plugin data from `plugins.json`
@@ -78,31 +87,37 @@ Features:
 **Implemented:**
 
 List all marketplace plugins:
+
 ```bash
 shard marketplace list
 ```
 
 Search for plugins:
+
 ```bash
 shard marketplace search "keyword"
 ```
 
 View plugin details:
+
 ```bash
 shard marketplace info plugin-id
 ```
 
 Install a plugin by ID:
+
 ```bash
 shard marketplace install plugin-id --output ./plugins/plugin-name
 ```
 
 Register a plugin to the marketplace:
+
 ```bash
 shard marketplace register ghcr.io/owner/plugin:tag
 ```
 
 Update a marketplace entry:
+
 ```bash
 shard marketplace update ghcr.io/owner/plugin:tag
 ```
@@ -124,11 +139,13 @@ shard marketplace update ghcr.io/owner/plugin:tag
 **Implemented:**
 
 Install directly by plugin ID:
+
 ```bash
 shard marketplace install plugin-id --output ~/.obsidian/plugins/plugin-name
 ```
 
 Or use the GHCR URL directly:
+
 ```bash
 shard pull ghcr.io/owner/plugin:tag --output ~/.obsidian/plugins/plugin-name
 ```
@@ -182,6 +199,7 @@ The generated `plugins.json` contains:
 ```
 
 **Required Fields:**
+
 - `id` - Plugin ID from manifest
 - `registryUrl` - GHCR registry URL (primary identifier)
 - `name` - Display name
@@ -191,6 +209,7 @@ The generated `plugins.json` contains:
 - `updatedAt` - Last update timestamp (ISO 8601)
 
 **Optional Fields:**
+
 - `repository` - GitHub repository URL (derived from OCI annotations)
 - `minObsidianVersion` - Minimum Obsidian version
 - `authorUrl` - Author website
@@ -203,9 +222,11 @@ To update your plugin listing:
 
 1. Publish new version to GHCR using `shard push`
 2. Update marketplace entry:
+
 ```bash
 shard marketplace update ghcr.io/owner/plugin:newtag
 ```
+
 3. Submit pull request with updated YAML
 
 The marketplace will automatically update metadata from the new version by pulling fresh data from GHCR.
@@ -213,13 +234,16 @@ The marketplace will automatically update metadata from the new version by pulli
 ## Marketplace Policies
 
 ### Acceptance Criteria
+
 - Plugin must be functional and not malicious
 - Must include valid manifest.json
 - Description must be clear and accurate
 - Must not infringe on trademarks or copyrights
 
 ### Removal Policy
+
 Plugins may be removed if they:
+
 - Contain malware or malicious code
 - Violate GitHub terms of service
 - Are abandoned and non-functional
@@ -230,16 +254,19 @@ Plugins may be removed if they:
 The marketplace website is built with Hugo and can be developed locally:
 
 ### Prerequisites
+
 - Hugo (install from https://gohugo.io/installation/)
 
 ### Local Development
 
 1. Navigate to marketplace directory:
+
 ```bash
 cd marketplace
 ```
 
 2. Generate plugins.json (if needed):
+
 ```bash
 # Run the same commands as the GitHub Action
 echo '{"plugins":[]}' > plugins.json
@@ -255,6 +282,7 @@ mv /tmp/formatted.json plugins.json
 ```
 
 3. Start Hugo development server:
+
 ```bash
 hugo server -D
 ```
@@ -287,6 +315,7 @@ marketplace/
 ## Contributing to Marketplace
 
 The marketplace is open source and welcomes contributions:
+
 - Submit plugins via CLI or pull request
 - Report issues on GitHub
 - Suggest improvements to marketplace UI
@@ -298,6 +327,7 @@ The marketplace is open source and welcomes contributions:
 **Implemented:**
 
 Get all plugins as JSON:
+
 ```bash
 # From GitHub (always latest)
 curl https://raw.githubusercontent.com/gillisandrew/shard/main/marketplace/plugins.json
@@ -307,12 +337,14 @@ curl https://gillisandrew.github.io/shard/plugins.json
 ```
 
 The JSON format includes all plugin metadata:
+
 - Registry URL, version, author, description
 - Repository URL, license, tags
 - Minimum Obsidian version
 - Last updated timestamp
 
 This API is consumed by:
+
 - The Shard Installer Obsidian plugin
 - The marketplace CLI commands
 - The marketplace website
@@ -320,6 +352,7 @@ This API is consumed by:
 ## Best Practices
 
 ### For Plugin Authors
+
 - Keep descriptions concise and clear
 - Include screenshots in repository README
 - Maintain semantic versioning
@@ -327,6 +360,7 @@ This API is consumed by:
 - Respond to user issues and feedback
 
 ### For Users
+
 - Review plugin permissions before installing
 - Check plugin repository for activity and issues
 - Report suspicious or malicious plugins
@@ -335,18 +369,21 @@ This API is consumed by:
 ## Troubleshooting
 
 ### Plugin Not Appearing in Marketplace
+
 - Ensure pull request was merged
 - Check that registry JSON is valid
 - Verify GHCR URL is accessible
 - Allow up to 10 minutes for site rebuild
 
 ### Installation Failures
+
 - Verify GHCR URL is correct
 - Check internet connectivity
 - Ensure plugin is compatible with Obsidian version
 - Review Obsidian console for error messages
 
 ### Metadata Not Updating
+
 - Confirm new version was pushed to GHCR
 - Run `marketplace update` command
 - Wait for pull request to be merged
@@ -355,6 +392,7 @@ This API is consumed by:
 ## Future Enhancements
 
 Planned marketplace features:
+
 - Plugin ratings and reviews
 - Download statistics
 - Plugin categories and collections

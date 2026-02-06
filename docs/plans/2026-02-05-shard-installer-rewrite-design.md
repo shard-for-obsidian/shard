@@ -7,6 +7,7 @@
 ## Overview
 
 Complete rewrite of the shard-installer package to establish:
+
 - Reusable UI component library
 - Consistent styling system with design tokens
 - Clean separation between primitives and domain components
@@ -19,24 +20,28 @@ This is a big-bang rewrite since the plugin is unpublished. Focus on maintainabi
 ### Three-Layer Structure
 
 **1. UI Primitives Layer** (`/src/ui/`)
+
 - Core reusable components wrapping Obsidian's declarative API
 - Components: Button, Card, IconButton, List, Badge, Divider, EmptyState, ErrorBanner, LoadingSpinner
 - Factory functions returning configured DOM elements
 - Example: `Button(container, { text: "Install", variant: "primary", onClick: () => {} })`
 
 **2. Feature Layers** (`/src/marketplace/`, `/src/installer/`)
+
 - Domain-specific components, views, and logic
 - Structure: `marketplace/components/`, `marketplace/marketplace-view.ts`, `marketplace/marketplace-client.ts`
 - Components like PluginCard, MarketplaceHeader, VersionList
 - Compose UI primitives with business logic
 
 **3. Shared Layer** (`/src/shared/`)
+
 - Cross-cutting concerns: types, utilities, adapters
 - Not feature-specific but used across features
 
 ### Styling Organization
 
 Development files (bundled to single `styles.css` for distribution):
+
 - `/styles/tokens.css` - Design tokens (`--shard-*` variables)
 - `/styles/primitives.css` - UI primitive component styles
 - `/styles/marketplace.css` - Marketplace-specific styles
@@ -54,6 +59,7 @@ Semantic layer between components and Obsidian's theme variables.
 ### Token Categories
 
 **Colors** (map to Obsidian variables):
+
 - `--shard-bg-primary` → `var(--background-primary)`
 - `--shard-bg-secondary` → `var(--background-secondary)`
 - `--shard-bg-elevated` → `var(--background-primary-alt)`
@@ -65,6 +71,7 @@ Semantic layer between components and Obsidian's theme variables.
 - `--shard-interactive-hover` → `var(--background-modifier-hover)`
 
 **Spacing** (consistent scale):
+
 - `--shard-space-xs`: 4px
 - `--shard-space-sm`: 8px
 - `--shard-space-md`: 12px
@@ -73,12 +80,14 @@ Semantic layer between components and Obsidian's theme variables.
 - `--shard-space-2xl`: 32px
 
 **Typography**:
+
 - `--shard-font-size-sm`: 0.85em
 - `--shard-font-size-base`: 1em
 - `--shard-font-size-lg`: 1.1em
 - `--shard-font-mono` → `var(--font-monospace)`
 
 **Borders & Radius**:
+
 - `--shard-radius-sm`: 4px
 - `--shard-radius-md`: 6px
 - `--shard-border-width`: 1px
@@ -90,6 +99,7 @@ Each primitive is a factory function accepting a parent container and options ob
 ### Core Primitives
 
 **Button**
+
 ```typescript
 Button(container: HTMLElement, options: {
   text?: string;
@@ -103,6 +113,7 @@ Button(container: HTMLElement, options: {
 ```
 
 **Card**
+
 ```typescript
 Card(container: HTMLElement, options?: {
   variant?: 'default' | 'elevated' | 'outlined';
@@ -116,6 +127,7 @@ Card(container: HTMLElement, options?: {
 ```
 
 **IconButton**
+
 ```typescript
 IconButton(container: HTMLElement, options: {
   icon: string;
@@ -126,6 +138,7 @@ IconButton(container: HTMLElement, options: {
 ```
 
 **State Components**
+
 ```typescript
 LoadingSpinner(container: HTMLElement, options?: {
   text?: string;
@@ -145,6 +158,7 @@ EmptyState(container: HTMLElement, options: {
 ```
 
 **List**
+
 ```typescript
 List(container: HTMLElement, options?: {
   gap?: 'sm' | 'md' | 'lg';
@@ -158,6 +172,7 @@ Primitives handle CSS class application and return created element for further m
 Domain-specific components build on primitives.
 
 **PluginCard**
+
 ```typescript
 PluginCard(container: HTMLElement, options: {
   plugin: MarketplacePlugin;
@@ -167,12 +182,14 @@ PluginCard(container: HTMLElement, options: {
 ```
 
 Internally uses:
+
 - `Card()` for container
 - `Button()` for "Browse Versions"
 - `Badge()` for installation status
 - Custom layout for plugin metadata (name, author, description, repo link, registry URL)
 
 **MarketplaceHeader**
+
 ```typescript
 MarketplaceHeader(container: HTMLElement, options: {
   onRefresh: () => void;
@@ -182,6 +199,7 @@ MarketplaceHeader(container: HTMLElement, options: {
 Uses standard header layout with title and `IconButton()` for refresh.
 
 **VersionListItem**
+
 ```typescript
 VersionListItem(container: HTMLElement, options: {
   tag: string;
@@ -194,6 +212,7 @@ VersionListItem(container: HTMLElement, options: {
 Used in version selection modal. Highlights current version, shows action hint.
 
 **Organization:**
+
 - `/src/marketplace/components/plugin-card.ts`
 - `/src/marketplace/components/marketplace-header.ts`
 - `/src/marketplace/components/version-list-item.ts`
@@ -249,6 +268,7 @@ class MarketplaceView extends ItemView {
 ### Build Process Changes
 
 Modify `esbuild.config.mjs` to:
+
 1. Bundle all CSS files from `/styles/*.css` into single `dist/styles.css`
 2. Maintain existing TypeScript bundling
 3. Add CSS minification in production mode
@@ -258,6 +278,7 @@ Plugin manifest already references `styles.css` - no changes needed.
 ### Testing Strategy
 
 UI-heavy rewrite approach:
+
 - **Manual testing**: Primary approach given Obsidian's environment
 - **Type safety**: Strict TypeScript to catch errors at compile time
 - **Component contracts**: Well-defined interfaces for all components
@@ -266,20 +287,24 @@ UI-heavy rewrite approach:
 ## Migration Execution Plan
 
 ### 1. Foundation (primitives + tokens)
+
 - Create `/src/ui/` folder with all primitive components
 - Create `/styles/tokens.css` and `/styles/primitives.css`
 - Update build to bundle CSS
 
 ### 2. Marketplace feature
+
 - Create `/src/marketplace/components/`
 - Rewrite `MarketplaceView` using new components
 - Create `/styles/marketplace.css`
 
 ### 3. Version selection
+
 - Create version list item component
 - Rewrite `VersionSelectionModal` using new components
 
 ### 4. Cleanup
+
 - Remove old inline styling code
 - Ensure no `setCssProps()` calls remain
 - Verify settings view still works (not touched in rewrite)
@@ -287,15 +312,18 @@ UI-heavy rewrite approach:
 ## File Impact
 
 **Files to Create:** ~15 new files
+
 - 8 primitives
 - 3 marketplace components
 - 4 CSS files
 
 **Files to Rewrite:** 2 files
+
 - `marketplace-view.ts`
 - `version-selection-modal.ts`
 
 **Files Unchanged:**
+
 - Settings
 - Clients
 - Utilities
