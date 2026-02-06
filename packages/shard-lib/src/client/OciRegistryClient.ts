@@ -24,14 +24,14 @@ import { parseLinkHeader } from "../parsing/LinkHeaderParser.js";
 
 const DEFAULT_USERAGENT: string = `open-obsidian-plugin-spec/0.1.0`;
 
-// Use globalThis.crypto (available in browsers/Electron) or Node's webcrypto as fallback
+// Use globalThis.crypto (available in browsers/Electron/Node 18+)
 const getCrypto = (): Crypto => {
-  if (globalThis.crypto) {
-    return globalThis.crypto;
+  if (!globalThis.crypto) {
+    throw new Error(
+      "crypto API not available. This library requires Node.js 18+ or a modern browser environment."
+    );
   }
-  // Fallback for Node.js test environments
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  return require("node:crypto").webcrypto as Crypto;
+  return globalThis.crypto;
 };
 
 /*
