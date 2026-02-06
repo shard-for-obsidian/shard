@@ -1,9 +1,0 @@
-id: nldates-obsidian
-registryUrl: ghcr.io/shard-for-obsidian/legacy/nldates-obsidian
-name: Natural Language Dates
-author: Argentina Ortega Sainz
-description: Create date-links based on natural language.
-version: 0.6.1
-repository: https://github.com/argenos/nldates-obsidian
-minObsidianVersion: 0.9.12
-updatedAt: 2025-02-05T00:00:00Z

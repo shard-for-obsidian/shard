@@ -1,0 +1,369 @@
+/* Plugin Page Layout */
+.plugin-page {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+/* Sidebar */
+.plugin-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebar-section {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.sidebar-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.plugin-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  color: var(--text-color);
+  line-height: 1.2;
+}
+
+.plugin-author {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* Install Command */
+.install-command {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.install-command code {
+  flex: 1;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: var(--text-color);
+  word-break: break-all;
+}
+
+.copy-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.copy-btn:hover {
+  background: var(--surface-color);
+  color: var(--primary-color);
+}
+
+.copy-btn.copied {
+  color: #10b981;
+}
+
+/* Plugin Metadata */
+.plugin-meta {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.plugin-meta dt {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.plugin-meta dd {
+  margin: 0.25rem 0 0 0;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.plugin-meta code {
+  background: var(--bg-color);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.85rem;
+}
+
+/* Plugin Links */
+.plugin-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.plugin-links .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.plugin-links .btn svg {
+  flex-shrink: 0;
+}
+
+/* Main Content */
+.plugin-content {
+  min-width: 0;
+}
+
+.plugin-introduction {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.plugin-introduction h1 {
+  margin: 0 0 1rem 0;
+  font-size: 2rem;
+  color: var(--text-color);
+}
+
+.plugin-introduction h2 {
+  margin: 2rem 0 1rem 0;
+  font-size: 1.5rem;
+  color: var(--text-color);
+}
+
+.plugin-introduction h3 {
+  margin: 1.5rem 0 0.75rem 0;
+  font-size: 1.25rem;
+  color: var(--text-color);
+}
+
+.plugin-introduction p {
+  margin: 0 0 1rem 0;
+  line-height: 1.7;
+  color: var(--text-color);
+}
+
+.plugin-introduction ul,
+.plugin-introduction ol {
+  margin: 0 0 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.plugin-introduction li {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.plugin-introduction code {
+  background: var(--bg-color);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.plugin-introduction pre {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 0 0 1rem 0;
+}
+
+.plugin-introduction pre code {
+  background: none;
+  padding: 0;
+}
+
+.plugin-introduction a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.plugin-introduction a:hover {
+  text-decoration: underline;
+}
+
+/* Version History */
+.version-history {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.version-history h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  color: var(--text-color);
+}
+
+.version-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.version-card {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+  transition: box-shadow 0.2s;
+}
+
+.version-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.version-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.version-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.version-tag {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.version-date {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.version-size {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.version-meta {
+  margin-bottom: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.version-commit {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.version-commit code {
+  background: var(--surface-color);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  color: var(--text-color);
+}
+
+.version-install {
+  margin-top: 0.75rem;
+}
+
+.no-versions {
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .plugin-page {
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+  }
+
+  .plugin-title {
+    font-size: 1.5rem;
+  }
+
+  .plugin-introduction {
+    padding: 1.5rem;
+  }
+
+  .version-history {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .plugin-page {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .plugin-sidebar {
+    order: 2;
+  }
+
+  .plugin-content {
+    order: 1;
+  }
+
+  .plugin-title {
+    font-size: 1.75rem;
+  }
+
+  .sidebar-section {
+    padding: 1.25rem;
+  }
+
+  .plugin-introduction {
+    padding: 1.25rem;
+  }
+
+  .version-history {
+    padding: 1.25rem;
+  }
+
+  .version-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .install-command code {
+    font-size: 0.8rem;
+  }
+}

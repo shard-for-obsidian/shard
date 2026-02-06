@@ -29,7 +29,11 @@ The all or nothing approach of the official Obsidian plugin system forces users 
 - [x] CLI tool for plugin management
   - [x] Push plugins to GHCR
   - [x] Pull plugins from GHCR
+  - [x] Marketplace registration and version querying
 - [x] GitHub hosted community marketplace for Shard plugins
+  - [x] Dynamic version querying from OCI registries
+  - [x] Individual plugin pages with markdown descriptions
+  - [x] Hugo-based static site generation
 - [x] Legacy Obsidian community plugin directory integration. Simple cli tooling for fetching an existing community plugin and packaging it as a Shard plugin.
 
 ## Planned features

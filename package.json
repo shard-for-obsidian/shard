@@ -16,7 +16,8 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
-    "prepare": "husky"
+    "prepare": "husky",
+    "marketplace:generate": "tsx marketplace/scripts/generate-plugins-json.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
@@ -41,5 +42,8 @@
   "lint-staged": {
     "*.{js,ts,mjs}": "eslint --fix",
     "*.{json,md}": "prettier --write"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3"
   }
 }

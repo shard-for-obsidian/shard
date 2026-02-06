@@ -1,9 +1,11 @@
+---
 id: shard-installer
 registryUrl: ghcr.io/shard-for-obsidian/shard/shard-installer-plugin
 name: Shard Installer
 author: Andrew Gillis
 description: Browse and install Obsidian plugins from GitHub Container Registry repositories
-version: 0.1.0
 repository: https://github.com/shard-for-obsidian/shard
 minObsidianVersion: 1.11.4
-updatedAt: 2026-02-06T01:25:08.854Z
+---
+
+Shard Installer brings a modern plugin distribution system to Obsidian. Built on the Open Container Initiative (OCI) standards and GitHub Container Registry, it enables seamless discovery and installation of Obsidian plugins from containerized repositories.
