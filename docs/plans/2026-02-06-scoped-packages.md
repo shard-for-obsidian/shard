@@ -13,16 +13,19 @@
 ## Task 1: Update shard-lib package.json
 
 **Files:**
+
 - Modify: `packages/shard-lib/package.json:2`
 
 **Step 1: Update package name to scoped**
 
 Change line 2 from:
+
 ```json
   "name": "shard-lib",
 ```
 
 To:
+
 ```json
   "name": "@shard-for-obsidian/lib",
 ```
@@ -44,16 +47,19 @@ git commit -m "refactor: rename shard-lib to @shard-for-obsidian/lib"
 ## Task 2: Update shard-cli package.json
 
 **Files:**
+
 - Modify: `packages/shard-cli/package.json:2,47`
 
 **Step 1: Update package name to scoped**
 
 Change line 2 from:
+
 ```json
   "name": "shard-cli",
 ```
 
 To:
+
 ```json
   "name": "@shard-for-obsidian/cli",
 ```
@@ -61,11 +67,13 @@ To:
 **Step 2: Update dependency on shard-lib**
 
 Change line 47 from:
+
 ```json
     "shard-lib": "workspace:*"
 ```
 
 To:
+
 ```json
     "@shard-for-obsidian/lib": "workspace:*"
 ```
@@ -87,16 +95,19 @@ git commit -m "refactor: rename shard-cli to @shard-for-obsidian/cli"
 ## Task 3: Update shard-installer package.json
 
 **Files:**
+
 - Modify: `packages/shard-installer/package.json:2,17,21`
 
 **Step 1: Update dependency on shard-lib**
 
 Change line 17 from:
+
 ```json
     "shard-lib": "workspace:*",
 ```
 
 To:
+
 ```json
     "@shard-for-obsidian/lib": "workspace:*",
 ```
@@ -104,11 +115,13 @@ To:
 **Step 2: Update devDependency on shard-cli**
 
 Change line 21 from:
+
 ```json
     "shard-cli": "workspace:*"
 ```
 
 To:
+
 ```json
     "@shard-for-obsidian/cli": "workspace:*"
 ```
@@ -130,6 +143,7 @@ git commit -m "refactor: update shard-installer deps to scoped packages"
 ## Task 4: Update workspace configuration
 
 **Files:**
+
 - Modify: `package.json:6-8`
 
 **Step 1: Verify workspace paths still correct**
@@ -139,12 +153,9 @@ However, verify current configuration:
 
 Run: `cat package.json | jq .workspaces`
 Expected:
+
 ```json
-[
-  "packages/shard-cli",
-  "packages/shard-installer",
-  "packages/shard-lib"
-]
+["packages/shard-cli", "packages/shard-installer", "packages/shard-lib"]
 ```
 
 **Step 2: Update lockfile**
@@ -169,11 +180,13 @@ git commit -m "chore: update lockfile for scoped packages"
 ## Task 5: Update root README
 
 **Files:**
+
 - Modify: `README.md:48,50,56,57`
 
 **Step 1: Update monorepo structure section**
 
 Change lines 48-50 from:
+
 ```markdown
 - **shard-lib** (`packages/shard-lib/`) - Core OCI registry client library
 - **shard-installer** (`packages/shard-installer/`) - Plugin installer for Obsidian
@@ -181,6 +194,7 @@ Change lines 48-50 from:
 ```
 
 To:
+
 ```markdown
 - **@shard-for-obsidian/lib** (`packages/shard-lib/`) - Core OCI registry client library
 - **shard-installer** (`packages/shard-installer/`) - Plugin installer for Obsidian (private)
@@ -190,12 +204,14 @@ To:
 **Step 2: Update NPM packages section**
 
 Change lines 56-57 from:
+
 ```markdown
 - **[shard-cli](https://www.npmjs.com/package/shard-cli)**: CLI tool for managing Obsidian plugins via GHCR
 - **[shard-lib](https://www.npmjs.com/package/shard-lib)**: Core library for OCI registry operations
 ```
 
 To:
+
 ```markdown
 - **[@shard-for-obsidian/cli](https://www.npmjs.com/package/@shard-for-obsidian/cli)**: CLI tool for managing Obsidian plugins via GHCR
 - **[@shard-for-obsidian/lib](https://www.npmjs.com/package/@shard-for-obsidian/lib)**: Core library for OCI registry operations
@@ -205,20 +221,23 @@ To:
 
 After line 59 (after "See [NPM_PUBLICATION.md]..."), add:
 
-```markdown
-
+````markdown
 ### Installation
 
 Install the CLI globally:
+
 ```bash
 npm install -g @shard-for-obsidian/cli
 ```
+````
 
 Or use the library in your project:
+
 ```bash
 npm install @shard-for-obsidian/lib
 ```
-```
+
+````
 
 **Step 4: Verify markdown renders correctly**
 
@@ -230,13 +249,14 @@ Expected: New package names and installation instructions visible
 ```bash
 git add README.md
 git commit -m "docs: update README with scoped package names"
-```
+````
 
 ---
 
 ## Task 6: Verify build
 
 **Files:**
+
 - None (verification task)
 
 **Step 1: Clean all build artifacts**
@@ -263,6 +283,7 @@ No commit needed (verification only)
 ## Task 7: Verify type checking
 
 **Files:**
+
 - None (verification task)
 
 **Step 1: Run TypeScript type checker**
@@ -279,6 +300,7 @@ No commit needed (verification only)
 ## Task 8: Verify linting
 
 **Files:**
+
 - None (verification task)
 
 **Step 1: Run ESLint**
@@ -295,6 +317,7 @@ No commit needed (verification only)
 ## Task 9: Verify tests
 
 **Files:**
+
 - None (verification task)
 
 **Step 1: Run all tests**
@@ -311,6 +334,7 @@ No commit needed (verification only)
 ## Task 10: Final verification commit
 
 **Files:**
+
 - None (meta task)
 
 **Step 1: Check git status**

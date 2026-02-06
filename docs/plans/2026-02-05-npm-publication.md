@@ -13,6 +13,7 @@
 ## Task 1: Update shard-cli package.json
 
 **Files:**
+
 - Modify: `packages/shard-cli/package.json`
 
 **Step 1: Read current package.json**
@@ -40,9 +41,7 @@ Add these fields to `packages/shard-cli/package.json`:
   "bin": {
     "shard": "./dist/index.js"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "publishConfig": {
     "access": "public"
   },
@@ -56,14 +55,7 @@ Add these fields to `packages/shard-cli/package.json`:
     "test:watch": "vitest",
     "test:ui": "vitest --ui"
   },
-  "keywords": [
-    "shard",
-    "plugin",
-    "ghcr",
-    "oci",
-    "registry",
-    "cli"
-  ],
+  "keywords": ["shard", "plugin", "ghcr", "oci", "registry", "cli"],
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
@@ -96,6 +88,7 @@ git commit -m "feat: add npm publication metadata to shard-cli"
 ## Task 2: Update shard-lib package.json
 
 **Files:**
+
 - Modify: `packages/shard-lib/package.json`
 
 **Step 1: Read current package.json**
@@ -125,9 +118,7 @@ Add these fields to `packages/shard-lib/package.json`:
   "exports": {
     ".": "./dist/index.js"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "publishConfig": {
     "access": "public"
   },
@@ -140,14 +131,7 @@ Add these fields to `packages/shard-lib/package.json`:
     "test:watch": "vitest",
     "test:ui": "vitest --ui"
   },
-  "keywords": [
-    "shard",
-    "lib",
-    "oci",
-    "registry",
-    "ghcr",
-    "container-registry"
-  ],
+  "keywords": ["shard", "lib", "oci", "registry", "ghcr", "container-registry"],
   "license": "MIT",
   "devDependencies": {
     "@vitest/ui": "^4.0.18",
@@ -173,6 +157,7 @@ git commit -m "feat: add npm publication metadata to shard-lib"
 ## Task 3: Mark shard-installer as private
 
 **Files:**
+
 - Modify: `packages/shard-installer/package.json`
 
 **Step 1: Read current package.json**
@@ -204,6 +189,7 @@ git commit -m "feat: mark shard-installer as private"
 ## Task 4: Install changesets
 
 **Files:**
+
 - Modify: `package.json` (root)
 
 **Step 1: Install changesets as dev dependency**
@@ -228,6 +214,7 @@ git commit -m "feat: install and initialize changesets"
 ## Task 5: Configure changesets
 
 **Files:**
+
 - Modify: `.changeset/config.json`
 
 **Step 1: Read default config**
@@ -264,6 +251,7 @@ git commit -m "feat: configure changesets for shard packages"
 ## Task 6: Add changeset helper scripts
 
 **Files:**
+
 - Modify: `package.json` (root)
 
 **Step 1: Read current root package.json**
@@ -301,6 +289,7 @@ git commit -m "feat: add changeset helper scripts"
 ## Task 7: Create GitHub Actions workflows directory
 
 **Files:**
+
 - Create: `.github/workflows/` (directory)
 
 **Step 1: Create directory structure**
@@ -318,6 +307,7 @@ Expected: Should show `workflows/` directory
 ## Task 8: Create version workflow
 
 **Files:**
+
 - Create: `.github/workflows/version.yml`
 
 **Step 1: Create version workflow file**
@@ -333,8 +323,8 @@ on:
     branches:
       - main
     paths:
-      - '.changeset/**'
-      - '!.changeset/README.md'
+      - ".changeset/**"
+      - "!.changeset/README.md"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -351,7 +341,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -365,8 +355,8 @@ jobs:
         uses: changesets/action@v1
         with:
           version: pnpm version-packages
-          commit: 'chore: version packages'
-          title: 'chore: version packages'
+          commit: "chore: version packages"
+          title: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -383,6 +373,7 @@ git commit -m "feat: add version packages workflow"
 ## Task 9: Create publish workflow
 
 **Files:**
+
 - Create: `.github/workflows/publish.yml`
 
 **Step 1: Create publish workflow file**
@@ -397,7 +388,7 @@ on:
     branches:
       - main
     paths:
-      - 'packages/*/package.json'
+      - "packages/*/package.json"
 
 permissions:
   id-token: write
@@ -416,8 +407,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "18"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -457,13 +448,14 @@ git commit -m "feat: add npm publish workflow"
 ## Task 10: Create documentation for OIDC setup
 
 **Files:**
+
 - Create: `docs/NPM_PUBLICATION.md`
 
 **Step 1: Create documentation file**
 
 Create `docs/NPM_PUBLICATION.md`:
 
-```markdown
+````markdown
 # NPM Publication
 
 This document describes how npm publication works for shard-cli and shard-lib.
@@ -486,8 +478,10 @@ When you make changes that should be released:
 ```bash
 pnpm changeset
 ```
+````
 
 This will:
+
 1. Ask which packages changed
 2. Ask what type of change (major/minor/patch)
 3. Prompt for a description
@@ -531,6 +525,7 @@ Repeat for both packages.
 ### How OIDC Works
 
 When the publish workflow runs:
+
 1. GitHub generates a short-lived OIDC token
 2. NPM verifies the token matches the trusted publisher config
 3. Publication proceeds without long-lived secrets
@@ -543,10 +538,12 @@ No `NPM_TOKEN` secret needed!
 ### Version Packages (.github/workflows/version.yml)
 
 **Triggers:**
+
 - Manual via workflow_dispatch
 - Auto when changesets are pushed to main
 
 **What it does:**
+
 - Runs `changeset version`
 - Creates "Version Packages" PR
 - Updates versions and CHANGELOGs
@@ -554,15 +551,18 @@ No `NPM_TOKEN` secret needed!
 ### Publish to NPM (.github/workflows/publish.yml)
 
 **Triggers:**
+
 - When package.json files change on main (after version PR merge)
 
 **What it does:**
+
 1. Install dependencies
 2. Build all packages
 3. Run type checks, linting, tests
 4. Publish changed packages via `changeset publish`
 
 **Safety:**
+
 - Only runs on main branch
 - Requires all tests to pass
 - Only publishes packages with version changes
@@ -595,9 +595,11 @@ pnpm release
 Only the `dist/` directory is published for each package:
 
 **shard-cli:**
+
 - `dist/index.js` (bundled CLI)
 
 **shard-lib:**
+
 - `dist/index.js` (bundled library)
 - `dist/index.d.ts` (type definitions)
 - `dist/**/*.d.ts` (supporting type definitions)
@@ -623,6 +625,7 @@ pnpm pack --dry-run
 ### OIDC Not Working
 
 Verify trusted publisher settings on npmjs.com:
+
 - Correct repository owner: `shard-for-obsidian`
 - Correct repository name: `shard`
 - Correct workflow file: `publish.yml`
@@ -630,24 +633,27 @@ Verify trusted publisher settings on npmjs.com:
 ### Package Name Conflicts
 
 If names are taken, update package.json names to use scoped packages:
+
 - `@shard-for-obsidian/shard-cli`
 - `@shard-for-obsidian/shard-lib`
 
 Then re-configure OIDC for the new package names.
-```
+
+````
 
 **Step 2: Commit**
 
 ```bash
 git add docs/NPM_PUBLICATION.md
 git commit -m "docs: add npm publication guide"
-```
+````
 
 ---
 
 ## Task 11: Update main README with publication info
 
 **Files:**
+
 - Modify: `README.md` (if exists, otherwise skip)
 
 **Step 1: Check if README exists**
@@ -682,12 +688,14 @@ git commit -m "docs: add npm packages section to README"
 ## Task 12: Test changeset workflow locally
 
 **Files:**
+
 - None (testing only)
 
 **Step 1: Create a test changeset**
 
 Run: `pnpm changeset`
 When prompted:
+
 - Select: shard-lib (spacebar to select)
 - Choose: patch
 - Description: "test changeset workflow"
@@ -703,6 +711,7 @@ Expected: Shows the new changeset file
 
 Run: `pnpm version-packages`
 Expected:
+
 - Shows version bumps that would occur
 - Updates package.json versions
 - Removes changeset file
@@ -722,6 +731,7 @@ Expected: Working directory clean (or only our committed changes)
 ## Task 13: Final verification
 
 **Files:**
+
 - None (verification only)
 
 **Step 1: Verify all tests pass**

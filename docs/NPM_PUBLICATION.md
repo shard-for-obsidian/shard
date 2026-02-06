@@ -22,6 +22,7 @@ pnpm changeset
 ```
 
 This will:
+
 1. Ask which packages changed
 2. Ask what type of change (major/minor/patch)
 3. Prompt for a description
@@ -65,6 +66,7 @@ Repeat for both packages.
 ### How OIDC Works
 
 When the publish workflow runs:
+
 1. GitHub generates a short-lived OIDC token
 2. NPM verifies the token matches the trusted publisher config
 3. Publication proceeds without long-lived secrets
@@ -77,10 +79,12 @@ No `NPM_TOKEN` secret needed!
 ### Version Packages (.github/workflows/version.yml)
 
 **Triggers:**
+
 - Manual via workflow_dispatch
 - Auto when changesets are pushed to main
 
 **What it does:**
+
 - Runs `changeset version`
 - Creates "Version Packages" PR
 - Updates versions and CHANGELOGs
@@ -88,15 +92,18 @@ No `NPM_TOKEN` secret needed!
 ### Publish to NPM (.github/workflows/publish.yml)
 
 **Triggers:**
+
 - When package.json files change on main (after version PR merge)
 
 **What it does:**
+
 1. Install dependencies
 2. Build all packages
 3. Run type checks, linting, tests
 4. Publish changed packages via `changeset publish`
 
 **Safety:**
+
 - Only runs on main branch
 - Requires all tests to pass
 - Only publishes packages with version changes
@@ -129,9 +136,11 @@ pnpm release
 Only the `dist/` directory is published for each package:
 
 **shard-cli:**
+
 - `dist/index.js` (bundled CLI)
 
 **shard-lib:**
+
 - `dist/index.js` (bundled library)
 - `dist/index.d.ts` (type definitions)
 - `dist/**/*.d.ts` (supporting type definitions)
@@ -157,6 +166,7 @@ pnpm pack --dry-run
 ### OIDC Not Working
 
 Verify trusted publisher settings on npmjs.com:
+
 - Correct repository owner: `shard-for-obsidian`
 - Correct repository name: `shard`
 - Correct workflow file: `publish.yml`
@@ -164,6 +174,7 @@ Verify trusted publisher settings on npmjs.com:
 ### Package Name Conflicts
 
 If names are taken, update package.json names to use scoped packages:
+
 - `@shard-for-obsidian/shard-cli`
 - `@shard-for-obsidian/shard-lib`
 

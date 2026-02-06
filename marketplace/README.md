@@ -81,6 +81,7 @@ updatedAt: 2025-02-05T00:00:00Z
 ```
 
 **Required fields:**
+
 - `id` - Plugin ID from manifest.json
 - `registryUrl` - GHCR registry URL (e.g., ghcr.io/owner/repo)
 - `name` - Plugin display name
@@ -90,6 +91,7 @@ updatedAt: 2025-02-05T00:00:00Z
 - `updatedAt` - ISO 8601 timestamp
 
 **Optional fields:**
+
 - `repository` - GitHub repository URL (auto-derived from OCI annotations)
 - `minObsidianVersion` - Minimum Obsidian version required
 - `authorUrl` - Author website or profile URL
