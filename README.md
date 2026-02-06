@@ -45,18 +45,30 @@ The all or nothing approach of the official Obsidian plugin system forces users 
 
 This repository is organized as a pnpm monorepo with three packages:
 
-- **shard-lib** (`packages/shard-lib/`) - Core OCI registry client library
+- **@shard-for-obsidian/lib** (`packages/shard-lib/`) - Core OCI registry client library
 - **shard-installer** (`packages/shard-installer/`) - Plugin installer for Obsidian
-- **shard-cli** (`packages/shard-cli/`) - CLI tool for pushing/pulling plugins to/from GHCR
+- **@shard-for-obsidian/cli** (`packages/shard-cli/`) - CLI tool for pushing/pulling plugins to/from GHCR
 
 ## NPM Packages
 
 This monorepo publishes two packages to npm:
 
-- **[shard-cli](https://www.npmjs.com/package/shard-cli)**: CLI tool for managing Obsidian plugins via GHCR
-- **[shard-lib](https://www.npmjs.com/package/shard-lib)**: Core library for OCI registry operations
+- **[@shard-for-obsidian/cli](https://www.npmjs.com/package/@shard-for-obsidian/cli)**: CLI tool for managing Obsidian plugins via GHCR
+- **[@shard-for-obsidian/lib](https://www.npmjs.com/package/@shard-for-obsidian/lib)**: Core library for OCI registry operations
 
 See [NPM_PUBLICATION.md](docs/NPM_PUBLICATION.md) for details on versioning and releasing.
+
+### Installation
+
+Install the CLI globally:
+```bash
+npm install -g @shard-for-obsidian/cli
+```
+
+Or use the library in your project:
+```bash
+npm install @shard-for-obsidian/lib
+```
 
 ### Development
 
