@@ -1,0 +1,13 @@
+baseURL = "https://gillisandrew.github.io/shard/"
+languageCode = "en-us"
+title = "Shard Plugin Marketplace"
+theme = ""
+
+[params]
+  description = "Discover and install Obsidian plugins via OCI registries"
+  author = "Shard Project"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true

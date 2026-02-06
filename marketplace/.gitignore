@@ -1,1 +1,8 @@
 plugins.json
+
+# Hugo build output
+public/
+resources/
+
+# Hugo cache
+.hugo_build.lock

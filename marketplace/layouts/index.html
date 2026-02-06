@@ -1,0 +1,140 @@
+{{ define "main" }}
+<div class="container">
+  <div class="search-box">
+    <input type="text" id="search-input" placeholder="Search plugins by name, description, author, or tags..." />
+  </div>
+
+  <div id="plugin-count" class="plugin-count"></div>
+
+  <div id="plugin-list" class="plugin-grid">
+    <div class="loading">Loading plugins...</div>
+  </div>
+</div>
+
+<script>
+// Load and display plugins from plugins.json
+async function loadPlugins() {
+  try {
+    const response = await fetch('{{ "plugins.json" | relURL }}');
+    if (!response.ok) {
+      throw new Error(`Failed to load plugins: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const plugins = data.plugins || [];
+
+    displayPlugins(plugins);
+    setupSearch(plugins);
+  } catch (error) {
+    console.error('Error loading plugins:', error);
+    document.getElementById('plugin-list').innerHTML =
+      '<div class="error">Failed to load plugins. Please try again later.</div>';
+  }
+}
+
+function displayPlugins(plugins) {
+  const container = document.getElementById('plugin-list');
+  const countEl = document.getElementById('plugin-count');
+
+  countEl.textContent = `${plugins.length} plugin${plugins.length !== 1 ? 's' : ''} available`;
+
+  if (plugins.length === 0) {
+    container.innerHTML = '<div class="empty">No plugins found.</div>';
+    return;
+  }
+
+  container.innerHTML = plugins.map(plugin => `
+    <div class="plugin-card" data-plugin-id="${escapeHtml(plugin.id)}">
+      <div class="plugin-header">
+        <h2 class="plugin-name">${escapeHtml(plugin.name)}</h2>
+        <span class="plugin-version">v${escapeHtml(plugin.version)}</span>
+      </div>
+
+      <div class="plugin-meta">
+        <span class="plugin-author">by ${escapeHtml(plugin.author)}</span>
+        ${plugin.tags ? `<div class="plugin-tags">${plugin.tags.map(tag =>
+          `<span class="tag">${escapeHtml(tag)}</span>`
+        ).join('')}</div>` : ''}
+      </div>
+
+      <p class="plugin-description">${escapeHtml(plugin.description)}</p>
+
+      <div class="plugin-details">
+        ${plugin.minObsidianVersion ? `<div class="detail"><strong>Min Obsidian:</strong> ${escapeHtml(plugin.minObsidianVersion)}</div>` : ''}
+        ${plugin.license ? `<div class="detail"><strong>License:</strong> ${escapeHtml(plugin.license)}</div>` : ''}
+        <div class="detail"><strong>Updated:</strong> ${formatDate(plugin.updatedAt)}</div>
+      </div>
+
+      <div class="plugin-links">
+        ${plugin.repository ? `<a href="${escapeHtml(plugin.repository)}" target="_blank" rel="noopener" class="btn btn-secondary">View Source</a>` : ''}
+        <button class="btn btn-primary" onclick="showInstallInstructions('${escapeHtml(plugin.id)}', '${escapeHtml(plugin.registryUrl)}', '${escapeHtml(plugin.version)}')">Install</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setupSearch(plugins) {
+  const searchInput = document.getElementById('search-input');
+
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+
+    if (!query) {
+      displayPlugins(plugins);
+      return;
+    }
+
+    const filtered = plugins.filter(plugin => {
+      return (
+        plugin.name.toLowerCase().includes(query) ||
+        plugin.description.toLowerCase().includes(query) ||
+        plugin.author.toLowerCase().includes(query) ||
+        plugin.id.toLowerCase().includes(query) ||
+        (plugin.tags && plugin.tags.some(tag => tag.toLowerCase().includes(query)))
+      );
+    });
+
+    displayPlugins(filtered);
+  });
+}
+
+function showInstallInstructions(pluginId, registryUrl, version) {
+  const instructions = `
+To install ${pluginId}:
+
+Via Obsidian Plugin (Shard Installer):
+1. Install the Shard Installer plugin
+2. Go to Settings > Shard Installer > Marketplace
+3. Find "${pluginId}" and click "Browse Versions"
+4. Select version and install
+
+Via CLI:
+shard marketplace install ${pluginId} --output ~/.obsidian/plugins/${pluginId}
+
+Or manually:
+shard pull ${registryUrl}:${version} --output ~/.obsidian/plugins/${pluginId}
+  `.trim();
+
+  alert(instructions);
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
+// Load plugins on page load
+loadPlugins();
+</script>
+
+{{ end }}

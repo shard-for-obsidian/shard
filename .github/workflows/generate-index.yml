@@ -64,11 +64,22 @@ jobs:
         if: github.event_name == 'push'
         run: git push
 
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: false
+
+      - name: Build Hugo site
+        run: |
+          cd marketplace
+          hugo --minify
+
       - name: Upload GitHub Pages artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: marketplace/
+          path: marketplace/public
 
   deploy:
     if: github.event_name != 'pull_request'

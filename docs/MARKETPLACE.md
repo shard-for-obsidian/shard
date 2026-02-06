@@ -55,19 +55,23 @@ The marketplace displays the following metadata:
 
 ### Web Interface
 
-**Planned (not yet implemented):**
+**Implemented:**
 
-Visit the marketplace at: `https://gillisandrew.github.io/shard-marketplace/`
+Visit the marketplace at: `https://gillisandrew.github.io/shard/`
 
-Planned features:
-- Search plugins by name or description
-- Filter by author or tags
-- View plugin details
-- Copy installation commands
+Features:
+- Browse all available plugins
+- Search plugins by name, description, author, or tags (real-time filtering)
+- View plugin details including version, license, and requirements
+- Click-to-copy installation commands
+- Responsive design for mobile and desktop
+- Built with Hugo static site generator
 
-**Current status:**
-- `plugins.json` is generated and available at the GitHub Pages URL
-- Static HTML site with Hugo is planned for future implementation
+**Technology:**
+- Static site generated with Hugo
+- Real-time JavaScript search (no server required)
+- Loads plugin data from `plugins.json`
+- Automatically deployed via GitHub Actions
 
 ### CLI Interface
 
@@ -221,6 +225,65 @@ Plugins may be removed if they:
 - Are abandoned and non-functional
 - Receive DMCA takedown requests
 
+## Developing the Marketplace Site
+
+The marketplace website is built with Hugo and can be developed locally:
+
+### Prerequisites
+- Hugo (install from https://gohugo.io/installation/)
+
+### Local Development
+
+1. Navigate to marketplace directory:
+```bash
+cd marketplace
+```
+
+2. Generate plugins.json (if needed):
+```bash
+# Run the same commands as the GitHub Action
+echo '{"plugins":[]}' > plugins.json
+for file in plugins/*.yml; do
+  if [ -f "$file" ]; then
+    plugin_json=$(yq eval -o=json "$file")
+    jq --argjson plugin "$plugin_json" '.plugins += [$plugin]' plugins.json > /tmp/merged.json
+    mv /tmp/merged.json plugins.json
+  fi
+done
+jq '.' plugins.json > /tmp/formatted.json
+mv /tmp/formatted.json plugins.json
+```
+
+3. Start Hugo development server:
+```bash
+hugo server -D
+```
+
+4. Open http://localhost:1313/shard/ in your browser
+
+### Site Structure
+
+```
+marketplace/
+├── hugo.toml              # Hugo configuration
+├── content/               # Markdown content
+├── layouts/               # HTML templates
+│   ├── index.html        # Main plugin listing page
+│   ├── _default/         # Base templates
+│   └── partials/         # Reusable components
+├── static/
+│   └── css/
+│       └── style.css     # Styles
+└── plugins.json          # Generated plugin data
+```
+
+### Customizing the Site
+
+- **Styling**: Edit `static/css/style.css`
+- **Layout**: Edit templates in `layouts/`
+- **Search logic**: Modify JavaScript in `layouts/index.html`
+- **Site config**: Edit `hugo.toml`
+
 ## Contributing to Marketplace
 
 The marketplace is open source and welcomes contributions:
@@ -228,26 +291,31 @@ The marketplace is open source and welcomes contributions:
 - Report issues on GitHub
 - Suggest improvements to marketplace UI
 - Help moderate plugin submissions
+- Contribute to Hugo site design and functionality
 
 ## API Access
 
 **Implemented:**
 
-Get all plugins:
+Get all plugins as JSON:
 ```bash
+# From GitHub (always latest)
 curl https://raw.githubusercontent.com/gillisandrew/shard/main/marketplace/plugins.json
+
+# From GitHub Pages (deployed version)
+curl https://gillisandrew.github.io/shard/plugins.json
 ```
 
-**Planned (not yet implemented):**
+The JSON format includes all plugin metadata:
+- Registry URL, version, author, description
+- Repository URL, license, tags
+- Minimum Obsidian version
+- Last updated timestamp
 
-Structured API endpoints:
-```bash
-# Get all plugins
-curl https://gillisandrew.github.io/shard-marketplace/api/plugins.json
-
-# Get specific plugin
-curl https://gillisandrew.github.io/shard-marketplace/api/plugins/{owner}/{name}.json
-```
+This API is consumed by:
+- The Shard Installer Obsidian plugin
+- The marketplace CLI commands
+- The marketplace website
 
 ## Best Practices
 
