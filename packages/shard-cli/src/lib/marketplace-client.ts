@@ -29,7 +29,7 @@ export interface MarketplaceIndex {
 }
 
 export const DEFAULT_MARKETPLACE_URL =
-  "https://raw.githubusercontent.com/gillisandrew/shard/main/marketplace/plugins.json";
+  "https://shard-for-obsidian.github.io/shard/plugins.json";
 
 /**
  * Client for fetching marketplace data from the registry.

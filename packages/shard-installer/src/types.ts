@@ -22,7 +22,7 @@ export const DEFAULT_SETTINGS: GHCRPluginSettings = {
   githubToken: "",
   repositories: [],
   installedPlugins: {},
-  marketplaceUrl: "https://raw.githubusercontent.com/gillisandrew/shard/main/marketplace/plugins.json",
+  marketplaceUrl: "https://shard-for-obsidian.github.io/shard/plugins.json",
   marketplaceCacheTTL: 3600000, // 1 hour
 };
 
