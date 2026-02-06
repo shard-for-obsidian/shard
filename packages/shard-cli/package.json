@@ -3,8 +3,22 @@
   "version": "0.1.0",
   "description": "Shard CLI tool to push and pull plugins from GHCR",
   "type": "module",
+  "author": "Andrew Gillis",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shard-for-obsidian/shard.git",
+    "directory": "packages/shard-cli"
+  },
+  "homepage": "https://github.com/shard-for-obsidian/shard#readme",
+  "bugs": "https://github.com/shard-for-obsidian/shard/issues",
   "bin": {
     "shard": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "node esbuild.config.mjs",
