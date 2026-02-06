@@ -1,4 +1,5 @@
 packages:
+  - "apps/*"
   - "packages/shard-cli"
   - "packages/shard-installer"
   - "packages/shard-lib"

@@ -1,0 +1,611 @@
+{
+  "index": {
+    "version": "2.3.9",
+    "fields": ["name", "author", "description", "tags"],
+    "fieldVectors": [
+      ["name/nldates-obsidian", [0, 4.208, 1, 4.208, 2, 4.208]],
+      ["author/nldates-obsidian", [3, 4.391, 4, 4.391, 5, 4.391]],
+      [
+        "description/nldates-obsidian",
+        [0, 0.599, 1, 0.599, 2, 0.599, 6, 1.25, 7, 1.25, 8, 1.25]
+      ],
+      ["tags/nldates-obsidian", []],
+      ["name/notebook-navigator", [9, 10.417, 10, 4.992]],
+      ["author/notebook-navigator", [11, 5.209, 12, 5.209]],
+      [
+        "description/notebook-navigator",
+        [
+          10, 0.344, 13, 0.718, 14, 0.718, 15, 1.077, 16, 0.718, 17, 0.718, 18,
+          0.718, 19, 0.718, 20, 0.718, 21, 0.718, 22, 0.718, 23, 0.718, 24,
+          0.718, 25, 0.344, 26, 0.718, 27, 0.718, 28, 0.718, 29, 0.718, 30,
+          0.718, 31, 0.718, 32, 0.718, 33, 0.718, 34, 0.718
+        ]
+      ],
+      ["tags/notebook-navigator", []],
+      ["name/shard-installer", [35, 10.417, 36, 4.992]],
+      ["author/shard-installer", [37, 5.209, 38, 5.209]],
+      [
+        "description/shard-installer",
+        [
+          25, 0.553, 36, 0.553, 39, 1.155, 40, 1.155, 41, 1.155, 42, 1.155, 43,
+          1.155, 44, 1.155
+        ]
+      ],
+      ["tags/shard-installer", []]
+    ],
+    "invertedIndex": [
+      [
+        "andrew",
+        {
+          "_index": 37,
+          "name": {},
+          "author": {
+            "shard-installer": {}
+          },
+          "description": {},
+          "tags": {}
+        }
+      ],
+      [
+        "argentina",
+        {
+          "_index": 3,
+          "name": {},
+          "author": {
+            "nldates-obsidian": {}
+          },
+          "description": {},
+          "tags": {}
+        }
+      ],
+      [
+        "base",
+        {
+          "_index": 8,
+          "name": {},
+          "author": {},
+          "description": {
+            "nldates-obsidian": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "brows",
+        {
+          "_index": 25,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {},
+            "shard-installer": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "clean",
+        {
+          "_index": 17,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "contain",
+        {
+          "_index": 42,
+          "name": {},
+          "author": {},
+          "description": {
+            "shard-installer": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "creat",
+        {
+          "_index": 6,
+          "name": {},
+          "author": {},
+          "description": {
+            "nldates-obsidian": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "customiz",
+        {
+          "_index": 32,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "date",
+        {
+          "_index": 2,
+          "name": {
+            "nldates-obsidian": {}
+          },
+          "author": {},
+          "description": {
+            "nldates-obsidian": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "default",
+        {
+          "_index": 14,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "display",
+        {
+          "_index": 33,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "drag",
+        {
+          "_index": 28,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "drop",
+        {
+          "_index": 29,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "explor",
+        {
+          "_index": 16,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "featur",
+        {
+          "_index": 21,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "file",
+        {
+          "_index": 15,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "folder",
+        {
+          "_index": 22,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "gilli",
+        {
+          "_index": 38,
+          "name": {},
+          "author": {
+            "shard-installer": {}
+          },
+          "description": {},
+          "tags": {}
+        }
+      ],
+      [
+        "github",
+        {
+          "_index": 41,
+          "name": {},
+          "author": {},
+          "description": {
+            "shard-installer": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "instal",
+        {
+          "_index": 36,
+          "name": {
+            "shard-installer": {}
+          },
+          "author": {},
+          "description": {
+            "shard-installer": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "interfac",
+        {
+          "_index": 20,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "johan",
+        {
+          "_index": 11,
+          "name": {},
+          "author": {
+            "notebook-navigator": {}
+          },
+          "description": {},
+          "tags": {}
+        }
+      ],
+      [
+        "keyboard",
+        {
+          "_index": 27,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "languag",
+        {
+          "_index": 1,
+          "name": {
+            "nldates-obsidian": {}
+          },
+          "author": {},
+          "description": {
+            "nldates-obsidian": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "link",
+        {
+          "_index": 7,
+          "name": {},
+          "author": {},
+          "description": {
+            "nldates-obsidian": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "natur",
+        {
+          "_index": 0,
+          "name": {
+            "nldates-obsidian": {}
+          },
+          "author": {},
+          "description": {
+            "nldates-obsidian": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "navig",
+        {
+          "_index": 10,
+          "name": {
+            "notebook-navigator": {}
+          },
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "note",
+        {
+          "_index": 31,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "notebook",
+        {
+          "_index": 9,
+          "name": {
+            "notebook-navigator": {}
+          },
+          "author": {},
+          "description": {},
+          "tags": {}
+        }
+      ],
+      [
+        "obsidian",
+        {
+          "_index": 39,
+          "name": {},
+          "author": {},
+          "description": {
+            "shard-installer": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "option",
+        {
+          "_index": 34,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "ortega",
+        {
+          "_index": 4,
+          "name": {},
+          "author": {
+            "nldates-obsidian": {}
+          },
+          "description": {},
+          "tags": {}
+        }
+      ],
+      [
+        "pane",
+        {
+          "_index": 19,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "pin",
+        {
+          "_index": 30,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "plugin",
+        {
+          "_index": 40,
+          "name": {},
+          "author": {},
+          "description": {
+            "shard-installer": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "preview",
+        {
+          "_index": 26,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "registri",
+        {
+          "_index": 43,
+          "name": {},
+          "author": {},
+          "description": {
+            "shard-installer": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "replac",
+        {
+          "_index": 13,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "repositori",
+        {
+          "_index": 44,
+          "name": {},
+          "author": {},
+          "description": {
+            "shard-installer": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "sainz",
+        {
+          "_index": 5,
+          "name": {},
+          "author": {
+            "nldates-obsidian": {}
+          },
+          "description": {},
+          "tags": {}
+        }
+      ],
+      [
+        "sanneblad",
+        {
+          "_index": 12,
+          "name": {},
+          "author": {
+            "notebook-navigator": {}
+          },
+          "description": {},
+          "tags": {}
+        }
+      ],
+      [
+        "shard",
+        {
+          "_index": 35,
+          "name": {
+            "shard-installer": {}
+          },
+          "author": {},
+          "description": {},
+          "tags": {}
+        }
+      ],
+      [
+        "tag",
+        {
+          "_index": 24,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "tree",
+        {
+          "_index": 23,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "two",
+        {
+          "_index": 18,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ]
+    ],
+    "pipeline": ["stemmer"]
+  },
+  "plugins": [
+    {
+      "id": "nldates-obsidian",
+      "name": "Natural Language Dates",
+      "author": "Argentina Ortega Sainz",
+      "description": "Create date-links based on natural language."
+    },
+    {
+      "id": "notebook-navigator",
+      "name": "Notebook Navigator",
+      "author": "Johan Sanneblad",
+      "description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options."
+    },
+    {
+      "id": "shard-installer",
+      "name": "Shard Installer",
+      "author": "Andrew Gillis",
+      "description": "Browse and install Obsidian plugins from GitHub Container Registry repositories"
+    }
+  ]
+}
