@@ -1,5 +1,13 @@
 # shard-cli
 
+## 0.2.4
+
+### Patch Changes
+
+- 1c8e517: Test scoped package publishing workflow
+- Updated dependencies [1c8e517]
+  - @shard-for-obsidian/lib@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes
