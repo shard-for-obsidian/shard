@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
+	import { base } from '$app/paths';
 	import type { MarketplacePlugin } from '$lib/types';
 
 	interface Props {
@@ -11,6 +12,7 @@
 
 	const latestVersion = $derived(plugin.version || 'N/A');
 	const installCommand = $derived(`shard install ${plugin.registryUrl}:${latestVersion}`);
+	const detailUrl = $derived(`${base}/plugins/${plugin.id}`);
 
 	function copyInstallCommand() {
 		navigator.clipboard.writeText(installCommand);
@@ -35,11 +37,7 @@
 	</Card.Content>
 
 	<Card.Footer class="flex gap-2">
-		<Button
-			variant="default"
-			class="flex-1"
-			onclick={() => (window.location.href = `/shard/plugins/${plugin.id}/`)}
-		>
+		<Button variant="default" class="flex-1" onclick={() => (window.location.href = detailUrl)}>
 			View Details
 		</Button>
 
