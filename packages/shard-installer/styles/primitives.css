@@ -1,0 +1,55 @@
+/* Button Component */
+
+.shard-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--shard-space-sm);
+  padding: var(--shard-space-sm) var(--shard-space-lg);
+  border: var(--shard-border-width) solid var(--shard-border);
+  border-radius: var(--shard-radius-sm);
+  background-color: var(--shard-bg-primary);
+  color: var(--shard-text-normal);
+  font-size: var(--shard-font-size-base);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.shard-button:hover {
+  background-color: var(--shard-interactive-hover);
+}
+
+.shard-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Variants */
+.shard-button--primary {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border-color: var(--interactive-accent);
+}
+
+.shard-button--primary:hover {
+  background-color: var(--interactive-accent-hover);
+}
+
+.shard-button--danger {
+  color: var(--shard-text-error);
+  border-color: var(--shard-text-error);
+}
+
+.shard-button--danger:hover {
+  background-color: var(--background-modifier-error);
+}
+
+/* Sizes */
+.shard-button--sm {
+  padding: var(--shard-space-xs) var(--shard-space-md);
+  font-size: var(--shard-font-size-sm);
+}
+
+.shard-button--lg {
+  padding: var(--shard-space-md) var(--shard-space-xl);
+  font-size: var(--shard-font-size-lg);
+}
