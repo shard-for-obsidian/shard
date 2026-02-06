@@ -3,6 +3,8 @@ import type { FetchAdapter } from "@shard-for-obsidian/lib";
 import { Logger } from "../lib/logger.js";
 import { MarketplaceClient } from "../lib/marketplace-client.js";
 import type { MarketplacePlugin } from "../lib/marketplace-client.js";
+import { queryOciTags, queryTagMetadata } from "../lib/oci-tags.js";
+import type { TagMetadata } from "../lib/oci-tags.js";
 import { pullCommand } from "./pull.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
@@ -358,6 +360,60 @@ export async function marketplaceInstallCommand(opts: {
 }
 
 /**
+ * Query and display all available versions for a plugin registry.
+ */
+export async function marketplaceVersionsCommand(opts: {
+  registryUrl: string;
+  token: string;
+  logger: Logger;
+  adapter: FetchAdapter;
+}): Promise<Array<{ tag: string } & TagMetadata>> {
+  const { registryUrl, token, logger, adapter } = opts;
+
+  logger.log(`Querying versions for ${registryUrl}...`);
+
+  // Query all tags
+  const tags = await queryOciTags({ registryUrl, token, adapter });
+
+  if (tags.length === 0) {
+    logger.log("No versions found");
+    return [];
+  }
+
+  logger.log(`\nFound ${tags.length} version(s):\n`);
+
+  // Query metadata for each tag
+  const versions: Array<{ tag: string } & TagMetadata> = [];
+
+  for (const tag of tags) {
+    const metadata = await queryTagMetadata({
+      registryUrl,
+      tag,
+      token,
+      adapter,
+    });
+
+    versions.push({ tag, ...metadata });
+
+    // Format size
+    const sizeKB = (metadata.size / 1024).toFixed(0);
+
+    // Format date
+    const date = new Date(metadata.publishedAt).toISOString().split("T")[0];
+
+    logger.log(`- ${tag} (published ${date}, ${sizeKB} KB)`);
+
+    // Show commit SHA if available
+    if (metadata.annotations["org.opencontainers.image.revision"]) {
+      const sha = metadata.annotations["org.opencontainers.image.revision"];
+      logger.log(`  Commit: ${sha.substring(0, 7)}`);
+    }
+  }
+
+  return versions;
+}
+
+/**
  * Update a marketplace entry by re-registering from GHCR.
  */
 export async function marketplaceUpdateCommand(opts: {
@@ -370,7 +426,7 @@ export async function marketplaceUpdateCommand(opts: {
 
   logger.log("Updating marketplace entry...");
   logger.log(
-    "Note: This will overwrite the existing YAML file with fresh metadata from GHCR\n",
+    "Note: This will overwrite the existing markdown file with fresh metadata from GHCR\n",
   );
 
   // Just call the register command - it will overwrite the existing file
