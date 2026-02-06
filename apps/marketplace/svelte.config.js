@@ -18,7 +18,8 @@ const config = {
 		},
 		prerender: {
 			entries: ['*'],
-			handleHttpError: 'warn'
+			handleHttpError: 'warn',
+			handleUnseenRoutes: 'ignore'
 		}
 	}
 };

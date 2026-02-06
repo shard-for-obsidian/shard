@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import SearchBar from '$lib/components/SearchBar.svelte';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -16,7 +17,14 @@
 <div class="app">
 	<header class="border-b">
 		<div class="container mx-auto px-4 py-6">
-			<h1 class="text-2xl font-bold">Shard Plugin Marketplace</h1>
+			<div class="flex items-center justify-between mb-4">
+				<h1 class="text-2xl font-bold">
+					<a href="/shard/" class="hover:text-primary transition-colors">
+						Shard Plugin Marketplace
+					</a>
+				</h1>
+			</div>
+			<SearchBar />
 		</div>
 	</header>
 
