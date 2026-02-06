@@ -1,5 +1,13 @@
 # shard-cli
 
+## 0.2.3
+
+### Patch Changes
+
+- d961959: Bumped to trigger workflow
+- Updated dependencies [d961959]
+  - @shard-for-obsidian/lib@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # shard-lib
 
+## 0.2.3
+
+### Patch Changes
+
+- d961959: Bumped to trigger workflow
+
 ## 0.2.2
 
 ### Patch Changes
