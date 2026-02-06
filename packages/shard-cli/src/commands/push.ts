@@ -8,19 +8,24 @@ import { discoverPlugin } from "../lib/plugin.js";
 import { Logger } from "../lib/logger.js";
 
 /**
- * Derive GitHub repository URL from GHCR registry URL.
- * Converts ghcr.io/owner/repo to https://github.com/owner/repo
+ * Derive GitHub repository URL from registry remote name.
+ * Takes the first two path components to form owner/repo.
+ *
+ * Examples:
+ *   shard-for-obsidian/shard -> https://github.com/shard-for-obsidian/shard
+ *   shard-for-obsidian/shard/plugin -> https://github.com/shard-for-obsidian/shard
  */
-function deriveGitHubUrl(ghcrUrl: string): string {
-  const match = ghcrUrl.match(/^ghcr\.io\/([^/]+)\/([^/:]+)/);
-  if (match) {
-    const owner = match[1];
-    const repo = match[2];
-    return `https://github.com/${owner}/${repo}`;
+function deriveGitHubUrl(remoteName: string): string {
+  const parts = remoteName.split('/');
+  if (parts.length < 2) {
+    throw new Error(
+      `Cannot derive GitHub URL from ${remoteName}. Need at least owner/repo format.`,
+    );
   }
-  throw new Error(
-    `Cannot derive GitHub URL from ${ghcrUrl}. Expected format: ghcr.io/owner/repo`,
-  );
+
+  const owner = parts[0];
+  const repo = parts[1];
+  return `https://github.com/${owner}/${repo}`;
 }
 
 export interface PushOptions {

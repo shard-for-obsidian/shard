@@ -10,7 +10,7 @@
     "clean": "rimraf dist",
     "ts-check": "tsc --noEmit",
     "lint": "eslint .",
-    "push": "shard push ./dist ghcr.io/gillisandrew/shard/shard-installer-plugin",
+    "push": "shard push ./dist ghcr.io/shard-for-obsidian/shard/shard-installer-plugin",
     "generate-manifest": "node manifest.config.mjs > manifest.json"
   },
   "dependencies": {
