@@ -10,6 +10,7 @@ import * as path from "node:path";
 export interface MarketplaceRegisterOptions {
   repository: string;
   token: string;
+  introduction?: string;
   logger: Logger;
   adapter: FetchAdapter;
 }
@@ -19,18 +20,17 @@ export interface MarketplaceRegisterResult {
   name: string;
   author: string;
   description: string;
-  version: string;
   registryUrl: string;
   repository?: string;
   license?: string;
   minObsidianVersion?: string;
   authorUrl?: string;
-  yamlPath: string;
+  mdPath: string;
 }
 
 /**
  * Register a plugin to the Shard marketplace.
- * Pulls plugin metadata from OCI registry and creates a YAML file.
+ * Pulls plugin metadata from OCI registry and creates a markdown file with frontmatter.
  *
  * @param opts - Marketplace register options
  * @returns Register result with plugin metadata
@@ -38,7 +38,7 @@ export interface MarketplaceRegisterResult {
 export async function marketplaceRegisterCommand(
   opts: MarketplaceRegisterOptions,
 ): Promise<MarketplaceRegisterResult> {
-  const { repository, token, logger, adapter } = opts;
+  const { repository, token, introduction, logger, adapter } = opts;
 
   // Step 1: Parse repository reference
   logger.log(`Fetching plugin metadata from ${repository}...`);
@@ -64,7 +64,6 @@ export async function marketplaceRegisterCommand(
   const name = pluginManifest.name;
   const author = pluginManifest.author;
   const description = pluginManifest.description || "";
-  const version = pluginManifest.version;
   const minObsidianVersion = pluginManifest.minAppVersion;
   const authorUrl = pluginManifest.authorUrl;
 
@@ -90,50 +89,54 @@ export async function marketplaceRegisterCommand(
   logger.log(`Plugin ID: ${pluginId}`);
   logger.log(`Name: ${name}`);
   logger.log(`Author: ${author}`);
-  logger.log(`Version: ${version}`);
   logger.log(`Registry URL: ${registryUrl}`);
   if (gitHubRepoUrl) {
     logger.log(`Repository: ${gitHubRepoUrl}`);
   }
 
-  // Step 6: Generate enhanced YAML content
-  let yamlContent = `id: ${pluginId}
+  // Step 6: Generate markdown with YAML frontmatter
+  let frontmatter = `---
+id: ${pluginId}
 registryUrl: ${registryUrl}
 name: ${name}
 author: ${author}
 description: ${description}
-version: ${version}
 `;
 
   if (gitHubRepoUrl) {
-    yamlContent += `repository: ${gitHubRepoUrl}\n`;
+    frontmatter += `repository: ${gitHubRepoUrl}\n`;
   }
 
   if (minObsidianVersion) {
-    yamlContent += `minObsidianVersion: ${minObsidianVersion}\n`;
+    frontmatter += `minObsidianVersion: ${minObsidianVersion}\n`;
   }
 
   if (authorUrl) {
-    yamlContent += `authorUrl: ${authorUrl}\n`;
+    frontmatter += `authorUrl: ${authorUrl}\n`;
   }
 
-  // Add timestamp
-  yamlContent += `updatedAt: ${new Date().toISOString()}\n`;
+  frontmatter += `---\n`;
+
+  // Add introduction content if provided
+  let markdownContent = frontmatter;
+  if (introduction) {
+    markdownContent += `\n${introduction}\n`;
+  }
 
   // Step 7: Find marketplace directory (walk up from cwd)
   const marketplacePath = await findMarketplaceDir();
   const pluginsDir = path.join(marketplacePath, "plugins");
-  const yamlPath = path.join(pluginsDir, `${pluginId}.yml`);
+  const mdPath = path.join(pluginsDir, `${pluginId}.md`);
 
   // Step 8: Ensure plugins directory exists
   await fs.mkdir(pluginsDir, { recursive: true });
 
-  // Step 9: Write YAML file
-  await fs.writeFile(yamlPath, yamlContent, "utf-8");
+  // Step 9: Write markdown file
+  await fs.writeFile(mdPath, markdownContent, "utf-8");
 
-  logger.success(`Successfully registered plugin to ${yamlPath}`);
+  logger.success(`Successfully registered plugin to ${mdPath}`);
   logger.log(`\nNext steps:`);
-  logger.log(`1. Review the generated YAML file`);
+  logger.log(`1. Review the generated markdown file`);
   logger.log(`2. Commit and push to the marketplace repository`);
   logger.log(`3. Submit a pull request to add your plugin to the marketplace`);
 
@@ -142,12 +145,11 @@ version: ${version}
     name,
     author,
     description,
-    version,
     registryUrl,
     repository: gitHubRepoUrl,
     minObsidianVersion,
     authorUrl,
-    yamlPath,
+    mdPath,
   };
 }
 
