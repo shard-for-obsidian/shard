@@ -11,10 +11,10 @@
 	}
 
 	let { data }: Props = $props();
-	let { plugin } = data;
+	const plugin = $derived(data.plugin);
 
-	const latestVersion = plugin.versions?.[0]?.tag || 'N/A';
-	const installCommand = `shard install ${plugin.registryUrl}:${latestVersion}`;
+	const latestVersion = $derived(plugin.versions?.[0]?.tag || 'N/A');
+	const installCommand = $derived(`shard install ${plugin.registryUrl}:${latestVersion}`);
 
 	function copyInstallCommand() {
 		navigator.clipboard.writeText(installCommand);
