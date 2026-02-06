@@ -27,8 +27,9 @@ describe("MarketplacePlugin types", () => {
     };
 
     expect(plugin.introduction).toBe("# Test Plugin\n\nIntro text");
+    expect(plugin.versions).toBeDefined();
     expect(plugin.versions).toHaveLength(1);
-    expect(plugin.versions[0].tag).toBe("1.0.0");
+    expect(plugin.versions![0].tag).toBe("1.0.0");
   });
 
   it("should support plugin without introduction and versions (migration compatibility)", () => {

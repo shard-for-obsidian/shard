@@ -30,7 +30,7 @@ export async function queryOciTags(
   const ref = parseRepoAndRef(registryUrl);
 
   // OCI Distribution API: GET /v2/<name>/tags/list
-  const url = `https://${ref.registry}/v2/${ref.repo}/tags/list`;
+  const url = `https://${ref.index.name}/v2/${ref.remoteName}/tags/list`;
 
   const headers: Record<string, string> = {
     Accept: "application/json",
@@ -63,7 +63,7 @@ export async function queryTagMetadata(
   const ref = parseRepoAndRef(registryUrl);
 
   // OCI Distribution API: GET /v2/<name>/manifests/<tag>
-  const url = `https://${ref.registry}/v2/${ref.repo}/manifests/${tag}`;
+  const url = `https://${ref.index.name}/v2/${ref.remoteName}/manifests/${tag}`;
 
   const headers: Record<string, string> = {
     Accept: "application/vnd.oci.image.manifest.v1+json",

@@ -204,7 +204,10 @@ export async function marketplaceListCommand(opts: {
   for (const plugin of plugins) {
     logger.log(`${plugin.name} (${plugin.id})`);
     logger.log(`  Author: ${plugin.author}`);
-    logger.log(`  Version: ${plugin.version}`);
+    // Display latest version if available
+    if (plugin.versions && plugin.versions.length > 0) {
+      logger.log(`  Latest Version: ${plugin.versions[0].tag}`);
+    }
     logger.log(`  Registry: ${plugin.registryUrl}`);
     if (plugin.description) {
       logger.log(`  Description: ${plugin.description}`);
@@ -241,7 +244,10 @@ export async function marketplaceSearchCommand(opts: {
   for (const plugin of plugins) {
     logger.log(`${plugin.name} (${plugin.id})`);
     logger.log(`  Author: ${plugin.author}`);
-    logger.log(`  Version: ${plugin.version}`);
+    // Display latest version if available
+    if (plugin.versions && plugin.versions.length > 0) {
+      logger.log(`  Latest Version: ${plugin.versions[0].tag}`);
+    }
     logger.log(`  Registry: ${plugin.registryUrl}`);
     if (plugin.description) {
       logger.log(`  Description: ${plugin.description}`);
@@ -278,7 +284,6 @@ export async function marketplaceInfoCommand(opts: {
   logger.log("=".repeat(60) + "\n");
 
   logger.log(`ID: ${plugin.id}`);
-  logger.log(`Version: ${plugin.version}`);
   logger.log(`Author: ${plugin.author}`);
   if (plugin.authorUrl) {
     logger.log(`Author URL: ${plugin.authorUrl}`);
@@ -297,12 +302,29 @@ export async function marketplaceInfoCommand(opts: {
   if (plugin.tags && plugin.tags.length > 0) {
     logger.log(`Tags: ${plugin.tags.join(", ")}`);
   }
-  logger.log(`Last Updated: ${plugin.updatedAt}`);
+
+  // Display available versions
+  if (plugin.versions && plugin.versions.length > 0) {
+    logger.log(`\nAvailable Versions (${plugin.versions.length}):`);
+    for (const version of plugin.versions.slice(0, 5)) {
+      const date = new Date(version.publishedAt).toISOString().split("T")[0];
+      logger.log(`  - ${version.tag} (${date})`);
+    }
+    if (plugin.versions.length > 5) {
+      logger.log(`  ... and ${plugin.versions.length - 5} more`);
+    }
+  }
 
   logger.log("\n" + "=".repeat(60));
   logger.log("Installation:");
   logger.log("=".repeat(60) + "\n");
-  logger.log(`shard pull ${plugin.registryUrl}:${plugin.version} --output <path>`);
+  const latestVersion =
+    plugin.versions && plugin.versions.length > 0
+      ? plugin.versions[0].tag
+      : "latest";
+  logger.log(
+    `shard pull ${plugin.registryUrl}:${latestVersion} --output <path>`,
+  );
   logger.log(
     `shard marketplace install ${plugin.id}  # (coming soon)`,
   );
@@ -335,10 +357,16 @@ export async function marketplaceInstallCommand(opts: {
     throw new Error(`Plugin "${pluginId}" not found in marketplace`);
   }
 
-  logger.log(`Found: ${plugin.name} v${plugin.version} by ${plugin.author}`);
+  // Get latest version if available
+  const latestVersion =
+    plugin.versions && plugin.versions.length > 0
+      ? plugin.versions[0].tag
+      : "latest";
+
+  logger.log(`Found: ${plugin.name} v${latestVersion} by ${plugin.author}`);
 
   // Step 2: Determine version to install
-  const versionToInstall = version || plugin.version;
+  const versionToInstall = version || latestVersion;
   const repository = `${plugin.registryUrl}:${versionToInstall}`;
 
   logger.log(`Installing from ${repository}...`);
