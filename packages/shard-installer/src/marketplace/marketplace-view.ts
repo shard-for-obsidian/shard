@@ -214,17 +214,29 @@ export class MarketplaceView extends ItemView {
       marginBottom: "8px",
     });
 
-    // Repository link
-    const repoLink = card.createEl("a");
-    repoLink.setText(plugin.repo);
-    repoLink.href = plugin.repo;
-    repoLink.setCssProps({
+    // Repository link (if available)
+    if (plugin.repository) {
+      const repoLink = card.createEl("a");
+      repoLink.setText(plugin.repository);
+      repoLink.href = plugin.repository;
+      repoLink.setCssProps({
+        fontSize: "0.85em",
+        color: "var(--text-accent)",
+      });
+    }
+
+    // Registry URL
+    const registryDiv = card.createDiv();
+    registryDiv.setText(plugin.registryUrl);
+    registryDiv.setCssProps({
       fontSize: "0.85em",
-      color: "var(--text-accent)",
+      color: "var(--text-muted)",
+      fontFamily: "monospace",
+      marginTop: "4px",
     });
 
     // Installation status
-    const installedInfo = this.getInstalledInfo(plugin.repo);
+    const installedInfo = this.getInstalledInfo(plugin.registryUrl);
     if (installedInfo) {
       const statusDiv = card.createDiv();
       statusDiv.setCssProps({
@@ -247,9 +259,8 @@ export class MarketplaceView extends ItemView {
     try {
       new Notice(`Fetching versions for ${plugin.name}...`);
 
-      // Extract repository URL from the marketplace plugin repo field
-      // Convert https://github.com/owner/repo to ghcr.io/owner/repo
-      const repoUrl = this.convertGitHubUrlToGHCR(plugin.repo);
+      // Use the registry URL directly
+      const repoUrl = plugin.registryUrl;
 
       // Get auth token
       const secretToken = this.plugin.settings.githubToken
@@ -266,7 +277,7 @@ export class MarketplaceView extends ItemView {
       }
 
       // Get installed info
-      const installedInfo = this.getInstalledInfo(plugin.repo);
+      const installedInfo = this.getInstalledInfo(plugin.registryUrl);
 
       // Show version selection modal
       new VersionSelectionModal(
@@ -355,15 +366,8 @@ export class MarketplaceView extends ItemView {
     throw new Error(`Cannot convert repository URL: ${githubUrl}`);
   }
 
-  private getInstalledInfo(repoUrl: string) {
-    // Try to find installed info by matching GitHub repo URL to GHCR URL
-    const ghcrUrl = this.convertGitHubUrlToGHCR(repoUrl);
-
-    // Check both the original and converted URLs
-    return (
-      this.plugin.settings.installedPlugins[repoUrl] ||
-      this.plugin.settings.installedPlugins[ghcrUrl] ||
-      null
-    );
+  private getInstalledInfo(registryUrl: string) {
+    // Look up by registry URL
+    return this.plugin.settings.installedPlugins[registryUrl] || null;
   }
 }

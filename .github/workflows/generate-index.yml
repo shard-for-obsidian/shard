@@ -34,14 +34,21 @@ jobs:
 
       - name: Generate plugins.json
         run: |
-          echo '[]' > marketplace/plugins.json
+          echo '{"plugins":[]}' > marketplace/plugins.json
+
+          # Convert each YAML file to JSON and add to array
           for file in marketplace/plugins/*.yml; do
             if [ -f "$file" ]; then
-              yq eval -o=json "$file" | jq -s '.' >> /tmp/plugin.json
-              jq -s 'add' marketplace/plugins.json /tmp/plugin.json > /tmp/merged.json
+              # Convert YAML to JSON
+              plugin_json=$(yq eval -o=json "$file")
+
+              # Add to plugins array
+              jq --argjson plugin "$plugin_json" '.plugins += [$plugin]' marketplace/plugins.json > /tmp/merged.json
               mv /tmp/merged.json marketplace/plugins.json
             fi
           done
+
+          # Pretty-print the final JSON
           jq '.' marketplace/plugins.json > /tmp/formatted.json
           mv /tmp/formatted.json marketplace/plugins.json
 

@@ -2,7 +2,14 @@ import { parseArgs } from "node:util";
 import { pushCommand } from "./commands/push.js";
 import { pullCommand } from "./commands/pull.js";
 import { convertCommand } from "./commands/convert.js";
-import { marketplaceRegisterCommand } from "./commands/marketplace.js";
+import {
+  marketplaceRegisterCommand,
+  marketplaceListCommand,
+  marketplaceSearchCommand,
+  marketplaceInfoCommand,
+  marketplaceInstallCommand,
+  marketplaceUpdateCommand,
+} from "./commands/marketplace.js";
 import { resolveAuthToken } from "./lib/auth.js";
 import { Logger } from "./lib/logger.js";
 import { NodeFetchAdapter } from "./adapters/node-fetch-adapter.js";
@@ -14,7 +21,15 @@ Commands:
   push <directory> <repository>     Push a plugin to GHCR
   pull <repository>                 Pull a plugin from GHCR
   convert <plugin-id> <repository>  Convert legacy plugin to OCI format
-  marketplace register <repository> Register plugin to marketplace
+  marketplace <subcommand>          Manage marketplace plugins
+
+Marketplace Subcommands:
+  list                              List all marketplace plugins
+  search <keyword>                  Search for plugins
+  info <plugin-id>                  Show detailed plugin information
+  install <plugin-id>               Install a plugin by ID
+  register <repository>             Register plugin to marketplace
+  update <repository>               Update marketplace entry
 
 Push Options:
   <directory>                       Path to plugin build output (e.g., ./dist)
@@ -39,7 +54,8 @@ Convert Options:
   --help                            Show help
 
 Marketplace Options:
-  <repository>                      Full reference with tag (e.g., ghcr.io/user/plugin:1.0.0)
+  --output <dir>                    Output directory for install command
+  --version <version>               Specific version to install (defaults to latest)
   --token <pat>                     GitHub Personal Access Token
   --json                            Output JSON result to stdout
   --help                            Show help
@@ -53,7 +69,12 @@ Examples:
   shard pull ghcr.io/user/my-plugin:1.0.0 --output ./plugin
   shard convert obsidian-git ghcr.io/user/obsidian-git
   shard convert calendar ghcr.io/user/calendar --version 1.5.3
+  shard marketplace list
+  shard marketplace search "calendar"
+  shard marketplace info obsidian-git
+  shard marketplace install obsidian-git --output ./plugins/obsidian-git
   shard marketplace register ghcr.io/user/my-plugin:1.0.0
+  shard marketplace update ghcr.io/user/my-plugin:1.0.1
 `;
 
 interface CliArgs {
@@ -185,16 +206,93 @@ async function main() {
       // Parse marketplace subcommand
       const subcommand = args.positionals[1];
 
-      if (subcommand === "register") {
-        // Parse register arguments
+      if (!subcommand) {
+        throw new Error(
+          "Marketplace command requires a subcommand. Available: list, search, info, install, register, update",
+        );
+      }
+
+      const token = resolveAuthToken(args.values.token);
+
+      if (subcommand === "list") {
+        // List all plugins
+        const result = await marketplaceListCommand({
+          logger,
+          adapter,
+        });
+
+        if (args.values.json) {
+          console.log(JSON.stringify(result, null, 2));
+        }
+        process.exit(0);
+      } else if (subcommand === "search") {
+        // Search for plugins
+        if (args.positionals.length < 3) {
+          throw new Error("Marketplace search command requires <keyword>");
+        }
+
+        const keyword = args.positionals[2];
+        const result = await marketplaceSearchCommand({
+          keyword,
+          logger,
+          adapter,
+        });
+
+        if (args.values.json) {
+          console.log(JSON.stringify(result, null, 2));
+        }
+        process.exit(0);
+      } else if (subcommand === "info") {
+        // Show plugin info
+        if (args.positionals.length < 3) {
+          throw new Error("Marketplace info command requires <plugin-id>");
+        }
+
+        const pluginId = args.positionals[2];
+        const result = await marketplaceInfoCommand({
+          pluginId,
+          logger,
+          adapter,
+        });
+
+        if (args.values.json) {
+          console.log(JSON.stringify(result, null, 2));
+        }
+        process.exit(0);
+      } else if (subcommand === "install") {
+        // Install plugin by ID
+        if (args.positionals.length < 3) {
+          throw new Error("Marketplace install command requires <plugin-id>");
+        }
+
+        if (!args.values.output) {
+          throw new Error("Marketplace install command requires --output flag");
+        }
+
+        const pluginId = args.positionals[2];
+        const output = args.values.output;
+        const version = args.values.version;
+
+        const result = await marketplaceInstallCommand({
+          pluginId,
+          output,
+          version,
+          token,
+          logger,
+          adapter,
+        });
+
+        if (args.values.json) {
+          console.log(JSON.stringify(result, null, 2));
+        }
+        process.exit(0);
+      } else if (subcommand === "register") {
+        // Register plugin to marketplace
         if (args.positionals.length < 3) {
           throw new Error("Marketplace register command requires <repository>");
         }
 
         const repository = args.positionals[2];
-        const token = resolveAuthToken(args.values.token);
-
-        // Execute marketplace register
         const result = await marketplaceRegisterCommand({
           repository,
           token,
@@ -202,14 +300,31 @@ async function main() {
           adapter,
         });
 
-        // Output result
+        if (args.values.json) {
+          console.log(JSON.stringify(result, null, 2));
+        }
+        process.exit(0);
+      } else if (subcommand === "update") {
+        // Update marketplace entry
+        if (args.positionals.length < 3) {
+          throw new Error("Marketplace update command requires <repository>");
+        }
+
+        const repository = args.positionals[2];
+        const result = await marketplaceUpdateCommand({
+          repository,
+          token,
+          logger,
+          adapter,
+        });
+
         if (args.values.json) {
           console.log(JSON.stringify(result, null, 2));
         }
         process.exit(0);
       } else {
         throw new Error(
-          `Unknown marketplace subcommand: ${subcommand}. Available: register`,
+          `Unknown marketplace subcommand: ${subcommand}. Available: list, search, info, install, register, update`,
         );
       }
     } else {

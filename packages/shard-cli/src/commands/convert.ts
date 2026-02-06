@@ -61,6 +61,7 @@ export async function convertCommand(
   logger.log(`\nPushing to ${convertResult.repository}...`);
   const pushResult = await converter.pushToRegistry({
     repository: convertResult.repository,
+    githubRepo: convertResult.githubRepo,
     token,
     pluginData: {
       manifest: convertResult.manifest,

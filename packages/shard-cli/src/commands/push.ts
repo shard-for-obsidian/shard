@@ -7,6 +7,22 @@ import type {
 import { discoverPlugin } from "../lib/plugin.js";
 import { Logger } from "../lib/logger.js";
 
+/**
+ * Derive GitHub repository URL from GHCR registry URL.
+ * Converts ghcr.io/owner/repo to https://github.com/owner/repo
+ */
+function deriveGitHubUrl(ghcrUrl: string): string {
+  const match = ghcrUrl.match(/^ghcr\.io\/([^/]+)\/([^/:]+)/);
+  if (match) {
+    const owner = match[1];
+    const repo = match[2];
+    return `https://github.com/${owner}/${repo}`;
+  }
+  throw new Error(
+    `Cannot derive GitHub URL from ${ghcrUrl}. Expected format: ghcr.io/owner/repo`,
+  );
+}
+
 export interface PushOptions {
   directory: string;
   repository: string;
@@ -93,19 +109,35 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
     );
   }
 
-  // Step 4: Push plugin manifest using new method
+  // Step 4: Derive GitHub URL and prepare annotations
+  const githubUrl = deriveGitHubUrl(ref.remoteName);
+  const manifest = plugin.manifest.parsed;
+
+  const annotations: Record<string, string> = {
+    "org.opencontainers.image.created": new Date().toISOString(),
+    "org.opencontainers.image.source": githubUrl,
+    "org.opencontainers.image.version": manifest.version,
+    "org.opencontainers.image.description": manifest.description,
+    "org.opencontainers.image.authors": manifest.author,
+  };
+
+  // Add optional fields if present
+  if (manifest.authorUrl) {
+    annotations["org.opencontainers.image.url"] = manifest.authorUrl;
+  }
+
+  // Step 5: Push plugin manifest using new method
   logger.log("Pushing plugin manifest...");
   const manifestPushResult = await client.pushPluginManifest({
     ref: ref.tag || version,
-    pluginManifest: plugin.manifest.parsed as unknown as ObsidianManifest,
+    pluginManifest: manifest as unknown as ObsidianManifest,
     layers,
-    annotations: {
-      "org.opencontainers.image.created": new Date().toISOString(),
-    },
+    annotations,
   });
 
   logger.success(`Successfully pushed ${fullRef}`);
   logger.log(`Manifest digest: ${manifestPushResult.digest}`);
+  logger.log(`GitHub repository: ${githubUrl}`);
 
   // Calculate total size from manifest
   const totalSize = manifestPushResult.manifest.layers.reduce(

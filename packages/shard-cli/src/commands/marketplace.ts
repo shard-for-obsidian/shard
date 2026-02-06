@@ -1,6 +1,9 @@
 import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
 import type { FetchAdapter } from "shard-lib";
 import { Logger } from "../lib/logger.js";
+import { MarketplaceClient } from "../lib/marketplace-client.js";
+import type { MarketplacePlugin } from "../lib/marketplace-client.js";
+import { pullCommand } from "./pull.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -16,7 +19,12 @@ export interface MarketplaceRegisterResult {
   name: string;
   author: string;
   description: string;
-  repo: string;
+  version: string;
+  registryUrl: string;
+  repository?: string;
+  license?: string;
+  minObsidianVersion?: string;
+  authorUrl?: string;
   yamlPath: string;
 }
 
@@ -51,58 +59,69 @@ export async function marketplaceRegisterCommand(
   const pluginManifest = manifestResult.pluginManifest;
   const ociManifest = manifestResult.manifest;
 
-  // Step 3: Extract metadata
+  // Step 3: Extract metadata from plugin manifest
   const pluginId = pluginManifest.id;
   const name = pluginManifest.name;
   const author = pluginManifest.author;
   const description = pluginManifest.description || "";
+  const version = pluginManifest.version;
+  const minObsidianVersion = pluginManifest.minAppVersion;
+  const authorUrl = pluginManifest.authorUrl;
 
-  // Step 4: Get repository URL from annotations or derive from OCI reference
-  let repoUrl: string;
+  // Step 4: Get repository URL from annotations
+  let gitHubRepoUrl: string | undefined;
   if (
     ociManifest.annotations &&
     ociManifest.annotations["org.opencontainers.image.source"]
   ) {
-    repoUrl = ociManifest.annotations["org.opencontainers.image.source"];
-  } else {
-    // Derive from OCI registry path: ghcr.io/user/repo -> https://github.com/user/repo
-    const registryPath = ref.remoteName;
-    // Extract owner/repo from ghcr.io/owner/repo
-    const match = registryPath.match(/^ghcr\.io\/([^/]+)\/(.+)$/);
-    if (match) {
-      const owner = match[1];
-      const repo = match[2];
-      repoUrl = `https://github.com/${owner}/${repo}`;
-    } else {
-      throw new Error(
-        `Cannot derive repository URL from ${registryPath}. ` +
-          `Please add org.opencontainers.image.source annotation to your manifest.`,
-      );
-    }
+    gitHubRepoUrl = ociManifest.annotations["org.opencontainers.image.source"];
   }
+
+  // Step 5: Build registry URL (remove tag/digest, keep base URL)
+  const registryUrl = ref.remoteName;
 
   logger.log(`Plugin ID: ${pluginId}`);
   logger.log(`Name: ${name}`);
   logger.log(`Author: ${author}`);
-  logger.log(`Repository: ${repoUrl}`);
+  logger.log(`Version: ${version}`);
+  logger.log(`Registry URL: ${registryUrl}`);
+  if (gitHubRepoUrl) {
+    logger.log(`Repository: ${gitHubRepoUrl}`);
+  }
 
-  // Step 5: Generate YAML content
-  const yamlContent = `id: ${pluginId}
+  // Step 6: Generate enhanced YAML content
+  let yamlContent = `id: ${pluginId}
+registryUrl: ${registryUrl}
 name: ${name}
 author: ${author}
 description: ${description}
-repo: ${repoUrl}
+version: ${version}
 `;
 
-  // Step 6: Find marketplace directory (walk up from cwd)
+  if (gitHubRepoUrl) {
+    yamlContent += `repository: ${gitHubRepoUrl}\n`;
+  }
+
+  if (minObsidianVersion) {
+    yamlContent += `minObsidianVersion: ${minObsidianVersion}\n`;
+  }
+
+  if (authorUrl) {
+    yamlContent += `authorUrl: ${authorUrl}\n`;
+  }
+
+  // Add timestamp
+  yamlContent += `updatedAt: ${new Date().toISOString()}\n`;
+
+  // Step 7: Find marketplace directory (walk up from cwd)
   const marketplacePath = await findMarketplaceDir();
   const pluginsDir = path.join(marketplacePath, "plugins");
   const yamlPath = path.join(pluginsDir, `${pluginId}.yml`);
 
-  // Step 7: Ensure plugins directory exists
+  // Step 8: Ensure plugins directory exists
   await fs.mkdir(pluginsDir, { recursive: true });
 
-  // Step 8: Write YAML file
+  // Step 9: Write YAML file
   await fs.writeFile(yamlPath, yamlContent, "utf-8");
 
   logger.success(`Successfully registered plugin to ${yamlPath}`);
@@ -116,7 +135,11 @@ repo: ${repoUrl}
     name,
     author,
     description,
-    repo: repoUrl,
+    version,
+    registryUrl,
+    repository: gitHubRepoUrl,
+    minObsidianVersion,
+    authorUrl,
     yamlPath,
   };
 }
@@ -148,4 +171,199 @@ async function findMarketplaceDir(): Promise<string> {
     "Could not find marketplace directory. " +
       "Please run this command from within the marketplace repository.",
   );
+}
+
+/**
+ * List all plugins in the marketplace.
+ */
+export async function marketplaceListCommand(opts: {
+  logger: Logger;
+  adapter: FetchAdapter;
+  marketplaceUrl?: string;
+}): Promise<MarketplacePlugin[]> {
+  const { logger, adapter, marketplaceUrl } = opts;
+
+  const client = new MarketplaceClient(adapter, marketplaceUrl);
+
+  logger.log("Fetching marketplace plugins...");
+  const plugins = await client.fetchPlugins();
+
+  logger.log(`\nFound ${plugins.length} plugins:\n`);
+
+  for (const plugin of plugins) {
+    logger.log(`${plugin.name} (${plugin.id})`);
+    logger.log(`  Author: ${plugin.author}`);
+    logger.log(`  Version: ${plugin.version}`);
+    logger.log(`  Registry: ${plugin.registryUrl}`);
+    if (plugin.description) {
+      logger.log(`  Description: ${plugin.description}`);
+    }
+    logger.log("");
+  }
+
+  return plugins;
+}
+
+/**
+ * Search for plugins in the marketplace.
+ */
+export async function marketplaceSearchCommand(opts: {
+  keyword: string;
+  logger: Logger;
+  adapter: FetchAdapter;
+  marketplaceUrl?: string;
+}): Promise<MarketplacePlugin[]> {
+  const { keyword, logger, adapter, marketplaceUrl } = opts;
+
+  const client = new MarketplaceClient(adapter, marketplaceUrl);
+
+  logger.log(`Searching for "${keyword}"...`);
+  const plugins = await client.searchPlugins(keyword);
+
+  if (plugins.length === 0) {
+    logger.log(`\nNo plugins found matching "${keyword}"`);
+    return [];
+  }
+
+  logger.log(`\nFound ${plugins.length} matching plugin(s):\n`);
+
+  for (const plugin of plugins) {
+    logger.log(`${plugin.name} (${plugin.id})`);
+    logger.log(`  Author: ${plugin.author}`);
+    logger.log(`  Version: ${plugin.version}`);
+    logger.log(`  Registry: ${plugin.registryUrl}`);
+    if (plugin.description) {
+      logger.log(`  Description: ${plugin.description}`);
+    }
+    logger.log("");
+  }
+
+  return plugins;
+}
+
+/**
+ * Display detailed information about a plugin.
+ */
+export async function marketplaceInfoCommand(opts: {
+  pluginId: string;
+  logger: Logger;
+  adapter: FetchAdapter;
+  marketplaceUrl?: string;
+}): Promise<MarketplacePlugin | null> {
+  const { pluginId, logger, adapter, marketplaceUrl } = opts;
+
+  const client = new MarketplaceClient(adapter, marketplaceUrl);
+
+  logger.log(`Fetching plugin "${pluginId}"...`);
+  const plugin = await client.findPluginById(pluginId);
+
+  if (!plugin) {
+    logger.error(`Plugin "${pluginId}" not found in marketplace`);
+    return null;
+  }
+
+  logger.log("\n" + "=".repeat(60));
+  logger.log(`Plugin: ${plugin.name}`);
+  logger.log("=".repeat(60) + "\n");
+
+  logger.log(`ID: ${plugin.id}`);
+  logger.log(`Version: ${plugin.version}`);
+  logger.log(`Author: ${plugin.author}`);
+  if (plugin.authorUrl) {
+    logger.log(`Author URL: ${plugin.authorUrl}`);
+  }
+  logger.log(`Description: ${plugin.description}`);
+  logger.log(`\nRegistry URL: ${plugin.registryUrl}`);
+  if (plugin.repository) {
+    logger.log(`Repository: ${plugin.repository}`);
+  }
+  if (plugin.license) {
+    logger.log(`License: ${plugin.license}`);
+  }
+  if (plugin.minObsidianVersion) {
+    logger.log(`Min Obsidian Version: ${plugin.minObsidianVersion}`);
+  }
+  if (plugin.tags && plugin.tags.length > 0) {
+    logger.log(`Tags: ${plugin.tags.join(", ")}`);
+  }
+  logger.log(`Last Updated: ${plugin.updatedAt}`);
+
+  logger.log("\n" + "=".repeat(60));
+  logger.log("Installation:");
+  logger.log("=".repeat(60) + "\n");
+  logger.log(`shard pull ${plugin.registryUrl}:${plugin.version} --output <path>`);
+  logger.log(
+    `shard marketplace install ${plugin.id}  # (coming soon)`,
+  );
+
+  return plugin;
+}
+
+/**
+ * Install a plugin from the marketplace by ID.
+ */
+export async function marketplaceInstallCommand(opts: {
+  pluginId: string;
+  output: string;
+  version?: string;
+  token: string;
+  logger: Logger;
+  adapter: FetchAdapter;
+  marketplaceUrl?: string;
+}): Promise<{ plugin: MarketplacePlugin; pullResult: unknown }> {
+  const { pluginId, output, version, token, logger, adapter, marketplaceUrl } =
+    opts;
+
+  const client = new MarketplaceClient(adapter, marketplaceUrl);
+
+  // Step 1: Find plugin in marketplace
+  logger.log(`Looking up plugin "${pluginId}" in marketplace...`);
+  const plugin = await client.findPluginById(pluginId);
+
+  if (!plugin) {
+    throw new Error(`Plugin "${pluginId}" not found in marketplace`);
+  }
+
+  logger.log(`Found: ${plugin.name} v${plugin.version} by ${plugin.author}`);
+
+  // Step 2: Determine version to install
+  const versionToInstall = version || plugin.version;
+  const repository = `${plugin.registryUrl}:${versionToInstall}`;
+
+  logger.log(`Installing from ${repository}...`);
+
+  // Step 3: Use pull command to install
+  const pullResult = await pullCommand({
+    repository,
+    output,
+    token,
+    logger,
+    adapter,
+  });
+
+  logger.success(
+    `Successfully installed ${plugin.name} v${versionToInstall} to ${output}`,
+  );
+
+  return { plugin, pullResult };
+}
+
+/**
+ * Update a marketplace entry by re-registering from GHCR.
+ */
+export async function marketplaceUpdateCommand(opts: {
+  repository: string;
+  token: string;
+  logger: Logger;
+  adapter: FetchAdapter;
+}): Promise<MarketplaceRegisterResult> {
+  const { logger } = opts;
+
+  logger.log("Updating marketplace entry...");
+  logger.log(
+    "Note: This will overwrite the existing YAML file with fresh metadata from GHCR\n",
+  );
+
+  // Just call the register command - it will overwrite the existing file
+  return marketplaceRegisterCommand(opts);
 }

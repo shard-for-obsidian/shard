@@ -31,6 +31,8 @@ export interface ConvertPluginResult {
   version: string;
   /** Target repository with tag */
   repository: string;
+  /** GitHub repository URL */
+  githubRepo: string;
   /** Parsed manifest */
   manifest: ObsidianManifest;
   /** main.js content */
@@ -45,6 +47,8 @@ export interface ConvertPluginResult {
 export interface PushToRegistryOptions {
   /** Repository with tag */
   repository: string;
+  /** GitHub repository URL */
+  githubRepo: string;
   /** GitHub token */
   token: string;
   /** Plugin data to push */
@@ -163,6 +167,7 @@ export class PluginConverter {
       pluginId,
       version: release.tag_name,
       repository: fullRepository,
+      githubRepo: plugin.repo,
       manifest,
       mainJs,
       stylesCss,
@@ -179,7 +184,7 @@ export class PluginConverter {
   async pushToRegistry(
     options: PushToRegistryOptions,
   ): Promise<PushToRegistryResult> {
-    const { repository, token, pluginData } = options;
+    const { repository, githubRepo, token, pluginData } = options;
 
     // Parse repository reference
     const ref = parseRepoAndRef(repository);
@@ -222,14 +227,25 @@ export class PluginConverter {
       });
     }
 
-    // Push manifest
+    // Push manifest with OCI annotations
+    const annotations: Record<string, string> = {
+      "org.opencontainers.image.created": new Date().toISOString(),
+      "org.opencontainers.image.source": githubRepo,
+      "org.opencontainers.image.version": pluginData.manifest.version,
+      "org.opencontainers.image.description": pluginData.manifest.description,
+      "org.opencontainers.image.authors": pluginData.manifest.author,
+    };
+
+    // Add optional fields if present
+    if (pluginData.manifest.authorUrl) {
+      annotations["org.opencontainers.image.url"] = pluginData.manifest.authorUrl;
+    }
+
     const manifestPushResult = await client.pushPluginManifest({
       ref: ref.tag || pluginData.manifest.version,
       pluginManifest: pluginData.manifest,
       layers,
-      annotations: {
-        "org.opencontainers.image.created": new Date().toISOString(),
-      },
+      annotations,
     });
 
     // Calculate total size from manifest

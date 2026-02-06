@@ -55,15 +55,23 @@ The marketplace displays the following metadata:
 
 ### Web Interface
 
+**Planned (not yet implemented):**
+
 Visit the marketplace at: `https://gillisandrew.github.io/shard-marketplace/`
 
-Features:
+Planned features:
 - Search plugins by name or description
 - Filter by author or tags
 - View plugin details
 - Copy installation commands
 
+**Current status:**
+- `plugins.json` is generated and available at the GitHub Pages URL
+- Static HTML site with Hugo is planned for future implementation
+
 ### CLI Interface
+
+**Implemented:**
 
 List all marketplace plugins:
 ```bash
@@ -77,60 +85,126 @@ shard marketplace search "keyword"
 
 View plugin details:
 ```bash
-shard marketplace info plugin-name
+shard marketplace info plugin-id
+```
+
+Install a plugin by ID:
+```bash
+shard marketplace install plugin-id --output ./plugins/plugin-name
+```
+
+Register a plugin to the marketplace:
+```bash
+shard marketplace register ghcr.io/owner/plugin:tag
+```
+
+Update a marketplace entry:
+```bash
+shard marketplace update ghcr.io/owner/plugin:tag
 ```
 
 ## Installing from Marketplace
 
 ### Via Obsidian Plugin
 
+**Implemented:**
+
 1. Open Obsidian
 2. Go to Settings > Shard Installer
 3. Browse marketplace tab
-4. Click "Install" on desired plugin
+4. Click "Browse Versions" on desired plugin
+5. Select version and install
 
 ### Via CLI
 
-Install directly by name:
+**Implemented:**
+
+Install directly by plugin ID:
 ```bash
-shard marketplace install plugin-name
+shard marketplace install plugin-id --output ~/.obsidian/plugins/plugin-name
 ```
 
-Or use the GHCR URL:
+Or use the GHCR URL directly:
 ```bash
-shard pull ghcr.io/owner/plugin:tag
+shard pull ghcr.io/owner/plugin:tag --output ~/.obsidian/plugins/plugin-name
 ```
 
 ## Marketplace Registry Format
 
-Each plugin entry is stored as JSON in `marketplace/registry/{owner}/{plugin}.json`:
+Each plugin entry is stored as YAML in `marketplace/plugins/{plugin-id}.yml` and automatically converted to JSON in `marketplace/plugins.json`:
+
+### YAML Format
+
+```yaml
+id: plugin-id
+registryUrl: ghcr.io/owner/plugin
+name: Plugin Name
+author: Author Name
+description: Plugin description
+version: 1.0.0
+repository: https://github.com/owner/plugin
+minObsidianVersion: 0.15.0
+authorUrl: https://author.com
+license: MIT
+tags:
+  - productivity
+  - notes
+updatedAt: 2025-01-15T12:00:00Z
+```
+
+### JSON Schema
+
+The generated `plugins.json` contains:
 
 ```json
 {
-  "name": "plugin-name",
-  "id": "plugin-id",
-  "author": "author-name",
-  "description": "Plugin description",
-  "version": "1.0.0",
-  "registryUrl": "ghcr.io/owner/plugin:tag",
-  "repository": "https://github.com/owner/plugin",
-  "license": "MIT",
-  "tags": ["tag1", "tag2"],
-  "updatedAt": "2025-01-15T12:00:00Z"
+  "plugins": [
+    {
+      "id": "plugin-id",
+      "registryUrl": "ghcr.io/owner/plugin",
+      "name": "Plugin Name",
+      "author": "Author Name",
+      "description": "Plugin description",
+      "version": "1.0.0",
+      "repository": "https://github.com/owner/plugin",
+      "minObsidianVersion": "0.15.0",
+      "authorUrl": "https://author.com",
+      "license": "MIT",
+      "tags": ["productivity", "notes"],
+      "updatedAt": "2025-01-15T12:00:00Z"
+    }
+  ]
 }
 ```
+
+**Required Fields:**
+- `id` - Plugin ID from manifest
+- `registryUrl` - GHCR registry URL (primary identifier)
+- `name` - Display name
+- `author` - Author name
+- `description` - Description
+- `version` - Latest version
+- `updatedAt` - Last update timestamp (ISO 8601)
+
+**Optional Fields:**
+- `repository` - GitHub repository URL (derived from OCI annotations)
+- `minObsidianVersion` - Minimum Obsidian version
+- `authorUrl` - Author website
+- `license` - License identifier
+- `tags` - Categorization tags
 
 ## Updating Marketplace Entries
 
 To update your plugin listing:
 
-1. Publish new version to GHCR
+1. Publish new version to GHCR using `shard push`
 2. Update marketplace entry:
 ```bash
 shard marketplace update ghcr.io/owner/plugin:newtag
 ```
+3. Submit pull request with updated YAML
 
-The marketplace will automatically update metadata from the new version.
+The marketplace will automatically update metadata from the new version by pulling fresh data from GHCR.
 
 ## Marketplace Policies
 
@@ -157,8 +231,16 @@ The marketplace is open source and welcomes contributions:
 
 ## API Access
 
-The marketplace registry can be accessed programmatically:
+**Implemented:**
 
+Get all plugins:
+```bash
+curl https://raw.githubusercontent.com/gillisandrew/shard/main/marketplace/plugins.json
+```
+
+**Planned (not yet implemented):**
+
+Structured API endpoints:
 ```bash
 # Get all plugins
 curl https://gillisandrew.github.io/shard-marketplace/api/plugins.json
