@@ -49,6 +49,15 @@ This repository is organized as a pnpm monorepo with three packages:
 - **shard-installer** (`packages/shard-installer/`) - Plugin installer for Obsidian
 - **shard-cli** (`packages/shard-cli/`) - CLI tool for pushing/pulling plugins to/from GHCR
 
+## NPM Packages
+
+This monorepo publishes two packages to npm:
+
+- **[shard-cli](https://www.npmjs.com/package/shard-cli)**: CLI tool for managing Obsidian plugins via GHCR
+- **[shard-lib](https://www.npmjs.com/package/shard-lib)**: Core library for OCI registry operations
+
+See [NPM_PUBLICATION.md](docs/NPM_PUBLICATION.md) for details on versioning and releasing.
+
 ### Development
 
 Install dependencies:
