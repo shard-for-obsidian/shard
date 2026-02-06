@@ -1,3 +1,10 @@
+export interface PluginVersion {
+  tag: string;
+  publishedAt: string; // ISO 8601
+  size: number; // bytes
+  annotations: Record<string, string>;
+}
+
 export interface MarketplacePlugin {
   // Primary identifiers
   id: string;
@@ -7,7 +14,6 @@ export interface MarketplacePlugin {
   name: string;
   author: string;
   description: string;
-  version: string; // Latest published version
 
   // Optional metadata
   license?: string;
@@ -18,12 +24,14 @@ export interface MarketplacePlugin {
   repository?: string; // GitHub URL derived from org.opencontainers.image.source
   tags?: string[]; // For categorization
 
-  // Marketplace metadata
-  updatedAt: string; // ISO 8601 timestamp
+  // New fields
+  introduction: string; // Markdown content from file body
+  versions: PluginVersion[]; // All available versions from OCI
 }
 
 export interface MarketplaceIndex {
   plugins: MarketplacePlugin[];
+  generatedAt: string; // ISO 8601 timestamp
 }
 
 export interface CachedMarketplaceData {

@@ -1,0 +1,42 @@
+import { describe, it, expect } from "vitest";
+import type {
+  MarketplacePlugin,
+  PluginVersion,
+  MarketplaceIndex,
+} from "../lib/marketplace-client.js";
+
+describe("MarketplacePlugin types", () => {
+  it("should support plugin with introduction and versions", () => {
+    const plugin: MarketplacePlugin = {
+      id: "test-plugin",
+      registryUrl: "ghcr.io/owner/repo",
+      name: "Test Plugin",
+      author: "Test Author",
+      description: "Test description",
+      introduction: "# Test Plugin\n\nIntro text",
+      versions: [
+        {
+          tag: "1.0.0",
+          publishedAt: "2026-02-06T00:00:00Z",
+          size: 123456,
+          annotations: {
+            "org.opencontainers.image.revision": "abc123",
+          },
+        },
+      ],
+    };
+
+    expect(plugin.introduction).toBe("# Test Plugin\n\nIntro text");
+    expect(plugin.versions).toHaveLength(1);
+    expect(plugin.versions[0].tag).toBe("1.0.0");
+  });
+
+  it("should support marketplace index with generatedAt", () => {
+    const index: MarketplaceIndex = {
+      plugins: [],
+      generatedAt: "2026-02-06T12:00:00Z",
+    };
+
+    expect(index.generatedAt).toBe("2026-02-06T12:00:00Z");
+  });
+});
