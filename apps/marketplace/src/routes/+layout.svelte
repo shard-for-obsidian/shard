@@ -1,18 +1,23 @@
 <script lang="ts">
+	import '../app.css';
 	let { children } = $props();
 </script>
 
 <div class="app">
-	<header>
-		<h1>Shard Plugin Marketplace</h1>
+	<header class="border-b">
+		<div class="container mx-auto px-4 py-6">
+			<h1 class="text-2xl font-bold">Shard Plugin Marketplace</h1>
+		</div>
 	</header>
 
-	<main>
+	<main class="flex-1 container mx-auto px-4 py-8">
 		{@render children()}
 	</main>
 
-	<footer>
-		<p>Built with SvelteKit</p>
+	<footer class="border-t">
+		<div class="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
+			<p>Built with SvelteKit</p>
+		</div>
 	</footer>
 </div>
 
@@ -21,21 +26,5 @@
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
-	}
-
-	header {
-		padding: 1rem 2rem;
-		border-bottom: 1px solid #ccc;
-	}
-
-	main {
-		flex: 1;
-		padding: 2rem;
-	}
-
-	footer {
-		padding: 1rem 2rem;
-		border-top: 1px solid #ccc;
-		text-align: center;
 	}
 </style>
