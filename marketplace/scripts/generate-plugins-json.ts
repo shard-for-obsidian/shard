@@ -52,10 +52,13 @@ async function generatePluginsJson(): Promise<void> {
 
   const pluginsDir = path.join(process.cwd(), "marketplace/plugins");
   const dataDir = path.join(process.cwd(), "marketplace/data");
+  const staticDir = path.join(process.cwd(), "marketplace/static");
   const outputPath = path.join(dataDir, "plugins.json");
+  const staticOutputPath = path.join(staticDir, "plugins.json");
 
-  // Ensure data directory exists
+  // Ensure directories exist
   await fs.mkdir(dataDir, { recursive: true });
+  await fs.mkdir(staticDir, { recursive: true });
 
   // Read all markdown files
   const files = await fs.readdir(pluginsDir);
@@ -151,10 +154,15 @@ async function generatePluginsJson(): Promise<void> {
     generatedAt: new Date().toISOString(),
   };
 
-  // Write to file
-  await fs.writeFile(outputPath, JSON.stringify(index, null, 2), "utf-8");
+  // Write to data directory
+  const jsonContent = JSON.stringify(index, null, 2);
+  await fs.writeFile(outputPath, jsonContent, "utf-8");
+
+  // Copy to static directory for Hugo to serve
+  await fs.writeFile(staticOutputPath, jsonContent, "utf-8");
 
   console.log(`✅ Generated ${outputPath}`);
+  console.log(`✅ Copied to ${staticOutputPath}`);
   console.log(`   ${plugins.length} plugin(s) total`);
   console.log(`   ${plugins.reduce((sum, p) => sum + (p.versions?.length || 0), 0)} version(s) total`);
 }
