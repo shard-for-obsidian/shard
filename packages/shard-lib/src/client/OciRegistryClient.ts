@@ -24,6 +24,16 @@ import { parseLinkHeader } from "../parsing/LinkHeaderParser.js";
 
 const DEFAULT_USERAGENT: string = `open-obsidian-plugin-spec/0.1.0`;
 
+// Use globalThis.crypto (available in browsers/Electron) or Node's webcrypto as fallback
+const getCrypto = (): Crypto => {
+  if (globalThis.crypto) {
+    return globalThis.crypto;
+  }
+  // Fallback for Node.js test environments
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require("node:crypto").webcrypto as Crypto;
+};
+
 /*
  * Set the "Authorization" HTTP header into the headers object from the given
  * auth info.
@@ -147,7 +157,7 @@ function _parseDockerContentDigest(dcd: string) {
     async validate(buffer: ArrayBuffer): Promise<void> {
       switch (this.algorithm) {
         case "sha256": {
-          const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+          const hashBuffer = await getCrypto().subtle.digest("SHA-256", buffer);
           const digest = encodeHex(hashBuffer);
           if (this.expectedDigest !== digest) {
             throw new e.BadDigestError(
@@ -672,7 +682,7 @@ export class OciRegistryClient {
         : opts.data;
 
     // Calculate digest
-    const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+    const hashBuffer = await getCrypto().subtle.digest("SHA-256", buffer);
     const digest = `sha256:${encodeHex(hashBuffer)}`;
 
     // Step 1: POST to initiate upload
