@@ -1,6 +1,6 @@
 {
-  "name": "shard-lib",
-  "version": "0.2.1",
+  "name": "@shard-for-obsidian/lib",
+  "version": "0.2.0",
   "type": "module",
   "description": "Core library for Shard plugin management",
   "author": "Andrew Gillis",

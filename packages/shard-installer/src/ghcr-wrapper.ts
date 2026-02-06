@@ -1,5 +1,5 @@
-import { parseRepoAndRef, OciRegistryClient } from "shard-lib";
-import type { RequestUrlParam, RequestUrlResponse } from "shard-lib";
+import { parseRepoAndRef, OciRegistryClient } from "@shard-for-obsidian/lib";
+import type { RequestUrlParam, RequestUrlResponse } from "@shard-for-obsidian/lib";
 import { ObsidianFetchAdapter } from "./adapters/obsidian-fetch-adapter.js";
 import type { TagMetadata } from "./types.js";
 import { requestUrl } from "obsidian";

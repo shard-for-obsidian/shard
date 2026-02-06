@@ -2,8 +2,8 @@ import type {
   FetchAdapter,
   ObsidianManifest,
   ManifestOCIDescriptor,
-} from "shard-lib";
-import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
+} from "@shard-for-obsidian/lib";
+import { OciRegistryClient, parseRepoAndRef } from "@shard-for-obsidian/lib";
 import { CommunityPluginsCache } from "./community-cache.js";
 import { GitHubReleaseFetcher } from "./github-release.js";
 

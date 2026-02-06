@@ -14,11 +14,11 @@
     "generate-manifest": "node manifest.config.mjs > manifest.json"
   },
   "dependencies": {
-    "shard-lib": "workspace:*",
+    "@shard-for-obsidian/lib": "workspace:*",
     "obsidian": "^1.11.4"
   },
   "devDependencies": {
-    "shard-cli": "workspace:*"
+    "@shard-for-obsidian/cli": "workspace:*"
   },
   "keywords": [
     "shard",

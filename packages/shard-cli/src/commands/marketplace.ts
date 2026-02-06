@@ -1,5 +1,5 @@
-import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
-import type { FetchAdapter } from "shard-lib";
+import { OciRegistryClient, parseRepoAndRef } from "@shard-for-obsidian/lib";
+import type { FetchAdapter } from "@shard-for-obsidian/lib";
 import { Logger } from "../lib/logger.js";
 import { MarketplaceClient } from "../lib/marketplace-client.js";
 import type { MarketplacePlugin } from "../lib/marketplace-client.js";

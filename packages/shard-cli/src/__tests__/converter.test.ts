@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { PluginConverter } from "../lib/converter.js";
-import type { FetchAdapter } from "shard-lib";
+import type { FetchAdapter } from "@shard-for-obsidian/lib";
 import type { CommunityPlugin } from "../lib/community-plugins.js";
 import type { GitHubRelease } from "../lib/github-release.js";
 

@@ -1,4 +1,4 @@
-import type { FetchAdapter } from "shard-lib";
+import type { FetchAdapter } from "@shard-for-obsidian/lib";
 import {
   COMMUNITY_PLUGINS_URL,
   type CommunityPlugin,
