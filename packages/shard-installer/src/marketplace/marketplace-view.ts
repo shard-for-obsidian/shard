@@ -68,7 +68,7 @@ export class MarketplaceView extends ItemView {
     this.client.setCacheTTL(ttl);
   }
 
-  private setState(updates: Partial<ViewState>): void {
+  private updateState(updates: Partial<ViewState>): void {
     this.state = { ...this.state, ...updates };
     this.render();
   }
@@ -81,19 +81,19 @@ export class MarketplaceView extends ItemView {
   private async loadPlugins(): Promise<void> {
     if (this.state.loading) return;
 
-    this.setState({ loading: true, error: null });
+    this.updateState({ loading: true, error: null });
 
     try {
       const plugins = await this.client.fetchPlugins();
-      this.setState({ plugins, loading: false });
+      this.updateState({ plugins, loading: false });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
-      this.setState({ loading: false, error: message });
+      this.updateState({ loading: false, error: message });
     }
   }
 
   private render(): void {
-    const container = this.containerEl.children[1];
+    const container = this.containerEl.children[1] as HTMLElement;
     container.empty();
     container.addClass("shard-view");
 

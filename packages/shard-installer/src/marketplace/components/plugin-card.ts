@@ -20,7 +20,7 @@ export function PluginCard(
   // Header: Name and install button
   const headerRow = card.header.createDiv("shard-plugin-card__header-row");
 
-  const name = headerRow.createEl("h3", {
+  headerRow.createEl("h3", {
     text: plugin.name,
     cls: "shard-plugin-card__name",
   });

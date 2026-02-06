@@ -51,12 +51,13 @@ export default class GHCRTagBrowserPlugin extends Plugin {
 
     if (!leaf) {
       // Create new leaf in right sidebar
-      leaf = workspace.getRightLeaf(false);
-      if (leaf) {
-        await leaf.setViewState({
+      const rightLeaf = workspace.getRightLeaf(false);
+      if (rightLeaf) {
+        await rightLeaf.setViewState({
           type: MARKETPLACE_VIEW_TYPE,
           active: true,
         });
+        leaf = rightLeaf;
       }
     }
 
