@@ -10,3 +10,16 @@ title = "Shard Plugin Marketplace"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+[permalinks]
+  plugins = "/plugins/:filename/"
+
+[[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  name = "Plugins"
+  url = "/plugins/"
+  weight = 2
