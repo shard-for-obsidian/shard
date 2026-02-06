@@ -9,7 +9,7 @@ export const manifest = {
   name: "Shard Installer",
   version: packageJson.version,
   description: packageJson.description,
-  author: packageJson.author,
+  author: "Andrew Gillis",
   minAppVersion: obsidianVersion,
 };
 
