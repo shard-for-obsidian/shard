@@ -27,8 +27,8 @@ export interface MarketplacePlugin {
   tags?: string[]; // For categorization
 
   // New fields
-  introduction: string; // Markdown content from file body
-  versions: PluginVersion[]; // All available versions from OCI
+  introduction?: string; // Markdown content from file body
+  versions?: PluginVersion[]; // All available versions from OCI
 }
 
 export interface MarketplaceIndex {

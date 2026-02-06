@@ -31,6 +31,19 @@ describe("MarketplacePlugin types", () => {
     expect(plugin.versions[0].tag).toBe("1.0.0");
   });
 
+  it("should support plugin without introduction and versions (migration compatibility)", () => {
+    const plugin: MarketplacePlugin = {
+      id: "legacy-plugin",
+      registryUrl: "ghcr.io/owner/legacy",
+      name: "Legacy Plugin",
+      author: "Legacy Author",
+      description: "Legacy description",
+    };
+
+    expect(plugin.introduction).toBeUndefined();
+    expect(plugin.versions).toBeUndefined();
+  });
+
   it("should support marketplace index with generatedAt", () => {
     const index: MarketplaceIndex = {
       plugins: [],
