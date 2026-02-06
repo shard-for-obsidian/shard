@@ -16,7 +16,8 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
-    "prepare": "husky"
+    "prepare": "husky",
+    "marketplace:generate": "tsx marketplace/scripts/generate-plugins-json.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
