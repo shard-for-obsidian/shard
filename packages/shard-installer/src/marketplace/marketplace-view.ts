@@ -1,18 +1,37 @@
-import { ItemView, WorkspaceLeaf, Notice, setIcon } from "obsidian";
+import { ItemView, WorkspaceLeaf, Notice } from "obsidian";
 import type GHCRTagBrowserPlugin from "../main";
 import { MarketplaceClient } from "./marketplace-client";
 import type { MarketplacePlugin } from "./types";
 import { VersionSelectionModal } from "../version-selection-modal";
 import { GHCRWrapper } from "../ghcr-wrapper";
 import { Installer } from "../installer/installer.js";
+import {
+  LoadingSpinner,
+  ErrorBanner,
+  EmptyState,
+  List,
+} from "../ui";
+import {
+  MarketplaceHeader,
+  PluginCard,
+} from "./components";
 
 export const MARKETPLACE_VIEW_TYPE = "shard-marketplace-view";
+
+interface ViewState {
+  plugins: MarketplacePlugin[];
+  loading: boolean;
+  error: string | null;
+}
 
 export class MarketplaceView extends ItemView {
   private plugin: GHCRTagBrowserPlugin;
   private client: MarketplaceClient;
-  private plugins: MarketplacePlugin[] = [];
-  private loading = false;
+  private state: ViewState = {
+    plugins: [],
+    loading: false,
+    error: null,
+  };
 
   constructor(leaf: WorkspaceLeaf, plugin: GHCRTagBrowserPlugin) {
     super(leaf);
@@ -36,222 +55,90 @@ export class MarketplaceView extends ItemView {
   }
 
   async onOpen(): Promise<void> {
-    await this.render();
+    await this.loadPlugins();
+    this.render();
   }
 
   async onClose(): Promise<void> {
     // Cleanup if needed
   }
 
-  /**
-   * Refresh the marketplace data and re-render.
-   */
-  async refresh(): Promise<void> {
-    this.client.clearCache();
-    await this.render();
-  }
-
-  /**
-   * Update client configuration when settings change.
-   */
   updateConfig(url: string, ttl: number): void {
     this.client.setMarketplaceUrl(url);
     this.client.setCacheTTL(ttl);
   }
 
-  private async render(): Promise<void> {
-    const container = this.containerEl.children[1];
-    container.empty();
-
-    // Header
-    const header = container.createDiv("marketplace-header");
-    header.setCssProps({
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "16px",
-      borderBottom: "1px solid var(--background-modifier-border)",
-    });
-
-    const title = header.createEl("h2");
-    title.setText("Shard Marketplace");
-    title.setCssProps({ margin: "0" });
-
-    const refreshBtn = header.createDiv("clickable-icon");
-    refreshBtn.setAttribute("aria-label", "Refresh marketplace");
-    setIcon(refreshBtn, "refresh-cw");
-    refreshBtn.onclick = () => {
-      void this.refresh();
-    };
-
-    // Content area
-    const content = container.createDiv("marketplace-content");
-    content.setCssProps({
-      padding: "16px",
-      overflowY: "auto",
-    });
-
-    // Load and render plugins
-    await this.loadPlugins(content);
+  private setState(updates: Partial<ViewState>): void {
+    this.state = { ...this.state, ...updates };
+    this.render();
   }
 
-  private async loadPlugins(container: HTMLElement): Promise<void> {
-    if (this.loading) return;
+  private async refresh(): Promise<void> {
+    this.client.clearCache();
+    await this.loadPlugins();
+  }
 
-    this.loading = true;
+  private async loadPlugins(): Promise<void> {
+    if (this.state.loading) return;
 
-    // Show loading state
-    const loadingDiv = container.createDiv();
-    loadingDiv.setText("Loading marketplace plugins...");
-    loadingDiv.setCssProps({
-      textAlign: "center",
-      padding: "32px",
-      color: "var(--text-muted)",
-    });
+    this.setState({ loading: true, error: null });
 
     try {
-      this.plugins = await this.client.fetchPlugins();
-      loadingDiv.remove();
-
-      if (this.plugins.length === 0) {
-        this.renderEmptyState(container);
-      } else {
-        this.renderPluginList(container);
-      }
+      const plugins = await this.client.fetchPlugins();
+      this.setState({ plugins, loading: false });
     } catch (error) {
-      loadingDiv.remove();
-      this.renderError(
-        container,
-        error instanceof Error ? error.message : "Unknown error",
-      );
-    } finally {
-      this.loading = false;
+      const message = error instanceof Error ? error.message : "Unknown error";
+      this.setState({ loading: false, error: message });
     }
   }
 
-  private renderEmptyState(container: HTMLElement): void {
-    const emptyState = container.createDiv();
-    emptyState.setText("No plugins found in marketplace");
-    emptyState.setCssProps({
-      textAlign: "center",
-      padding: "32px",
-      color: "var(--text-muted)",
-      fontStyle: "italic",
-    });
-  }
+  private render(): void {
+    const container = this.containerEl.children[1];
+    container.empty();
+    container.addClass("shard-view");
 
-  private renderError(container: HTMLElement, error: string): void {
-    const errorDiv = container.createDiv();
-    errorDiv.setCssProps({
-      padding: "16px",
-      backgroundColor: "var(--background-modifier-error)",
-      borderRadius: "4px",
-      color: "var(--text-error)",
+    // Header
+    MarketplaceHeader(container, {
+      onRefresh: () => this.refresh(),
     });
 
-    const errorTitle = errorDiv.createEl("strong");
-    errorTitle.setText("Failed to load marketplace");
-    errorDiv.createEl("br");
+    // Content
+    const content = container.createDiv("shard-view__content");
 
-    const errorMsg = errorDiv.createDiv();
-    errorMsg.setText(error);
-    errorMsg.setCssProps({
-      marginTop: "8px",
-      fontSize: "0.9em",
-    });
-  }
-
-  private renderPluginList(container: HTMLElement): void {
-    const pluginList = container.createDiv("marketplace-plugin-list");
-
-    for (const plugin of this.plugins) {
-      this.renderPluginCard(pluginList, plugin);
+    // Loading state
+    if (this.state.loading) {
+      LoadingSpinner(content, { text: "Loading marketplace plugins..." });
+      return;
     }
-  }
 
-  private renderPluginCard(container: HTMLElement, plugin: MarketplacePlugin): void {
-    const card = container.createDiv("marketplace-plugin-card");
-    card.setCssProps({
-      padding: "16px",
-      marginBottom: "12px",
-      border: "1px solid var(--background-modifier-border)",
-      borderRadius: "4px",
-      backgroundColor: "var(--background-primary)",
-    });
-
-    // Header row with name and install button
-    const headerRow = card.createDiv();
-    headerRow.setCssProps({
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: "8px",
-    });
-
-    const name = headerRow.createEl("h3");
-    name.setText(plugin.name);
-    name.setCssProps({ margin: "0" });
-
-    const installBtn = headerRow.createEl("button");
-    installBtn.setText("Browse Versions");
-    installBtn.onclick = () => {
-      void this.browseVersions(plugin);
-    };
-
-    // Author
-    const author = card.createDiv();
-    author.setText(`by ${plugin.author}`);
-    author.setCssProps({
-      fontSize: "0.9em",
-      color: "var(--text-muted)",
-      marginBottom: "8px",
-    });
-
-    // Description
-    const description = card.createDiv();
-    description.setText(plugin.description);
-    description.setCssProps({
-      marginBottom: "8px",
-    });
-
-    // Repository link (if available)
-    if (plugin.repository) {
-      const repoLink = card.createEl("a");
-      repoLink.setText(plugin.repository);
-      repoLink.href = plugin.repository;
-      repoLink.setCssProps({
-        fontSize: "0.85em",
-        color: "var(--text-accent)",
+    // Error state
+    if (this.state.error) {
+      ErrorBanner(content, {
+        title: "Failed to load marketplace",
+        message: this.state.error,
+        onRetry: () => this.refresh(),
       });
+      return;
     }
 
-    // Registry URL
-    const registryDiv = card.createDiv();
-    registryDiv.setText(plugin.registryUrl);
-    registryDiv.setCssProps({
-      fontSize: "0.85em",
-      color: "var(--text-muted)",
-      fontFamily: "monospace",
-      marginTop: "4px",
-    });
-
-    // Installation status
-    const installedInfo = this.getInstalledInfo(plugin.registryUrl);
-    if (installedInfo) {
-      const statusDiv = card.createDiv();
-      statusDiv.setCssProps({
-        marginTop: "8px",
-        padding: "8px",
-        backgroundColor: "var(--background-secondary)",
-        borderRadius: "4px",
-        fontSize: "0.9em",
+    // Empty state
+    if (this.state.plugins.length === 0) {
+      EmptyState(content, {
+        icon: "package",
+        message: "No plugins found in marketplace",
       });
+      return;
+    }
 
-      const digestShort = installedInfo.digest.substring(0, 23) + "...";
-      statusDiv.setText(
-        `Installed: ${installedInfo.tag} (${digestShort})`,
-      );
-      statusDiv.title = installedInfo.digest;
+    // Plugin list
+    const pluginList = List(content);
+    for (const plugin of this.state.plugins) {
+      const installedInfo = this.getInstalledInfo(plugin.registryUrl);
+      PluginCard(pluginList, {
+        plugin,
+        installedInfo,
+        onBrowseVersions: (plugin) => this.browseVersions(plugin),
+      });
     }
   }
 
@@ -259,16 +146,12 @@ export class MarketplaceView extends ItemView {
     try {
       new Notice(`Fetching versions for ${plugin.name}...`);
 
-      // Use the registry URL directly
       const repoUrl = plugin.registryUrl;
-
-      // Get auth token
       const secretToken = this.plugin.settings.githubToken
         ? this.app.secretStorage.getSecret(this.plugin.settings.githubToken)
         : null;
       const token = secretToken || undefined;
 
-      // Fetch tags
       const tags = await GHCRWrapper.getTags(repoUrl, token);
 
       if (tags.length === 0) {
@@ -276,15 +159,13 @@ export class MarketplaceView extends ItemView {
         return;
       }
 
-      // Get installed info
       const installedInfo = this.getInstalledInfo(plugin.registryUrl);
 
-      // Show version selection modal
       new VersionSelectionModal(
         this.app,
         repoUrl,
         tags,
-        false, // showAllTags
+        false,
         installedInfo?.tag || null,
         (selectedTag: string) => {
           void this.installPlugin(repoUrl, selectedTag, plugin.name);
@@ -306,24 +187,18 @@ export class MarketplaceView extends ItemView {
     try {
       new Notice(`Installing ${pluginName}@${tag}...`);
 
-      // Get auth token
       const secretToken = this.plugin.settings.githubToken
         ? this.app.secretStorage.getSecret(this.plugin.settings.githubToken)
         : null;
       const token = secretToken || undefined;
 
-      // Create GHCR client
       const ghcrClient = GHCRWrapper.createClient(repoUrl, token);
-
-      // Fetch manifest to get digest
       const { resp } = await ghcrClient.getManifest({ ref: tag });
       const digest = resp.headers.get("docker-content-digest") || "unknown";
 
-      // Create installer and perform installation
       const installer = new Installer(this.app, ghcrClient);
       const result = await installer.install(repoUrl, tag);
 
-      // Update installed plugins settings
       this.plugin.settings.installedPlugins[repoUrl] = {
         tag,
         digest,
@@ -332,13 +207,11 @@ export class MarketplaceView extends ItemView {
       };
       await this.plugin.saveSettings();
 
-      // Show success notice
       new Notice(
         `Successfully installed ${pluginName}@${tag} (${result.filesInstalled} files)`,
       );
 
-      // Re-render to update status
-      await this.render();
+      this.render();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
@@ -347,27 +220,7 @@ export class MarketplaceView extends ItemView {
     }
   }
 
-  private convertGitHubUrlToGHCR(githubUrl: string): string {
-    // Convert https://github.com/owner/repo to ghcr.io/owner/repo
-    const match = githubUrl.match(
-      /^https?:\/\/github\.com\/([^/]+)\/([^/]+)/,
-    );
-    if (match) {
-      const owner = match[1];
-      const repo = match[2];
-      return `ghcr.io/${owner}/${repo}`;
-    }
-
-    // If already in ghcr.io format, return as-is
-    if (githubUrl.startsWith("ghcr.io/")) {
-      return githubUrl;
-    }
-
-    throw new Error(`Cannot convert repository URL: ${githubUrl}`);
-  }
-
   private getInstalledInfo(registryUrl: string) {
-    // Look up by registry URL
     return this.plugin.settings.installedPlugins[registryUrl] || null;
   }
 }
