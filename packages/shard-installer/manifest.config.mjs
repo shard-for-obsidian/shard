@@ -6,7 +6,7 @@ const obsidianVersion = (packageJson.dependencies?.obsidian || "").replace(/^\^/
 
 export const manifest = {
   id: packageJson.name,
-  name: packageJson.name,
+  name: "Shard Installer",
   version: packageJson.version,
   description: packageJson.description,
   author: packageJson.author,
