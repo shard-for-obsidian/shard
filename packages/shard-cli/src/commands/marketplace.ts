@@ -74,11 +74,18 @@ export async function marketplaceRegisterCommand(
     ociManifest.annotations &&
     ociManifest.annotations["org.opencontainers.image.source"]
   ) {
-    gitHubRepoUrl = ociManifest.annotations["org.opencontainers.image.source"];
+    const source = ociManifest.annotations["org.opencontainers.image.source"];
+    // Ensure it's a full GitHub URL
+    if (source.startsWith("http")) {
+      gitHubRepoUrl = source;
+    } else {
+      // Convert short form to full URL
+      gitHubRepoUrl = `https://github.com/${source}`;
+    }
   }
 
-  // Step 5: Build registry URL (remove tag/digest, keep base URL)
-  const registryUrl = ref.remoteName;
+  // Step 5: Build registry URL (use canonical name which includes registry host)
+  const registryUrl = ref.canonicalName;
 
   logger.log(`Plugin ID: ${pluginId}`);
   logger.log(`Name: ${name}`);

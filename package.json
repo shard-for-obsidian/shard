@@ -15,6 +15,7 @@
     "test": "pnpm -r test"
   },
   "devDependencies": {
+    "shard-cli": "workspace:*",
     "@cyclonedx/cyclonedx-esbuild": "^1.0.0",
     "@eslint/js": "^9.39.2",
     "@types/node": "^25.2.0",
