@@ -1,9 +1,9 @@
-import { OciRegistryClient, parseRepoAndRef } from "shard-lib";
+import { OciRegistryClient, parseRepoAndRef } from "@shard-for-obsidian/lib";
 import type {
   ManifestOCIDescriptor,
   FetchAdapter,
   ObsidianManifest,
-} from "shard-lib";
+} from "@shard-for-obsidian/lib";
 import { discoverPlugin } from "../lib/plugin.js";
 import { Logger } from "../lib/logger.js";
 

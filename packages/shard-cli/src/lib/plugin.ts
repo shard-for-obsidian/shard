@@ -1,6 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { ObsidianManifest } from "shard-lib";
+import type { ObsidianManifest } from "@shard-for-obsidian/lib";
 
 export interface DiscoveredPlugin {
   directory: string;

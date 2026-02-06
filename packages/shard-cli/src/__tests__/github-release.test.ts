@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { GitHubReleaseFetcher } from "../lib/github-release.js";
-import type { FetchAdapter } from "shard-lib";
+import type { FetchAdapter } from "@shard-for-obsidian/lib";
 
 describe("GitHubReleaseFetcher", () => {
   let mockAdapter: FetchAdapter;

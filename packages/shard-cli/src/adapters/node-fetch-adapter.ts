@@ -1,4 +1,4 @@
-import type { FetchAdapter } from "shard-lib";
+import type { FetchAdapter } from "@shard-for-obsidian/lib";
 
 /**
  * Adapter for Node.js native fetch API.
