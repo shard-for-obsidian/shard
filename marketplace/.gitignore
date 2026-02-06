@@ -1,4 +1,5 @@
 plugins.json
+static/plugins.json
 
 # Hugo build output
 public/
