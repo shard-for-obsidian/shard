@@ -1,5 +1,12 @@
 # shard-lib
 
+## 0.2.2
+
+### Patch Changes
+
+- 202bf93: Test publish
+- 46a0d40: Test scoped package publishing workflow
+
 ## 0.2.1
 
 ### Patch Changes
