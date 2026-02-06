@@ -17,7 +17,9 @@
     ".": "./dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.test.*",
+    "!dist/**/__tests__"
   ],
   "publishConfig": {
     "access": "public"
