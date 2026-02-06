@@ -1,4 +1,4 @@
-name: Generate Plugin Index
+name: Build and Deploy Marketplace
 
 on:
   push:
@@ -12,12 +12,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
   pages: write
   id-token: write
 
 jobs:
-  generate-index:
+  build-site:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,18 +51,6 @@ jobs:
           jq '.' marketplace/plugins.json > /tmp/formatted.json
           mv /tmp/formatted.json marketplace/plugins.json
 
-      - name: Commit changes
-        if: github.event_name == 'push'
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add marketplace/plugins.json
-          git diff --staged --quiet || git commit -m "chore: update plugin index"
-
-      - name: Push changes
-        if: github.event_name == 'push'
-        run: git push
-
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
@@ -84,7 +71,7 @@ jobs:
 
   deploy:
     if: github.event_name != 'pull_request'
-    needs: generate-index
+    needs: build-site
     runs-on: ubuntu-latest
     environment:
       name: github-pages
