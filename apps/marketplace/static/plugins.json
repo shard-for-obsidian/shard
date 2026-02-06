@@ -1,0 +1,28 @@
+{
+  "plugins": [
+    {
+      "id": "test-plugin",
+      "registryUrl": "ghcr.io/example/test-plugin",
+      "name": "Test Plugin",
+      "author": "Test Author",
+      "description": "A test plugin for development",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "license": "MIT",
+      "repository": "https://github.com/example/test-plugin"
+    },
+    {
+      "id": "another-plugin",
+      "registryUrl": "ghcr.io/example/another-plugin",
+      "name": "Another Plugin",
+      "author": "Another Author",
+      "description": "Another test plugin with more features",
+      "version": "2.1.0",
+      "updatedAt": "2026-02-05T12:00:00Z",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/example/another-plugin",
+      "tags": ["utility", "productivity"]
+    }
+  ],
+  "generatedAt": "2026-02-06T00:00:00Z"
+}

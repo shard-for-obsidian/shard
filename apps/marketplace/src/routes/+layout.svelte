@@ -1,6 +1,16 @@
 <script lang="ts">
 	import '../app.css';
-	let { children } = $props();
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		children: Snippet;
+		data: {
+			plugins: any[];
+			generatedAt: string;
+		};
+	}
+
+	let { children, data }: Props = $props();
 </script>
 
 <div class="app">
@@ -17,6 +27,9 @@
 	<footer class="border-t">
 		<div class="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
 			<p>Built with SvelteKit</p>
+			{#if data.generatedAt}
+				<p class="text-xs mt-1">Last updated: {new Date(data.generatedAt).toLocaleDateString()}</p>
+			{/if}
 		</div>
 	</footer>
 </div>
