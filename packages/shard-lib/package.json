@@ -2,10 +2,25 @@
   "name": "shard-lib",
   "version": "0.1.0",
   "type": "module",
+  "description": "Core library for Shard plugin management",
+  "author": "Andrew Gillis",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shard-for-obsidian/shard.git",
+    "directory": "packages/shard-lib"
+  },
+  "homepage": "https://github.com/shard-for-obsidian/shard#readme",
+  "bugs": "https://github.com/shard-for-obsidian/shard/issues",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "node esbuild.config.mjs && tsc",
