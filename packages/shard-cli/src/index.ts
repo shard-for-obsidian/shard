@@ -9,6 +9,7 @@ import {
   marketplaceInfoCommand,
   marketplaceInstallCommand,
   marketplaceUpdateCommand,
+  marketplaceVersionsCommand,
 } from "./commands/marketplace.js";
 import { resolveAuthToken } from "./lib/auth.js";
 import { Logger } from "./lib/logger.js";
@@ -30,6 +31,7 @@ Marketplace Subcommands:
   install <plugin-id>               Install a plugin by ID
   register <repository>             Register plugin to marketplace
   update <repository>               Update marketplace entry
+  versions <registryUrl>            List all available versions for a plugin
 
 Push Options:
   <directory>                       Path to plugin build output (e.g., ./dist)
@@ -75,6 +77,7 @@ Examples:
   shard marketplace install obsidian-git --output ./plugins/obsidian-git
   shard marketplace register ghcr.io/user/my-plugin:1.0.0
   shard marketplace update ghcr.io/user/my-plugin:1.0.1
+  shard marketplace versions ghcr.io/user/my-plugin
 `;
 
 interface CliArgs {
@@ -208,7 +211,7 @@ async function main() {
 
       if (!subcommand) {
         throw new Error(
-          "Marketplace command requires a subcommand. Available: list, search, info, install, register, update",
+          "Marketplace command requires a subcommand. Available: list, search, info, install, register, update, versions",
         );
       }
 
@@ -322,9 +325,29 @@ async function main() {
           console.log(JSON.stringify(result, null, 2));
         }
         process.exit(0);
+      } else if (subcommand === "versions") {
+        // List all available versions for a registry URL
+        if (args.positionals.length < 3) {
+          throw new Error(
+            "Marketplace versions command requires <registryUrl>",
+          );
+        }
+
+        const registryUrl = args.positionals[2];
+        const result = await marketplaceVersionsCommand({
+          registryUrl,
+          token,
+          logger,
+          adapter,
+        });
+
+        if (args.values.json) {
+          console.log(JSON.stringify(result, null, 2));
+        }
+        process.exit(0);
       } else {
         throw new Error(
-          `Unknown marketplace subcommand: ${subcommand}. Available: list, search, info, install, register, update`,
+          `Unknown marketplace subcommand: ${subcommand}. Available: list, search, info, install, register, update, versions`,
         );
       }
     } else {

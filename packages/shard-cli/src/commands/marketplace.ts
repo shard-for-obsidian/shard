@@ -3,6 +3,8 @@ import type { FetchAdapter } from "@shard-for-obsidian/lib";
 import { Logger } from "../lib/logger.js";
 import { MarketplaceClient } from "../lib/marketplace-client.js";
 import type { MarketplacePlugin } from "../lib/marketplace-client.js";
+import { queryOciTags, queryTagMetadata } from "../lib/oci-tags.js";
+import type { TagMetadata } from "../lib/oci-tags.js";
 import { pullCommand } from "./pull.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
@@ -10,6 +12,7 @@ import * as path from "node:path";
 export interface MarketplaceRegisterOptions {
   repository: string;
   token: string;
+  introduction?: string;
   logger: Logger;
   adapter: FetchAdapter;
 }
@@ -19,18 +22,17 @@ export interface MarketplaceRegisterResult {
   name: string;
   author: string;
   description: string;
-  version: string;
   registryUrl: string;
   repository?: string;
   license?: string;
   minObsidianVersion?: string;
   authorUrl?: string;
-  yamlPath: string;
+  mdPath: string;
 }
 
 /**
  * Register a plugin to the Shard marketplace.
- * Pulls plugin metadata from OCI registry and creates a YAML file.
+ * Pulls plugin metadata from OCI registry and creates a markdown file with frontmatter.
  *
  * @param opts - Marketplace register options
  * @returns Register result with plugin metadata
@@ -38,7 +40,7 @@ export interface MarketplaceRegisterResult {
 export async function marketplaceRegisterCommand(
   opts: MarketplaceRegisterOptions,
 ): Promise<MarketplaceRegisterResult> {
-  const { repository, token, logger, adapter } = opts;
+  const { repository, token, introduction, logger, adapter } = opts;
 
   // Step 1: Parse repository reference
   logger.log(`Fetching plugin metadata from ${repository}...`);
@@ -64,7 +66,6 @@ export async function marketplaceRegisterCommand(
   const name = pluginManifest.name;
   const author = pluginManifest.author;
   const description = pluginManifest.description || "";
-  const version = pluginManifest.version;
   const minObsidianVersion = pluginManifest.minAppVersion;
   const authorUrl = pluginManifest.authorUrl;
 
@@ -90,50 +91,54 @@ export async function marketplaceRegisterCommand(
   logger.log(`Plugin ID: ${pluginId}`);
   logger.log(`Name: ${name}`);
   logger.log(`Author: ${author}`);
-  logger.log(`Version: ${version}`);
   logger.log(`Registry URL: ${registryUrl}`);
   if (gitHubRepoUrl) {
     logger.log(`Repository: ${gitHubRepoUrl}`);
   }
 
-  // Step 6: Generate enhanced YAML content
-  let yamlContent = `id: ${pluginId}
+  // Step 6: Generate markdown with YAML frontmatter
+  let frontmatter = `---
+id: ${pluginId}
 registryUrl: ${registryUrl}
 name: ${name}
 author: ${author}
 description: ${description}
-version: ${version}
 `;
 
   if (gitHubRepoUrl) {
-    yamlContent += `repository: ${gitHubRepoUrl}\n`;
+    frontmatter += `repository: ${gitHubRepoUrl}\n`;
   }
 
   if (minObsidianVersion) {
-    yamlContent += `minObsidianVersion: ${minObsidianVersion}\n`;
+    frontmatter += `minObsidianVersion: ${minObsidianVersion}\n`;
   }
 
   if (authorUrl) {
-    yamlContent += `authorUrl: ${authorUrl}\n`;
+    frontmatter += `authorUrl: ${authorUrl}\n`;
   }
 
-  // Add timestamp
-  yamlContent += `updatedAt: ${new Date().toISOString()}\n`;
+  frontmatter += `---\n`;
+
+  // Add introduction content if provided
+  let markdownContent = frontmatter;
+  if (introduction) {
+    markdownContent += `\n${introduction}\n`;
+  }
 
   // Step 7: Find marketplace directory (walk up from cwd)
   const marketplacePath = await findMarketplaceDir();
   const pluginsDir = path.join(marketplacePath, "plugins");
-  const yamlPath = path.join(pluginsDir, `${pluginId}.yml`);
+  const mdPath = path.join(pluginsDir, `${pluginId}.md`);
 
   // Step 8: Ensure plugins directory exists
   await fs.mkdir(pluginsDir, { recursive: true });
 
-  // Step 9: Write YAML file
-  await fs.writeFile(yamlPath, yamlContent, "utf-8");
+  // Step 9: Write markdown file
+  await fs.writeFile(mdPath, markdownContent, "utf-8");
 
-  logger.success(`Successfully registered plugin to ${yamlPath}`);
+  logger.success(`Successfully registered plugin to ${mdPath}`);
   logger.log(`\nNext steps:`);
-  logger.log(`1. Review the generated YAML file`);
+  logger.log(`1. Review the generated markdown file`);
   logger.log(`2. Commit and push to the marketplace repository`);
   logger.log(`3. Submit a pull request to add your plugin to the marketplace`);
 
@@ -142,12 +147,11 @@ version: ${version}
     name,
     author,
     description,
-    version,
     registryUrl,
     repository: gitHubRepoUrl,
     minObsidianVersion,
     authorUrl,
-    yamlPath,
+    mdPath,
   };
 }
 
@@ -200,7 +204,10 @@ export async function marketplaceListCommand(opts: {
   for (const plugin of plugins) {
     logger.log(`${plugin.name} (${plugin.id})`);
     logger.log(`  Author: ${plugin.author}`);
-    logger.log(`  Version: ${plugin.version}`);
+    // Display latest version if available
+    if (plugin.versions && plugin.versions.length > 0) {
+      logger.log(`  Latest Version: ${plugin.versions[0].tag}`);
+    }
     logger.log(`  Registry: ${plugin.registryUrl}`);
     if (plugin.description) {
       logger.log(`  Description: ${plugin.description}`);
@@ -237,7 +244,10 @@ export async function marketplaceSearchCommand(opts: {
   for (const plugin of plugins) {
     logger.log(`${plugin.name} (${plugin.id})`);
     logger.log(`  Author: ${plugin.author}`);
-    logger.log(`  Version: ${plugin.version}`);
+    // Display latest version if available
+    if (plugin.versions && plugin.versions.length > 0) {
+      logger.log(`  Latest Version: ${plugin.versions[0].tag}`);
+    }
     logger.log(`  Registry: ${plugin.registryUrl}`);
     if (plugin.description) {
       logger.log(`  Description: ${plugin.description}`);
@@ -274,7 +284,6 @@ export async function marketplaceInfoCommand(opts: {
   logger.log("=".repeat(60) + "\n");
 
   logger.log(`ID: ${plugin.id}`);
-  logger.log(`Version: ${plugin.version}`);
   logger.log(`Author: ${plugin.author}`);
   if (plugin.authorUrl) {
     logger.log(`Author URL: ${plugin.authorUrl}`);
@@ -293,12 +302,29 @@ export async function marketplaceInfoCommand(opts: {
   if (plugin.tags && plugin.tags.length > 0) {
     logger.log(`Tags: ${plugin.tags.join(", ")}`);
   }
-  logger.log(`Last Updated: ${plugin.updatedAt}`);
+
+  // Display available versions
+  if (plugin.versions && plugin.versions.length > 0) {
+    logger.log(`\nAvailable Versions (${plugin.versions.length}):`);
+    for (const version of plugin.versions.slice(0, 5)) {
+      const date = new Date(version.publishedAt).toISOString().split("T")[0];
+      logger.log(`  - ${version.tag} (${date})`);
+    }
+    if (plugin.versions.length > 5) {
+      logger.log(`  ... and ${plugin.versions.length - 5} more`);
+    }
+  }
 
   logger.log("\n" + "=".repeat(60));
   logger.log("Installation:");
   logger.log("=".repeat(60) + "\n");
-  logger.log(`shard pull ${plugin.registryUrl}:${plugin.version} --output <path>`);
+  const latestVersion =
+    plugin.versions && plugin.versions.length > 0
+      ? plugin.versions[0].tag
+      : "latest";
+  logger.log(
+    `shard pull ${plugin.registryUrl}:${latestVersion} --output <path>`,
+  );
   logger.log(
     `shard marketplace install ${plugin.id}  # (coming soon)`,
   );
@@ -331,10 +357,16 @@ export async function marketplaceInstallCommand(opts: {
     throw new Error(`Plugin "${pluginId}" not found in marketplace`);
   }
 
-  logger.log(`Found: ${plugin.name} v${plugin.version} by ${plugin.author}`);
+  // Get latest version if available
+  const latestVersion =
+    plugin.versions && plugin.versions.length > 0
+      ? plugin.versions[0].tag
+      : "latest";
+
+  logger.log(`Found: ${plugin.name} v${latestVersion} by ${plugin.author}`);
 
   // Step 2: Determine version to install
-  const versionToInstall = version || plugin.version;
+  const versionToInstall = version || latestVersion;
   const repository = `${plugin.registryUrl}:${versionToInstall}`;
 
   logger.log(`Installing from ${repository}...`);
@@ -356,6 +388,60 @@ export async function marketplaceInstallCommand(opts: {
 }
 
 /**
+ * Query and display all available versions for a plugin registry.
+ */
+export async function marketplaceVersionsCommand(opts: {
+  registryUrl: string;
+  token: string;
+  logger: Logger;
+  adapter: FetchAdapter;
+}): Promise<Array<{ tag: string } & TagMetadata>> {
+  const { registryUrl, token, logger, adapter } = opts;
+
+  logger.log(`Querying versions for ${registryUrl}...`);
+
+  // Query all tags
+  const tags = await queryOciTags({ registryUrl, token, adapter });
+
+  if (tags.length === 0) {
+    logger.log("No versions found");
+    return [];
+  }
+
+  logger.log(`\nFound ${tags.length} version(s):\n`);
+
+  // Query metadata for each tag
+  const versions: Array<{ tag: string } & TagMetadata> = [];
+
+  for (const tag of tags) {
+    const metadata = await queryTagMetadata({
+      registryUrl,
+      tag,
+      token,
+      adapter,
+    });
+
+    versions.push({ tag, ...metadata });
+
+    // Format size
+    const sizeKB = (metadata.size / 1024).toFixed(0);
+
+    // Format date
+    const date = new Date(metadata.publishedAt).toISOString().split("T")[0];
+
+    logger.log(`- ${tag} (published ${date}, ${sizeKB} KB)`);
+
+    // Show commit SHA if available
+    if (metadata.annotations["org.opencontainers.image.revision"]) {
+      const sha = metadata.annotations["org.opencontainers.image.revision"];
+      logger.log(`  Commit: ${sha.substring(0, 7)}`);
+    }
+  }
+
+  return versions;
+}
+
+/**
  * Update a marketplace entry by re-registering from GHCR.
  */
 export async function marketplaceUpdateCommand(opts: {
@@ -368,7 +454,7 @@ export async function marketplaceUpdateCommand(opts: {
 
   logger.log("Updating marketplace entry...");
   logger.log(
-    "Note: This will overwrite the existing YAML file with fresh metadata from GHCR\n",
+    "Note: This will overwrite the existing markdown file with fresh metadata from GHCR\n",
   );
 
   // Just call the register command - it will overwrite the existing file
