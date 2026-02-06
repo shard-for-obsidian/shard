@@ -8,7 +8,7 @@ on:
       - 'marketplace/plugins/**'
       - 'marketplace/scripts/**'
       - 'packages/shard-installer/src/marketplace/types.ts'
-      - '.github/workflows/marketplace-sveltekit.yml'
+      - '.github/workflows/marketplace.yml'
   workflow_dispatch:
 
 permissions:
