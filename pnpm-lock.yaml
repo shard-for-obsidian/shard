@@ -72,6 +72,9 @@ importers:
       '@shard-for-obsidian/lib':
         specifier: workspace:*
         version: link:../shard-lib
+      gray-matter:
+        specifier: ^4.0.3
+        version: 4.0.3
     devDependencies:
       '@types/node':
         specifier: ^25.2.0
