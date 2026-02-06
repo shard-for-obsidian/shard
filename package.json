@@ -41,5 +41,8 @@
   "lint-staged": {
     "*.{js,ts,mjs}": "eslint --fix",
     "*.{json,md}": "prettier --write"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3"
   }
 }
