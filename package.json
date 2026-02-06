@@ -16,7 +16,9 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
-    "prepare": "husky"
+    "prepare": "husky",
+    "marketplace:generate": "tsx marketplace/scripts/generate-plugins-json.ts",
+    "marketplace:dev": "pnpm marketplace:generate && pnpm --filter marketplace dev"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
@@ -28,6 +30,7 @@
     "esbuild-plugin-copy": "^2.1.1",
     "eslint": "^9.39.2",
     "eslint-plugin-obsidianmd": "^0.1.9",
+    "gray-matter": "^4.0.3",
     "husky": "^9.1.7",
     "jiti": "^2.6.1",
     "lint-staged": "^16.2.7",
