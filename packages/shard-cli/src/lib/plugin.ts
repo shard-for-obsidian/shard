@@ -1,17 +1,13 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import type { ObsidianManifest } from "shard-lib";
 
 export interface DiscoveredPlugin {
   directory: string;
   manifest: {
     path: string;
     content: ArrayBuffer;
-    parsed: {
-      id?: string;
-      name?: string;
-      version: string;
-      [key: string]: unknown;
-    };
+    parsed: ObsidianManifest;
   };
   mainJs: {
     path: string;
@@ -58,7 +54,7 @@ export async function discoverPlugin(
   // Find manifest.json (required)
   const manifestPath = path.join(absDirectory, "manifest.json");
   let manifestContent: ArrayBuffer;
-  let manifestParsed: DiscoveredPlugin["manifest"]["parsed"];
+  let manifestParsed: ObsidianManifest;
 
   try {
     const buffer = await fs.readFile(manifestPath);
@@ -69,11 +65,29 @@ export async function discoverPlugin(
 
     // Parse and validate manifest
     const text = new TextDecoder().decode(manifestContent);
-    manifestParsed = JSON.parse(text) as DiscoveredPlugin["manifest"]["parsed"];
+    const parsed = JSON.parse(text) as Record<string, unknown>;
 
-    if (!manifestParsed.version) {
+    // Validate required fields
+    if (!parsed.version || typeof parsed.version !== "string") {
       throw new Error('manifest.json missing required "version" field');
     }
+    if (!parsed.id || typeof parsed.id !== "string") {
+      throw new Error('manifest.json missing required "id" field');
+    }
+    if (!parsed.name || typeof parsed.name !== "string") {
+      throw new Error('manifest.json missing required "name" field');
+    }
+    if (!parsed.minAppVersion || typeof parsed.minAppVersion !== "string") {
+      throw new Error('manifest.json missing required "minAppVersion" field');
+    }
+    if (!parsed.description || typeof parsed.description !== "string") {
+      throw new Error('manifest.json missing required "description" field');
+    }
+    if (!parsed.author || typeof parsed.author !== "string") {
+      throw new Error('manifest.json missing required "author" field');
+    }
+
+    manifestParsed = parsed as unknown as ObsidianManifest;
   } catch (err) {
     if (
       err &&
