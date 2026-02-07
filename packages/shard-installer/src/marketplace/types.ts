@@ -21,7 +21,7 @@ export interface MarketplacePlugin {
   authorUrl?: string;
 
   // Derived/optional
-  repository?: string; // GitHub URL derived from org.opencontainers.image.source
+  repository?: string; // GitHub URL derived from vnd.obsidianmd.plugin.repo
   tags?: string[]; // For categorization
 
   // New fields

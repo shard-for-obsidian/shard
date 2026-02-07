@@ -38,7 +38,7 @@ describe('OciRegistryClient.pushPluginManifest', () => {
         digest: 'sha256:mainjs123',
         size: 1000,
         annotations: {
-          'org.opencontainers.image.title': 'main.js',
+          'vnd.obsidianmd.layer.filename': 'main.js',
         },
       },
     ];
@@ -105,13 +105,13 @@ describe('OciRegistryClient.pushPluginManifest', () => {
         digest: 'sha256:mainjs123',
         size: 1000,
         annotations: {
-          'org.opencontainers.image.title': 'main.js',
+          'vnd.obsidianmd.layer.filename': 'main.js',
         },
       },
     ];
 
     const annotations = {
-      'org.opencontainers.image.created': '2024-01-01T00:00:00Z',
+      'vnd.obsidianmd.plugin.published-at': '2024-01-01T00:00:00Z',
       'custom.annotation': 'value',
     };
 

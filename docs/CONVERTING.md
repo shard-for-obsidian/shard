@@ -159,13 +159,15 @@ ghcr.io/owner/obsidian-calendar-plugin:1.5.10
 
 ```json
 {
-  "org.opencontainers.image.source": "https://github.com/liamcain/obsidian-calendar-plugin",
-  "org.opencontainers.image.description": "Simple calendar widget for Obsidian",
-  "org.opencontainers.image.version": "1.5.10",
-  "org.opencontainers.image.authors": "Liam Cain",
-  "shard.plugin.id": "obsidian-calendar-plugin",
-  "shard.plugin.converted": "true",
-  "shard.plugin.original-repo": "obsidianmd/obsidian-releases"
+  "vnd.obsidianmd.plugin.id": "obsidian-calendar-plugin",
+  "vnd.obsidianmd.plugin.name": "Calendar",
+  "vnd.obsidianmd.plugin.version": "1.5.10",
+  "vnd.obsidianmd.plugin.description": "Simple calendar widget for Obsidian",
+  "vnd.obsidianmd.plugin.author": "Liam Cain",
+  "vnd.obsidianmd.plugin.repo": "https://github.com/liamcain/obsidian-calendar-plugin",
+  "vnd.obsidianmd.plugin.published-at": "2026-02-07T12:00:00Z",
+  "vnd.obsidianmd.plugin.converted": "true",
+  "vnd.obsidianmd.plugin.original-repo": "obsidianmd/obsidian-releases"
 }
 ```
 
