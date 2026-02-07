@@ -97,25 +97,6 @@ export interface ManifestOCIIndex {
 
 /**
  * Obsidian plugin manifest structure
- * Stored in OCI image config field
+ * Re-exported from Zod schema
  */
-export interface ObsidianManifest {
-  /** Plugin ID */
-  id: string;
-  /** Display name */
-  name: string;
-  /** Plugin version */
-  version: string;
-  /** Minimum Obsidian version required */
-  minAppVersion: string;
-  /** Plugin description */
-  description: string;
-  /** Plugin author */
-  author: string;
-  /** Author URL (optional) */
-  authorUrl?: string;
-  /** Is desktop only? (optional) */
-  isDesktopOnly?: boolean;
-  /** Funding URLs (optional) */
-  fundingUrl?: string | { [key: string]: string };
-}
+export type { ObsidianManifest } from "../schemas/manifest.js";
