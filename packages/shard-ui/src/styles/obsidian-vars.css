@@ -1,0 +1,68 @@
+/**
+ * Obsidian CSS Variables - Minimal Subset
+ *
+ * These are the Obsidian design tokens used by our components.
+ * When running in Obsidian, these will be provided by the app.
+ * When running standalone (marketplace), these serve as fallbacks.
+ */
+
+:root {
+  /* Colors - Backgrounds */
+  --background-primary: hsl(0 0% 100%);
+  --background-primary-alt: hsl(0 0% 96%);
+  --background-secondary: hsl(0 0% 98%);
+  --background-modifier-border: hsl(0 0% 90%);
+  --background-modifier-border-hover: hsl(0 0% 80%);
+  --background-modifier-hover: hsla(0 0% 0% / 0.05);
+
+  /* Colors - Text */
+  --text-normal: hsl(0 0% 13%);
+  --text-muted: hsl(0 0% 45%);
+  --text-faint: hsl(0 0% 60%);
+  --text-accent: hsl(254 80% 60%);
+  --text-accent-hover: hsl(254 80% 50%);
+  --text-on-accent: hsl(0 0% 100%);
+
+  /* Colors - Interactive */
+  --interactive-accent: hsl(254 80% 60%);
+  --interactive-accent-hover: hsl(254 80% 50%);
+
+  /* Spacing */
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-l: 12px;
+  --size-4-1: 4px;
+  --size-4-2: 8px;
+  --size-4-3: 12px;
+  --size-4-4: 16px;
+  --size-4-6: 24px;
+
+  /* Typography */
+  --font-ui-small: 13px;
+  --font-ui-smaller: 12px;
+
+  /* Effects */
+  --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.dark {
+  /* Colors - Backgrounds */
+  --background-primary: hsl(0 0% 10%);
+  --background-primary-alt: hsl(0 0% 15%);
+  --background-secondary: hsl(0 0% 8%);
+  --background-modifier-border: hsl(0 0% 25%);
+  --background-modifier-border-hover: hsl(0 0% 35%);
+  --background-modifier-hover: hsla(0 0% 100% / 0.05);
+
+  /* Colors - Text */
+  --text-normal: hsl(0 0% 90%);
+  --text-muted: hsl(0 0% 60%);
+  --text-faint: hsl(0 0% 45%);
+  --text-accent: hsl(254 80% 70%);
+  --text-accent-hover: hsl(254 80% 80%);
+  --text-on-accent: hsl(0 0% 100%);
+
+  /* Colors - Interactive */
+  --interactive-accent: hsl(254 80% 60%);
+  --interactive-accent-hover: hsl(254 80% 70%);
+}
