@@ -14,6 +14,7 @@ export default defineConfig({
       formats: ['es']
     },
     cssCodeSplit: true,
+    minify: false,
     rollupOptions: {
       external: ['svelte', 'svelte/internal', 'clsx', 'tailwind-merge'],
       output: {
