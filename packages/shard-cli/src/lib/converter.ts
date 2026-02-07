@@ -4,6 +4,7 @@ import type {
   ManifestOCIDescriptor,
 } from "@shard-for-obsidian/lib";
 import { OciRegistryClient, parseRepoAndRef } from "@shard-for-obsidian/lib";
+import { manifestToAnnotations } from "@shard-for-obsidian/lib/schemas";
 import { CommunityPluginsCache } from "./community-cache.js";
 import { GitHubReleaseFetcher } from "./github-release.js";
 
@@ -228,25 +229,14 @@ export class PluginConverter {
     }
 
     // Push manifest with vendor annotations
-    const annotations: Record<string, string> = {
-      "vnd.obsidianmd.plugin.id": pluginData.manifest.id,
-      "vnd.obsidianmd.plugin.name": pluginData.manifest.name,
-      "vnd.obsidianmd.plugin.version": pluginData.manifest.version,
-      "vnd.obsidianmd.plugin.description": pluginData.manifest.description,
-      "vnd.obsidianmd.plugin.author": pluginData.manifest.author,
-      "vnd.obsidianmd.plugin.repo": githubRepo,
-      "vnd.obsidianmd.plugin.published-at": new Date().toISOString(),
-      "vnd.obsidianmd.plugin.converted": "true",
-      "vnd.obsidianmd.plugin.original-repo": "obsidianmd/obsidian-releases",
-    };
+    // Create annotations using schema transform
+    const baseAnnotations = manifestToAnnotations(pluginData.manifest, githubRepo);
 
-    // Add optional fields if present
-    if (pluginData.manifest.authorUrl) {
-      annotations["vnd.obsidianmd.plugin.author-url"] = pluginData.manifest.authorUrl;
-    }
-    if (pluginData.manifest.minAppVersion) {
-      annotations["vnd.obsidianmd.plugin.min-app-version"] = pluginData.manifest.minAppVersion;
-    }
+    // Add converted flag for legacy plugins
+    const annotations: Record<string, string> = {
+      ...baseAnnotations,
+      "vnd.obsidianmd.plugin.converted": "true",
+    };
 
     const manifestPushResult = await client.pushPluginManifest({
       ref: ref.tag || pluginData.manifest.version,
