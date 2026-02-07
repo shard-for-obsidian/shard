@@ -7,7 +7,16 @@
       "author": "Argentina Ortega Sainz",
       "description": "Create date-links based on natural language.",
       "introduction": "Natural Language Dates transforms how you work with dates in Obsidian by allowing you to create date-links using everyday language. Simply type phrases like \"next Friday,\" \"in two weeks,\" or \"last month,\" and the plugin automatically converts them into properly formatted date links.",
-      "versions": [],
+      "versions": [
+        {
+          "tag": "0.6.2",
+          "publishedAt": "2026-02-07T16:57:22.931Z",
+          "size": 1376761,
+          "annotations": {
+            "org.opencontainers.image.created": "2026-02-05T22:52:35.284Z"
+          }
+        }
+      ],
       "minObsidianVersion": "0.9.12",
       "repository": "https://github.com/argenos/nldates-obsidian"
     },
@@ -18,7 +27,21 @@
       "author": "Johan Sanneblad",
       "description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
       "introduction": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
-      "versions": [],
+      "versions": [
+        {
+          "tag": "2.2.3",
+          "publishedAt": "2026-02-07T16:57:23.461Z",
+          "size": 4579642,
+          "annotations": {
+            "org.opencontainers.image.created": "2026-02-06T00:48:03.768Z",
+            "org.opencontainers.image.source": "johansan/notebook-navigator",
+            "org.opencontainers.image.version": "2.2.3",
+            "org.opencontainers.image.description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
+            "org.opencontainers.image.authors": "Johan Sanneblad",
+            "org.opencontainers.image.url": "https://github.com/johansan"
+          }
+        }
+      ],
       "minObsidianVersion": "1.8.7",
       "authorUrl": "https://github.com/johansan",
       "repository": "https://github.com/johansan/notebook-navigator"
@@ -30,10 +53,23 @@
       "author": "Andrew Gillis",
       "description": "Browse and install Obsidian plugins from GitHub Container Registry repositories",
       "introduction": "Shard Installer brings a modern plugin distribution system to Obsidian. Built on the Open Container Initiative (OCI) standards and GitHub Container Registry, it enables seamless discovery and installation of Obsidian plugins from containerized repositories.",
-      "versions": [],
+      "versions": [
+        {
+          "tag": "0.1.0",
+          "publishedAt": "2026-02-07T16:57:23.845Z",
+          "size": 37061,
+          "annotations": {
+            "org.opencontainers.image.created": "2026-02-06T01:24:53.879Z",
+            "org.opencontainers.image.source": "https://github.com/shard-for-obsidian/shard",
+            "org.opencontainers.image.version": "0.1.0",
+            "org.opencontainers.image.description": "Browse and install Obsidian plugins from GitHub Container Registry repositories",
+            "org.opencontainers.image.authors": "Andrew Gillis"
+          }
+        }
+      ],
       "minObsidianVersion": "1.11.4",
       "repository": "https://github.com/shard-for-obsidian/shard"
     }
   ],
-  "generatedAt": "2026-02-06T21:48:07.414Z"
+  "generatedAt": "2026-02-07T16:57:23.846Z"
 }
