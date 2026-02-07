@@ -1,51 +1,69 @@
 <script lang="ts">
-	import '../app.css';
-	import SearchBar from '$lib/components/SearchBar.svelte';
-	import type { Snippet } from 'svelte';
+  import "../app.css";
+  import SearchBar from "$lib/components/SearchBar.svelte";
+  import type { Snippet } from "svelte";
+  import { asset, base, resolve } from "$app/paths";
 
-	interface Props {
-		children: Snippet;
-		data: {
-			plugins: any[];
-			generatedAt: string;
-		};
-	}
+  interface Props {
+    children: Snippet;
+    data: {
+      plugins: any[];
+      generatedAt: string;
+    };
+  }
 
-	let { children, data }: Props = $props();
+  let { children, data }: Props = $props();
 </script>
 
 <div class="app">
-	<header class="border-b">
-		<div class="container mx-auto px-4 py-6">
-			<div class="flex items-center justify-between mb-4">
-				<h1 class="text-2xl font-bold">
-					<a href="/shard/" class="hover:text-primary transition-colors">
-						Shard Plugin Marketplace
-					</a>
-				</h1>
-			</div>
-			<SearchBar />
-		</div>
-	</header>
+  <header class="border-b">
+    <div
+      class="container mx-auto px-4 py-6 flex items-center justify-between flex-row"
+    >
+      <div class="flex items-center flex-row gap-4">
+        <a href={resolve("/")} class="hover:scale-105 transition-transform">
+          <img
+            src={asset("/shard-logo.svg")}
+            alt="Shard Logo"
+            class="h-16 w-auto"
+          />
+        </a>
 
-	<main class="flex-1 container mx-auto px-4 py-8">
-		{@render children()}
-	</main>
+        <div class="gap-0">
+          <h1 class="text-2xl/4 font-bold">
+            <a href={resolve("/")} class="hover:text-primary transition-colors">
+              Shard for Obsidian
+            </a>
+          </h1>
+          <small class="text-xs uppercase text-gray-500">Marketplace</small>
+        </div>
+      </div>
+      <SearchBar />
+    </div>
+  </header>
 
-	<footer class="border-t">
-		<div class="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
-			<p>Built with SvelteKit</p>
-			{#if data.generatedAt}
-				<p class="text-xs mt-1">Last updated: {new Date(data.generatedAt).toLocaleDateString()}</p>
-			{/if}
-		</div>
-	</footer>
+  <main class="flex-1 container mx-auto px-4 py-8">
+    {@render children()}
+  </main>
+
+  <footer class="border-t">
+    <div
+      class="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground"
+    >
+      <p><a href="https://github.com/shard-for-obsidian/shard">GitHub</a></p>
+      {#if data.generatedAt}
+        <p class="text-xs mt-1">
+          Last updated: {new Date(data.generatedAt).toLocaleDateString()}
+        </p>
+      {/if}
+    </div>
+  </footer>
 </div>
 
 <style>
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
+  .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 </style>
