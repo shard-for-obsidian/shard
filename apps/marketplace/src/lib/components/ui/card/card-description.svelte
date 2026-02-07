@@ -1,9 +1,0 @@
-<script lang="ts">
-	import { cn } from '$lib/utils';
-
-	let { class: className, children, ...restProps }: any = $props();
-</script>
-
-<p class={cn('text-sm text-muted-foreground', className)} {...restProps}>
-	{@render children()}
-</p>

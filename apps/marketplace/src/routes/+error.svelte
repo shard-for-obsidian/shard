@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
+	import { Button, Card } from '@shard-for-obsidian/ui';
 	import { base } from '$app/paths';
 </script>
 

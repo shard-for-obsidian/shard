@@ -1,5 +1,6 @@
 <script lang="ts">
-	import PluginCard from '$lib/components/PluginCard.svelte';
+	import { PluginCard } from '@shard-for-obsidian/ui';
+	import { base } from '$app/paths';
 	import type { MarketplacePlugin } from '$lib/types';
 
 	interface Props {
@@ -20,7 +21,7 @@
 	{:else}
 		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 			{#each data.plugins as plugin}
-				<PluginCard {plugin} />
+				<PluginCard {plugin} base={base} />
 			{/each}
 		</div>
 	{/if}

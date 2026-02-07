@@ -1,0 +1,50 @@
+/**
+ * Tailwind-Obsidian Bridge
+ *
+ * Maps Obsidian CSS variables to Tailwind theme tokens.
+ * This allows components to use Tailwind utilities while
+ * automatically inheriting Obsidian's theme.
+ */
+
+@layer theme {
+  /* Background Colors */
+  --color-background: var(--background-primary);
+  --color-foreground: var(--text-normal);
+
+  --color-muted: var(--background-primary-alt);
+  --color-muted-foreground: var(--text-muted);
+
+  --color-card: var(--background-primary);
+  --color-card-foreground: var(--text-normal);
+
+  --color-popover: var(--background-primary);
+  --color-popover-foreground: var(--text-normal);
+
+  /* Interactive Colors */
+  --color-primary: var(--interactive-accent);
+  --color-primary-foreground: var(--text-on-accent);
+
+  --color-secondary: var(--background-secondary);
+  --color-secondary-foreground: var(--text-normal);
+
+  --color-accent: var(--background-modifier-hover);
+  --color-accent-foreground: var(--text-normal);
+
+  /* Border & Input */
+  --color-border: var(--background-modifier-border);
+  --color-input: var(--background-modifier-border);
+  --color-ring: var(--interactive-accent);
+
+  /* Destructive (use accent as fallback) */
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: var(--text-on-accent);
+
+  /* Radius */
+  --radius: var(--radius-m);
+  --radius-sm: var(--radius-s);
+  --radius-md: var(--radius-m);
+  --radius-lg: var(--radius-l);
+
+  /* Shadow */
+  --shadow: var(--shadow-s);
+}
