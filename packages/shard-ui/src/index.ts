@@ -11,6 +11,7 @@ export {
   CardContent,
   CardFooter
 } from './components/card';
+export { PluginCard } from './components/plugin-card';
 
 // Types
 export type { MarketplacePlugin } from './types';
