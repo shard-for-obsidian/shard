@@ -1,5 +1,15 @@
 # shard-cli
 
+## 0.2.4
+
+### Patch Changes
+
+- a94f41a: Work in progress moving toward vendored annotations.
+- 1c8e517: Test scoped package publishing workflow
+- Updated dependencies [a94f41a]
+- Updated dependencies [1c8e517]
+  - @shard-for-obsidian/lib@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes
