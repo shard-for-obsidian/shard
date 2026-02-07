@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '@shard-for-obsidian/ui/styles';
 	import '../app.css';
-	import SearchBar from '$lib/components/SearchBar.svelte';
+	import { SearchBar } from '@shard-for-obsidian/ui';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
