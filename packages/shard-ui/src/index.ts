@@ -12,6 +12,7 @@ export {
   CardFooter
 } from './components/card';
 export { PluginCard } from './components/plugin-card';
+export { SearchBar } from './components/search-bar';
 
 // Types
 export type { MarketplacePlugin } from './types';
