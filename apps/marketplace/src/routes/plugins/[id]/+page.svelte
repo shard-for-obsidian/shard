@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
+	import { Card } from '@shard-for-obsidian/ui';
 	import { Button } from '$lib/components/ui/button';
 	import { base } from '$app/paths';
 	import type { MarketplacePlugin } from '$lib/types';
