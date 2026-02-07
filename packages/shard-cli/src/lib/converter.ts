@@ -208,7 +208,7 @@ export class PluginConverter {
       digest: mainJsResult.digest,
       size: mainJsResult.size,
       annotations: {
-        "org.opencontainers.image.title": "main.js",
+        "vnd.obsidianmd.layer.filename": "main.js",
       },
     });
 
@@ -222,23 +222,30 @@ export class PluginConverter {
         digest: stylesCssResult.digest,
         size: stylesCssResult.size,
         annotations: {
-          "org.opencontainers.image.title": "styles.css",
+          "vnd.obsidianmd.layer.filename": "styles.css",
         },
       });
     }
 
-    // Push manifest with OCI annotations
+    // Push manifest with vendor annotations
     const annotations: Record<string, string> = {
-      "org.opencontainers.image.created": new Date().toISOString(),
-      "org.opencontainers.image.source": githubRepo,
-      "org.opencontainers.image.version": pluginData.manifest.version,
-      "org.opencontainers.image.description": pluginData.manifest.description,
-      "org.opencontainers.image.authors": pluginData.manifest.author,
+      "vnd.obsidianmd.plugin.id": pluginData.manifest.id,
+      "vnd.obsidianmd.plugin.name": pluginData.manifest.name,
+      "vnd.obsidianmd.plugin.version": pluginData.manifest.version,
+      "vnd.obsidianmd.plugin.description": pluginData.manifest.description,
+      "vnd.obsidianmd.plugin.author": pluginData.manifest.author,
+      "vnd.obsidianmd.plugin.repo": githubRepo,
+      "vnd.obsidianmd.plugin.published-at": new Date().toISOString(),
+      "vnd.obsidianmd.plugin.converted": "true",
+      "vnd.obsidianmd.plugin.original-repo": "obsidianmd/obsidian-releases",
     };
 
     // Add optional fields if present
     if (pluginData.manifest.authorUrl) {
-      annotations["org.opencontainers.image.url"] = pluginData.manifest.authorUrl;
+      annotations["vnd.obsidianmd.plugin.author-url"] = pluginData.manifest.authorUrl;
+    }
+    if (pluginData.manifest.minAppVersion) {
+      annotations["vnd.obsidianmd.plugin.min-app-version"] = pluginData.manifest.minAppVersion;
     }
 
     const manifestPushResult = await client.pushPluginManifest({

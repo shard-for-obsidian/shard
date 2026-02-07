@@ -73,16 +73,9 @@ export async function marketplaceRegisterCommand(
   let gitHubRepoUrl: string | undefined;
   if (
     ociManifest.annotations &&
-    ociManifest.annotations["org.opencontainers.image.source"]
+    ociManifest.annotations["vnd.obsidianmd.plugin.repo"]
   ) {
-    const source = ociManifest.annotations["org.opencontainers.image.source"];
-    // Ensure it's a full GitHub URL
-    if (source.startsWith("http")) {
-      gitHubRepoUrl = source;
-    } else {
-      // Convert short form to full URL
-      gitHubRepoUrl = `https://github.com/${source}`;
-    }
+    gitHubRepoUrl = ociManifest.annotations["vnd.obsidianmd.plugin.repo"];
   }
 
   // Step 5: Build registry URL (use canonical name which includes registry host)
@@ -432,8 +425,8 @@ export async function marketplaceVersionsCommand(opts: {
     logger.log(`- ${tag} (published ${date}, ${sizeKB} KB)`);
 
     // Show commit SHA if available
-    if (metadata.annotations["org.opencontainers.image.revision"]) {
-      const sha = metadata.annotations["org.opencontainers.image.revision"];
+    if (metadata.annotations["vnd.obsidianmd.plugin.commit"]) {
+      const sha = metadata.annotations["vnd.obsidianmd.plugin.commit"];
       logger.log(`  Commit: ${sha.substring(0, 7)}`);
     }
   }

@@ -47,12 +47,12 @@ describe('OciRegistryClient.pullPluginManifest', () => {
           digest: 'sha256:mainjs123',
           size: 1000,
           annotations: {
-            'org.opencontainers.image.title': 'main.js',
+            'vnd.obsidianmd.layer.filename': 'main.js',
           },
         },
       ],
       annotations: {
-        'org.opencontainers.image.created': '2024-01-01T00:00:00Z',
+        'vnd.obsidianmd.plugin.published-at': '2024-01-01T00:00:00Z',
       },
     };
 

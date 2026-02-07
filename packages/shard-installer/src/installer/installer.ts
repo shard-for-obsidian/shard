@@ -33,7 +33,7 @@ export class Installer {
     const fileMap = new Map<string, string>(); // filename -> digest
     for (const layer of pullResult.manifest.layers) {
       // Extract filename from annotation
-      const filename = layer.annotations?.["org.opencontainers.image.title"];
+      const filename = layer.annotations?.["vnd.obsidianmd.layer.filename"];
       if (filename) {
         console.log(
           `[Installer] Found layer: ${filename} (${layer.mediaType}) -> ${layer.digest}`,

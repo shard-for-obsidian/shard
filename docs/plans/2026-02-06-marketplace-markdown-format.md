@@ -83,8 +83,8 @@ The Shard Installer brings GitHub Container Registry support to Obsidian, allowi
           "publishedAt": "2026-02-06T01:25:08Z",
           "size": 245678,
           "annotations": {
-            "org.opencontainers.image.revision": "abc123",
-            "org.opencontainers.image.url": "https://..."
+            "vnd.obsidianmd.plugin.commit": "abc123",
+            "vnd.obsidianmd.plugin.author-url": "https://..."
           }
         },
         {

@@ -5,20 +5,31 @@
       "registryUrl": "ghcr.io/shard-for-obsidian/legacy/nldates-obsidian",
       "name": "Natural Language Dates",
       "author": "Argentina Ortega Sainz",
-      "description": "Create date-links based on natural language.",
-      "introduction": "Natural Language Dates transforms how you work with dates in Obsidian by allowing you to create date-links using everyday language. Simply type phrases like \"next Friday,\" \"in two weeks,\" or \"last month,\" and the plugin automatically converts them into properly formatted date links.",
+      "description": "Create date-links based on natural language",
+      "introduction": "Use natural language to create date-links in your Obsidian notes. For example, typing \"next Monday\" will create a link to the date corresponding to the next Monday. This plugin helps you quickly reference dates without needing to remember specific formats or manually calculate them.",
       "versions": [
         {
           "tag": "0.6.2",
-          "publishedAt": "2026-02-07T16:57:22.931Z",
+          "publishedAt": "2026-02-07T19:37:42.557Z",
           "size": 1376761,
           "annotations": {
-            "org.opencontainers.image.created": "2026-02-05T22:52:35.284Z"
+            "vnd.obsidianmd.plugin.id": "nldates-obsidian",
+            "vnd.obsidianmd.plugin.name": "Natural Language Dates",
+            "vnd.obsidianmd.plugin.version": "0.6.2",
+            "vnd.obsidianmd.plugin.description": "Create date-links based on natural language",
+            "vnd.obsidianmd.plugin.author": "Argentina Ortega Sainz",
+            "vnd.obsidianmd.plugin.repo": "argenos/nldates-obsidian",
+            "vnd.obsidianmd.plugin.published-at": "2026-02-07T17:57:34.569Z",
+            "vnd.obsidianmd.plugin.converted": "true",
+            "vnd.obsidianmd.plugin.original-repo": "obsidianmd/obsidian-releases",
+            "vnd.obsidianmd.plugin.author-url": "https://argentinaos.com/",
+            "vnd.obsidianmd.plugin.min-app-version": "1.0.0"
           }
         }
       ],
-      "minObsidianVersion": "0.9.12",
-      "repository": "https://github.com/argenos/nldates-obsidian"
+      "minObsidianVersion": "1.0.0",
+      "authorUrl": "https://argentinaos.com/",
+      "repository": "argenos/nldates-obsidian"
     },
     {
       "id": "notebook-navigator",
@@ -26,25 +37,30 @@
       "name": "Notebook Navigator",
       "author": "Johan Sanneblad",
       "description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
-      "introduction": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
+      "introduction": "This plugin replaces the default file explorer in Obsidian with a clean two-pane interface. The left pane features a folder tree and tag browser, while the right pane provides file previews. It supports keyboard navigation, drag-and-drop functionality, pinned notes, and customizable display options to enhance your note organization and navigation experience.",
       "versions": [
         {
           "tag": "2.2.3",
-          "publishedAt": "2026-02-07T16:57:23.461Z",
+          "publishedAt": "2026-02-07T19:37:42.938Z",
           "size": 4579642,
           "annotations": {
-            "org.opencontainers.image.created": "2026-02-06T00:48:03.768Z",
-            "org.opencontainers.image.source": "johansan/notebook-navigator",
-            "org.opencontainers.image.version": "2.2.3",
-            "org.opencontainers.image.description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
-            "org.opencontainers.image.authors": "Johan Sanneblad",
-            "org.opencontainers.image.url": "https://github.com/johansan"
+            "vnd.obsidianmd.plugin.id": "notebook-navigator",
+            "vnd.obsidianmd.plugin.name": "Notebook Navigator",
+            "vnd.obsidianmd.plugin.version": "2.2.3",
+            "vnd.obsidianmd.plugin.description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
+            "vnd.obsidianmd.plugin.author": "Johan Sanneblad",
+            "vnd.obsidianmd.plugin.repo": "johansan/notebook-navigator",
+            "vnd.obsidianmd.plugin.published-at": "2026-02-07T19:27:02.422Z",
+            "vnd.obsidianmd.plugin.converted": "true",
+            "vnd.obsidianmd.plugin.original-repo": "obsidianmd/obsidian-releases",
+            "vnd.obsidianmd.plugin.author-url": "https://github.com/johansan",
+            "vnd.obsidianmd.plugin.min-app-version": "1.8.7"
           }
         }
       ],
       "minObsidianVersion": "1.8.7",
       "authorUrl": "https://github.com/johansan",
-      "repository": "https://github.com/johansan/notebook-navigator"
+      "repository": "johansan/notebook-navigator"
     },
     {
       "id": "shard-installer",
@@ -56,7 +72,7 @@
       "versions": [
         {
           "tag": "0.1.0",
-          "publishedAt": "2026-02-07T16:57:23.845Z",
+          "publishedAt": "2026-02-07T19:37:43.309Z",
           "size": 37061,
           "annotations": {
             "org.opencontainers.image.created": "2026-02-06T01:24:53.879Z",
@@ -71,5 +87,5 @@
       "repository": "https://github.com/shard-for-obsidian/shard"
     }
   ],
-  "generatedAt": "2026-02-07T16:57:23.846Z"
+  "generatedAt": "2026-02-07T19:37:43.309Z"
 }

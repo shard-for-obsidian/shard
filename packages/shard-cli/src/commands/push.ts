@@ -88,7 +88,7 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
     digest: mainJsResult.digest,
     size: mainJsResult.size,
     annotations: {
-      "org.opencontainers.image.title": "main.js",
+      "vnd.obsidianmd.layer.filename": "main.js",
     },
   });
   logger.log(
@@ -106,7 +106,7 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
       digest: stylesCssResult.digest,
       size: stylesCssResult.size,
       annotations: {
-        "org.opencontainers.image.title": "styles.css",
+        "vnd.obsidianmd.layer.filename": "styles.css",
       },
     });
     logger.log(
@@ -119,16 +119,21 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
   const manifest = plugin.manifest.parsed;
 
   const annotations: Record<string, string> = {
-    "org.opencontainers.image.created": new Date().toISOString(),
-    "org.opencontainers.image.source": githubUrl,
-    "org.opencontainers.image.version": manifest.version,
-    "org.opencontainers.image.description": manifest.description,
-    "org.opencontainers.image.authors": manifest.author,
+    "vnd.obsidianmd.plugin.id": manifest.id,
+    "vnd.obsidianmd.plugin.name": manifest.name,
+    "vnd.obsidianmd.plugin.version": manifest.version,
+    "vnd.obsidianmd.plugin.description": manifest.description,
+    "vnd.obsidianmd.plugin.author": manifest.author,
+    "vnd.obsidianmd.plugin.repo": githubUrl,
+    "vnd.obsidianmd.plugin.published-at": new Date().toISOString(),
   };
 
   // Add optional fields if present
   if (manifest.authorUrl) {
-    annotations["org.opencontainers.image.url"] = manifest.authorUrl;
+    annotations["vnd.obsidianmd.plugin.author-url"] = manifest.authorUrl;
+  }
+  if (manifest.minAppVersion) {
+    annotations["vnd.obsidianmd.plugin.min-app-version"] = manifest.minAppVersion;
   }
 
   // Step 5: Push plugin manifest using new method

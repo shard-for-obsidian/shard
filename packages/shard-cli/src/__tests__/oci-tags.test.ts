@@ -30,7 +30,7 @@ describe("OCI Tags Query", () => {
           config: { size: 1234 },
           layers: [{ size: 100000 }, { size: 145678 }],
           annotations: {
-            "org.opencontainers.image.revision": "abc123",
+            "vnd.obsidianmd.plugin.commit": "abc123",
           },
         }),
       }),
@@ -44,7 +44,7 @@ describe("OCI Tags Query", () => {
 
     expect(metadata.publishedAt).toBe("2026-02-06T01:25:08Z");
     expect(metadata.size).toBe(245678); // sum of layers
-    expect(metadata.annotations["org.opencontainers.image.revision"]).toBe(
+    expect(metadata.annotations["vnd.obsidianmd.plugin.commit"]).toBe(
       "abc123",
     );
   });

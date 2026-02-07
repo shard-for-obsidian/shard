@@ -20,7 +20,7 @@ describe("MarketplacePlugin types", () => {
           publishedAt: "2026-02-06T00:00:00Z",
           size: 123456,
           annotations: {
-            "org.opencontainers.image.revision": "abc123",
+            "vnd.obsidianmd.plugin.commit": "abc123",
           },
         },
       ],
