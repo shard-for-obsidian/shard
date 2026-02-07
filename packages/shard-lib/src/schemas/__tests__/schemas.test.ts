@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { ObsidianManifestSchema } from "../manifest.js";
 import { PluginAnnotationsSchema } from "../annotations.js";
+import {
+  MarketplacePluginSchema,
+  PluginVersionSchema,
+} from "../marketplace.js";
 
 describe("ObsidianManifestSchema", () => {
   it("should validate valid manifest", () => {
@@ -91,6 +95,62 @@ describe("PluginAnnotationsSchema", () => {
     };
 
     const result = PluginAnnotationsSchema.safeParse(annotationsWithOptionals);
+    expect(result.success).toBe(true);
+  });
+});
+
+describe("MarketplacePluginSchema", () => {
+  it("should validate valid marketplace plugin", () => {
+    const validPlugin = {
+      id: "test-plugin",
+      registryUrl: "ghcr.io/owner/repo",
+      name: "Test Plugin",
+      author: "Test Author",
+      description: "A test plugin",
+    };
+
+    const result = MarketplacePluginSchema.safeParse(validPlugin);
+    expect(result.success).toBe(true);
+  });
+
+  it("should validate plugin with optional fields", () => {
+    const pluginWithOptionals = {
+      id: "test-plugin",
+      registryUrl: "ghcr.io/owner/repo",
+      name: "Test Plugin",
+      author: "Test Author",
+      description: "A test plugin",
+      license: "MIT",
+      minObsidianVersion: "1.0.0",
+      authorUrl: "https://example.com",
+      repository: "https://github.com/owner/repo",
+      tags: ["productivity", "notes"],
+      introduction: "# Test Plugin\n\nThis is a test.",
+      versions: [
+        {
+          tag: "1.0.0",
+          publishedAt: "2026-02-07T10:00:00Z",
+          size: 12345,
+          annotations: { "vnd.obsidianmd.plugin.id": "test-plugin" },
+        },
+      ],
+    };
+
+    const result = MarketplacePluginSchema.safeParse(pluginWithOptionals);
+    expect(result.success).toBe(true);
+  });
+});
+
+describe("PluginVersionSchema", () => {
+  it("should validate valid plugin version", () => {
+    const validVersion = {
+      tag: "1.0.0",
+      publishedAt: "2026-02-07T10:00:00Z",
+      size: 12345,
+      annotations: {},
+    };
+
+    const result = PluginVersionSchema.safeParse(validVersion);
     expect(result.success).toBe(true);
   });
 });
