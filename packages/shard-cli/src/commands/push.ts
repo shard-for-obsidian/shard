@@ -4,6 +4,7 @@ import type {
   FetchAdapter,
   ObsidianManifest,
 } from "@shard-for-obsidian/lib";
+import { manifestToAnnotations } from "@shard-for-obsidian/lib/schemas";
 import { discoverPlugin } from "../lib/plugin.js";
 import { Logger } from "../lib/logger.js";
 
@@ -118,23 +119,12 @@ export async function pushCommand(opts: PushOptions): Promise<PushResult> {
   const githubUrl = deriveGitHubUrl(ref.remoteName);
   const manifest = plugin.manifest.parsed;
 
-  const annotations: Record<string, string> = {
-    "vnd.obsidianmd.plugin.id": manifest.id,
-    "vnd.obsidianmd.plugin.name": manifest.name,
-    "vnd.obsidianmd.plugin.version": manifest.version,
-    "vnd.obsidianmd.plugin.description": manifest.description,
-    "vnd.obsidianmd.plugin.author": manifest.author,
-    "vnd.obsidianmd.plugin.repo": githubUrl,
-    "vnd.obsidianmd.plugin.published-at": new Date().toISOString(),
-  };
+  // Extract owner/repo from remoteName (e.g., "owner/repo" or "owner/repo/plugin")
+  const repoParts = ref.remoteName.split('/');
+  const ownerRepo = `${repoParts[0]}/${repoParts[1]}`;
 
-  // Add optional fields if present
-  if (manifest.authorUrl) {
-    annotations["vnd.obsidianmd.plugin.author-url"] = manifest.authorUrl;
-  }
-  if (manifest.minAppVersion) {
-    annotations["vnd.obsidianmd.plugin.min-app-version"] = manifest.minAppVersion;
-  }
+  // Use manifestToAnnotations to create annotations with new VCS URL format
+  const annotations = manifestToAnnotations(manifest, ownerRepo);
 
   // Step 5: Push plugin manifest using new method
   logger.log("Pushing plugin manifest...");

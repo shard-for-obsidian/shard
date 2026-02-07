@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type {
   MarketplacePlugin,
-  PluginVersion,
   MarketplaceIndex,
 } from "../lib/marketplace-client.js";
 

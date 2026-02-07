@@ -1,5 +1,6 @@
 import { OciRegistryClient, parseRepoAndRef } from "@shard-for-obsidian/lib";
 import type { FetchAdapter } from "@shard-for-obsidian/lib";
+import { vcsUrlToGitHubUrl } from "@shard-for-obsidian/lib/schemas";
 import { Logger } from "../lib/logger.js";
 import { MarketplaceClient } from "../lib/marketplace-client.js";
 import type { MarketplacePlugin } from "../lib/marketplace-client.js";
@@ -73,9 +74,11 @@ export async function marketplaceRegisterCommand(
   let gitHubRepoUrl: string | undefined;
   if (
     ociManifest.annotations &&
-    ociManifest.annotations["vnd.obsidianmd.plugin.repo"]
+    ociManifest.annotations["vnd.obsidianmd.plugin.source"]
   ) {
-    gitHubRepoUrl = ociManifest.annotations["vnd.obsidianmd.plugin.repo"];
+    gitHubRepoUrl = vcsUrlToGitHubUrl(
+      ociManifest.annotations["vnd.obsidianmd.plugin.source"]
+    );
   }
 
   // Step 5: Build registry URL (use canonical name which includes registry host)
