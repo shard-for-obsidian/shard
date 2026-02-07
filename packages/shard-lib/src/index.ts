@@ -13,3 +13,6 @@ export * from "./errors/RegistryErrors.js";
 export * from "./ghcr/GhcrConstants.js";
 export type { FetchAdapter } from "./client/FetchAdapter.js";
 export type { RegistryClientOptions } from "./client/RegistryClientOptions.js";
+
+// Schema exports
+export * from "./schemas/index.js";

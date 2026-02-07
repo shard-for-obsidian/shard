@@ -44,7 +44,7 @@ describe("marketplace register command", () => {
       },
       layers: [],
       annotations: {
-        "vnd.obsidianmd.plugin.repo": "https://github.com/test/repo",
+        "vnd.obsidianmd.plugin.source": "git+https://github.com/test/repo.git",
       },
     };
 
