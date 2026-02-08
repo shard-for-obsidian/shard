@@ -2,6 +2,74 @@
 
 Utility scripts for managing Shard plugins and registry operations.
 
+## generate-plugin-markdown.sh
+
+Generates markdown documentation files for all Obsidian community plugins in the marketplace.
+
+### Prerequisites
+
+- `jq` command-line JSON processor
+
+### Usage
+
+```bash
+# Run from repository root
+./scripts/generate-plugin-markdown.sh
+```
+
+### What it does
+
+1. Fetches the latest community plugins list from the Obsidian releases repository
+2. Generates a markdown file for each plugin in `apps/marketplace/content/plugins/`
+3. Skips plugins that already have markdown files (won't overwrite existing files)
+4. Creates frontmatter with plugin metadata (id, name, author, description, repository, registryUrl)
+
+### Example output
+
+```
+Fetching community plugins list...
+Found 2726 plugins
+
+Generating markdown files...
+====================
+
+[1/2726] Processing: Natural Language Dates (nldates-obsidian)
+  ✓ Created
+
+[2/2726] Processing: Hotkeys++ (hotkeysplus-obsidian)
+  ℹ Already exists, skipping
+
+...
+
+====================
+Generation Complete
+====================
+Created: 2723
+Skipped: 3
+Failed:  0
+
+Files saved to: ./apps/marketplace/content/plugins
+```
+
+### Generated file format
+
+Each generated markdown file contains:
+
+```markdown
+---
+id: plugin-id
+registryUrl: ghcr.io/shard-for-obsidian/shard/community/plugin-id
+name: Plugin Name
+author: Plugin Author
+description: Short description of the plugin
+repository: https://github.com/author/repo
+---
+
+Short description of the plugin
+```
+
+Additional metadata fields (like `minObsidianVersion`, `authorUrl`, etc.) can be added manually or will be resolved when the marketplace site is built.
+
 ## convert-community-plugins.sh
 
 Batch converts all plugins from the Obsidian community plugins list to OCI format and pushes them to the Shard registry.
