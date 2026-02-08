@@ -10,7 +10,7 @@
       "versions": [
         {
           "tag": "0.6.2",
-          "publishedAt": "2026-02-07T19:37:42.557Z",
+          "publishedAt": "2026-02-07T21:34:47.728Z",
           "size": 1376761,
           "annotations": {
             "vnd.obsidianmd.plugin.id": "nldates-obsidian",
@@ -41,7 +41,7 @@
       "versions": [
         {
           "tag": "2.2.3",
-          "publishedAt": "2026-02-07T19:37:42.938Z",
+          "publishedAt": "2026-02-07T21:34:48.141Z",
           "size": 4579642,
           "annotations": {
             "vnd.obsidianmd.plugin.id": "notebook-navigator",
@@ -72,7 +72,7 @@
       "versions": [
         {
           "tag": "0.1.0",
-          "publishedAt": "2026-02-07T19:37:43.309Z",
+          "publishedAt": "2026-02-07T21:34:48.510Z",
           "size": 37061,
           "annotations": {
             "org.opencontainers.image.created": "2026-02-06T01:24:53.879Z",
@@ -87,5 +87,5 @@
       "repository": "https://github.com/shard-for-obsidian/shard"
     }
   ],
-  "generatedAt": "2026-02-07T19:37:43.309Z"
+  "generatedAt": "2026-02-07T21:34:48.511Z"
 }
