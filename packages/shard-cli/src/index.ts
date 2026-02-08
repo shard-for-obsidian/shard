@@ -13,6 +13,7 @@ import { search } from "./commands/search.js";
 import { info } from "./commands/info.js";
 import { install } from "./commands/install.js";
 import { registryRouteMap } from "./commands/registry/index.js";
+import { configRouteMap } from "./commands/config/index.js";
 
 /**
  * Build the application context with shared services
@@ -55,6 +56,7 @@ const routes = buildRouteMap({
     info,
     install,
     registry: registryRouteMap,
+    config: configRouteMap,
   },
   docs: {
     brief: "Shard CLI - Plugin distribution for Obsidian",

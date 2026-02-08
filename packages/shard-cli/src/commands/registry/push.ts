@@ -13,20 +13,13 @@ export interface PushFlags {
 }
 
 /**
- * Positional arguments for the push command
- */
-export interface PushPositional {
-  directory: string;
-  repository: string;
-}
-
-/**
  * Push an Obsidian plugin to an OCI registry
  */
 async function pushCommandHandler(
   this: AppContext,
   flags: PushFlags,
-  positional: PushPositional,
+  directory: string,
+  repository: string,
 ): Promise<void> {
   const { logger, config, adapter } = this;
 
@@ -49,8 +42,8 @@ async function pushCommandHandler(
 
     // Call the existing push logic
     const result = await pushLogic({
-      directory: positional.directory,
-      repository: positional.repository,
+      directory,
+      repository,
       token,
       logger: legacyLogger,
       adapter,

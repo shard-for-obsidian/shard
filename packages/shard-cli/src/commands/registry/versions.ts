@@ -12,13 +12,6 @@ export interface VersionsFlags {
 }
 
 /**
- * Positional arguments for the versions command
- */
-export interface VersionsPositional {
-  registryUrl: string;
-}
-
-/**
  * Version information with metadata
  */
 interface VersionInfo {
@@ -34,7 +27,7 @@ interface VersionInfo {
 async function versionsCommandHandler(
   this: AppContext,
   flags: VersionsFlags,
-  positional: VersionsPositional,
+  registryUrl: string,
 ): Promise<void> {
   const { logger, config, adapter } = this;
 
@@ -45,11 +38,11 @@ async function versionsCommandHandler(
       process.env.GITHUB_TOKEN ||
       ((await config.get("token")) as string | undefined);
 
-    logger.info(`Querying versions for ${positional.registryUrl}...`);
+    logger.info(`Querying versions for ${registryUrl}...`);
 
     // Step 1: Get all tags
     const tags = await queryOciTags({
-      registryUrl: positional.registryUrl,
+      registryUrl,
       adapter,
       token,
     });
@@ -65,7 +58,7 @@ async function versionsCommandHandler(
     for (const tag of tags) {
       try {
         const metadata = await queryTagMetadata({
-          registryUrl: positional.registryUrl,
+          registryUrl,
           tag,
           adapter,
           token,

@@ -14,19 +14,12 @@ export interface PullFlags {
 }
 
 /**
- * Positional arguments for the pull command
- */
-export interface PullPositional {
-  repository: string;
-}
-
-/**
  * Pull an Obsidian plugin from an OCI registry
  */
 async function pullCommandHandler(
   this: AppContext,
   flags: PullFlags,
-  positional: PullPositional,
+  repository: string,
 ): Promise<void> {
   const { logger, config, adapter } = this;
 
@@ -55,7 +48,7 @@ async function pullCommandHandler(
 
     // Call the existing pull logic
     const result = await pullLogic({
-      repository: positional.repository,
+      repository,
       output,
       token,
       logger: legacyLogger,
