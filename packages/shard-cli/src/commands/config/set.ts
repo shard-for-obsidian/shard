@@ -50,7 +50,7 @@ async function setCommandHandler(
         null,
         2,
       );
-      process.stdout.write(output + "\n");
+      this.process.stdout.write(output + "\n");
       return;
     }
 
@@ -59,7 +59,7 @@ async function setCommandHandler(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Failed to set configuration: ${message}`);
-    process.exit(1);
+    this.process.exit(1);
   }
 }
 

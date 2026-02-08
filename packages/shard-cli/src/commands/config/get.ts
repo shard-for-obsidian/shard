@@ -26,13 +26,13 @@ async function getCommandHandler(
       if (!flags.json) {
         logger.warn(`Configuration key "${key}" not found`);
       }
-      process.exit(1);
+      this.process.exit(1);
     }
 
     // JSON output mode
     if (flags.json) {
       const output = JSON.stringify({ key, value }, null, 2);
-      process.stdout.write(output + "\n");
+      this.process.stdout.write(output + "\n");
       return;
     }
 
@@ -46,7 +46,7 @@ async function getCommandHandler(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Failed to get configuration: ${message}`);
-    process.exit(1);
+    this.process.exit(1);
   }
 }
 

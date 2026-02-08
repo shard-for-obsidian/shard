@@ -35,7 +35,7 @@ async function versionsCommandHandler(
     // Token resolution: flag > env > config (optional for public repos)
     const token =
       flags.token ||
-      process.env.GITHUB_TOKEN ||
+      this.process.env.GITHUB_TOKEN ||
       ((await config.get("token")) as string | undefined);
 
     logger.info(`Querying versions for ${registryUrl}...`);
@@ -77,7 +77,7 @@ async function versionsCommandHandler(
     // JSON output mode
     if (flags.json) {
       const output = JSON.stringify(versions, null, 2);
-      process.stdout.write(output + "\n");
+      this.process.stdout.write(output + "\n");
       return;
     }
 
@@ -102,7 +102,7 @@ async function versionsCommandHandler(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Failed to list versions: ${message}`);
-    process.exit(1);
+    this.process.exit(1);
   }
 }
 

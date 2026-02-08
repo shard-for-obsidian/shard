@@ -52,7 +52,7 @@ async function installCommand(
     if (!plugin) {
       spinner?.fail();
       logger.error(`Plugin "${pluginId}" not found in marketplace`);
-      process.exit(1);
+      this.process.exit(1);
     }
 
     // Step 2: Determine version to install
@@ -61,7 +61,7 @@ async function installCommand(
     if (!versionToInstall) {
       spinner?.fail();
       logger.error(`No versions available for plugin "${pluginId}"`);
-      process.exit(1);
+      this.process.exit(1);
     }
 
     spinner?.succeed(`Found ${plugin.name} (version: ${versionToInstall})`);
@@ -90,7 +90,7 @@ async function installCommand(
       logger.error(
         "GitHub token required. Use --token flag, set GITHUB_TOKEN environment variable, or configure with: shard config set token <token>",
       );
-      process.exit(1);
+      this.process.exit(1);
     }
 
     // Step 4: Download plugin using pullCommand
@@ -123,12 +123,12 @@ async function installCommand(
         output: pullResult.output,
         digest: pullResult.digest,
       };
-      process.stdout.write(JSON.stringify(result, null, 2) + "\n");
+      this.process.stdout.write(JSON.stringify(result, null, 2) + "\n");
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Failed to install plugin: ${message}`);
-    process.exit(1);
+    this.process.exit(1);
   }
 }
 

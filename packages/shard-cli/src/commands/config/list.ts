@@ -24,7 +24,7 @@ async function listCommandHandler(
     // JSON output mode
     if (flags.json) {
       const output = JSON.stringify(allConfig, null, 2);
-      process.stdout.write(output + "\n");
+      this.process.stdout.write(output + "\n");
       return;
     }
 
@@ -57,7 +57,7 @@ async function listCommandHandler(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Failed to list configuration: ${message}`);
-    process.exit(1);
+    this.process.exit(1);
   }
 }
 

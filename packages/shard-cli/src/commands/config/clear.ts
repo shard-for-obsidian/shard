@@ -24,7 +24,7 @@ async function clearCommandHandler(
     // JSON output mode
     if (flags.json) {
       const output = JSON.stringify({ success: true, message: "Configuration cleared" }, null, 2);
-      process.stdout.write(output + "\n");
+      this.process.stdout.write(output + "\n");
       return;
     }
 
@@ -33,7 +33,7 @@ async function clearCommandHandler(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Failed to clear configuration: ${message}`);
-    process.exit(1);
+    this.process.exit(1);
   }
 }
 

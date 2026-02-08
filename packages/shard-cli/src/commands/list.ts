@@ -28,7 +28,7 @@ async function listCommand(
     // JSON output mode
     if (flags.json) {
       const output = JSON.stringify(plugins, null, 2);
-      process.stdout.write(output + "\n");
+      this.process.stdout.write(output + "\n");
       return;
     }
 
@@ -71,7 +71,7 @@ async function listCommand(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Failed to list plugins: ${message}`);
-    process.exit(1);
+    this.process.exit(1);
   }
 }
 

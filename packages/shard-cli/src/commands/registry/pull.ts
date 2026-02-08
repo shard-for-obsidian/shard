@@ -26,14 +26,14 @@ async function pullCommandHandler(
     // Token resolution: flag > env > config
     const token =
       flags.token ||
-      process.env.GITHUB_TOKEN ||
+      this.process.env.GITHUB_TOKEN ||
       ((await config.get("token")) as string | undefined);
 
     if (!token) {
       logger.error(
         "GitHub token is required. Provide via --token flag, GITHUB_TOKEN env var, or config.",
       );
-      process.exit(1);
+      this.process.exit(1);
     }
 
     // Output directory resolution: flag > config default > current directory
@@ -54,7 +54,7 @@ async function pullCommandHandler(
     // JSON output mode
     if (flags.json) {
       const output = JSON.stringify(result, null, 2);
-      process.stdout.write(output + "\n");
+      this.process.stdout.write(output + "\n");
       return;
     }
 
@@ -62,7 +62,7 @@ async function pullCommandHandler(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Failed to pull plugin: ${message}`);
-    process.exit(1);
+    this.process.exit(1);
   }
 }
 

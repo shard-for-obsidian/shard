@@ -28,13 +28,13 @@ async function infoCommand(
 
     if (!plugin) {
       logger.error(`Plugin "${pluginId}" not found in marketplace`);
-      process.exit(1);
+      this.process.exit(1);
     }
 
     // JSON output mode
     if (flags.json) {
       const output = JSON.stringify(plugin, null, 2);
-      process.stdout.write(output + "\n");
+      this.process.stdout.write(output + "\n");
       return;
     }
 
@@ -114,7 +114,7 @@ async function infoCommand(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Failed to fetch plugin info: ${message}`);
-    process.exit(1);
+    this.process.exit(1);
   }
 }
 
