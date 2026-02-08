@@ -76,7 +76,8 @@ export const pull = buildCommand({
       kind: "tuple",
       parameters: [
         {
-          brief: "OCI repository with tag or digest (e.g., ghcr.io/owner/repo:tag)",
+          brief:
+            "OCI repository with tag or digest (e.g., ghcr.io/owner/repo:tag)",
           parse: String,
           placeholder: "repository",
         },
@@ -98,12 +99,12 @@ export const pull = buildCommand({
       json: {
         kind: "boolean",
         brief: "Output JSON instead of human-readable format",
-        default: false,
+        optional: true,
       },
       verbose: {
         kind: "boolean",
         brief: "Show detailed output",
-        default: false,
+        optional: true,
       },
     },
     aliases: {},

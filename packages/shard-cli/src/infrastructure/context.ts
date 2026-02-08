@@ -1,15 +1,6 @@
 import type { CliLogger } from "./logger.js";
 import type { ConfigService } from "./config.js";
-
-/**
- * Adapter interface for OCI operations
- * This will be implemented by the OCI adapter
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface Adapter {
-  // Placeholder - actual adapter methods will be defined later
-  // when implementing OCI operations
-}
+import type { FetchAdapter } from "@shard-for-obsidian/lib";
 
 /**
  * Application context containing shared services and configuration
@@ -17,11 +8,13 @@ export interface Adapter {
  * - Logger: For output and logging
  * - Config: For persistent configuration
  * - Adapter: For OCI registry operations
+ * - Process: For process-level operations (exit codes, stdio)
  */
 export interface AppContext {
   logger: CliLogger;
   config: ConfigService;
-  adapter: Adapter;
+  adapter: FetchAdapter;
+  process: NodeJS.Process;
 }
 
 /**
@@ -31,11 +24,12 @@ export interface AppContext {
 export function createContext(options: {
   logger: CliLogger;
   config: ConfigService;
-  adapter: Adapter;
+  adapter: FetchAdapter;
 }): AppContext {
   return {
     logger: options.logger,
     config: options.config,
     adapter: options.adapter,
+    process,
   };
 }

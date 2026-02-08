@@ -137,12 +137,12 @@ export const info = buildCommand({
       json: {
         kind: "boolean",
         brief: "Output JSON instead of human-readable format",
-        default: false,
+        optional: true,
       },
       verbose: {
         kind: "boolean",
         brief: "Show all versions and additional details",
-        default: false,
+        optional: true,
       },
     },
     aliases: {},

@@ -26,8 +26,9 @@ async function installCommand(
  * Build the install command
  */
 export const install = buildCommand({
-  loader: async () => installCommand,
+  func: installCommand,
   parameters: {
+    positional: { kind: "tuple", parameters: [] },
     flags: {
       json: {
         kind: "boolean",
@@ -40,8 +41,10 @@ export const install = buildCommand({
         optional: true,
       },
     },
+    aliases: {},
   },
   docs: {
     brief: "Install shell completion (coming soon)",
+    customUsage: [],
   },
 });

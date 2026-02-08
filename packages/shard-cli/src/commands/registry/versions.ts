@@ -132,12 +132,12 @@ export const versions = buildCommand({
       json: {
         kind: "boolean",
         brief: "Output JSON instead of human-readable format",
-        default: false,
+        optional: true,
       },
       verbose: {
         kind: "boolean",
         brief: "Show additional version details including annotations",
-        default: false,
+        optional: true,
       },
     },
     aliases: {},

@@ -70,12 +70,12 @@ export const get = buildCommand({
       json: {
         kind: "boolean",
         brief: "Output JSON instead of human-readable format",
-        default: false,
+        optional: true,
       },
       verbose: {
         kind: "boolean",
         brief: "Show detailed output",
-        default: false,
+        optional: true,
       },
     },
     aliases: {},

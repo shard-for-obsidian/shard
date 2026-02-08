@@ -74,11 +74,8 @@ const app = buildApplication(routes, {
 // Determine log mode from command line args
 const logMode = determineLogMode(process.argv.slice(2));
 
-// Build context with process and our app context
-const context = {
-  process,
-  ...buildAppContext(logMode),
-};
+// Build context - buildAppContext already includes process
+const context = buildAppContext(logMode);
 
 // Run the application
 await run(app, process.argv.slice(2), context);
