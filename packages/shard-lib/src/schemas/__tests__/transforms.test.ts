@@ -1,7 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, test } from "vitest";
 import {
   repoToVcsUrl,
   vcsUrlToGitHubUrl,
+  ghcrUrlToGitHubRepo,
   manifestToAnnotations,
   annotationsToMarketplacePlugin,
 } from "../transforms.js";
@@ -30,6 +31,44 @@ describe("vcsUrlToGitHubUrl", () => {
 
   it("should throw on invalid VCS URL", () => {
     expect(() => vcsUrlToGitHubUrl("https://github.com/owner/repo")).toThrow();
+  });
+});
+
+describe("ghcrUrlToGitHubRepo", () => {
+  test("converts standard GHCR URL", () => {
+    expect(ghcrUrlToGitHubRepo("ghcr.io/owner/repo")).toBe(
+      "https://github.com/owner/repo"
+    );
+  });
+
+  test("converts GHCR URL with subpath", () => {
+    expect(
+      ghcrUrlToGitHubRepo("ghcr.io/shard-for-obsidian/shard/community/plugin")
+    ).toBe("https://github.com/shard-for-obsidian/shard");
+  });
+
+  test("handles URL with https protocol", () => {
+    expect(ghcrUrlToGitHubRepo("https://ghcr.io/owner/repo")).toBe(
+      "https://github.com/owner/repo"
+    );
+  });
+
+  test("handles URL with http protocol", () => {
+    expect(ghcrUrlToGitHubRepo("http://ghcr.io/owner/repo")).toBe(
+      "https://github.com/owner/repo"
+    );
+  });
+
+  test("throws on invalid URL with single segment", () => {
+    expect(() => ghcrUrlToGitHubRepo("ghcr.io/invalid")).toThrow(
+      "Invalid GHCR URL: ghcr.io/invalid"
+    );
+  });
+
+  test("throws on invalid URL with no segments", () => {
+    expect(() => ghcrUrlToGitHubRepo("ghcr.io/")).toThrow(
+      "Invalid GHCR URL: ghcr.io/"
+    );
   });
 });
 
