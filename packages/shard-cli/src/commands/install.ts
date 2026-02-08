@@ -3,7 +3,6 @@ import type { AppContext } from "../infrastructure/context.js";
 import { createSpinner } from "../infrastructure/progress.js";
 import { MarketplaceClient } from "../lib/marketplace-client.js";
 import { resolveAuthToken } from "../lib/auth.js";
-import { Logger } from "../lib/logger.js";
 import { pullCommand } from "./pull.js";
 
 /**
@@ -99,15 +98,12 @@ async function installCommand(
 
     const repository = `${plugin.registryUrl}:${versionToInstall}`;
 
-    // Create a Logger instance for pullCommand (uses lib/logger.ts, not infrastructure/logger.ts)
-    // Silent in json mode, verbose shows debug messages
-    const pullLogger = new Logger(flags.json);
-
+    // Use CliLogger from context
     const pullResult = await pullCommand({
       repository,
       output: flags.output,
       token,
-      logger: pullLogger,
+      logger,
       adapter,
     });
 

@@ -1,7 +1,6 @@
 import { buildCommand } from "@stricli/core";
 import type { AppContext } from "../../infrastructure/context.js";
 import { pullCommand as pullLogic } from "../pull.js";
-import { Logger } from "../../lib/logger.js";
 
 /**
  * Flags for the pull command
@@ -43,15 +42,12 @@ async function pullCommandHandler(
       ((await config.get("defaults.output")) as string | undefined) ||
       ".";
 
-    // Create a Logger instance for the pull logic
-    const legacyLogger = new Logger();
-
-    // Call the existing pull logic
+    // Call the existing pull logic with CliLogger
     const result = await pullLogic({
       repository,
       output,
       token,
-      logger: legacyLogger,
+      logger,
       adapter,
     });
 

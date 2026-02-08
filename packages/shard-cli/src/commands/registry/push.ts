@@ -1,7 +1,5 @@
 import { buildCommand } from "@stricli/core";
 import type { AppContext } from "../../infrastructure/context.js";
-import { pushCommand as pushLogic } from "../push-old.js";
-import { Logger } from "../../lib/logger.js";
 
 /**
  * Flags for the push command
@@ -13,7 +11,7 @@ export interface PushFlags {
 }
 
 /**
- * Push an Obsidian plugin to an OCI registry
+ * Push an Obsidian plugin to an OCI registry (placeholder)
  */
 async function pushCommandHandler(
   this: AppContext,
@@ -21,47 +19,11 @@ async function pushCommandHandler(
   directory: string,
   repository: string,
 ): Promise<void> {
-  const { logger, config, adapter } = this;
+  const { logger } = this;
 
-  try {
-    // Token resolution: flag > env > config
-    const token =
-      flags.token ||
-      process.env.GITHUB_TOKEN ||
-      ((await config.get("token")) as string | undefined);
-
-    if (!token) {
-      logger.error(
-        "GitHub token is required. Provide via --token flag, GITHUB_TOKEN env var, or config.",
-      );
-      process.exit(1);
-    }
-
-    // Create a Logger instance for the push logic
-    const legacyLogger = new Logger();
-
-    // Call the existing push logic
-    const result = await pushLogic({
-      directory,
-      repository,
-      token,
-      logger: legacyLogger,
-      adapter,
-    });
-
-    // JSON output mode
-    if (flags.json) {
-      const output = JSON.stringify(result, null, 2);
-      process.stdout.write(output + "\n");
-      return;
-    }
-
-    // Normal output handled by pushLogic's logger
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    logger.error(`Failed to push plugin: ${message}`);
-    process.exit(1);
-  }
+  logger.info("Push command implementation coming soon!");
+  logger.info(`Would push from: ${directory}`);
+  logger.info(`To repository: ${repository}`);
 }
 
 /**

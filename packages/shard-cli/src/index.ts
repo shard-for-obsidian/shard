@@ -12,8 +12,6 @@ import { list } from "./commands/list.js";
 import { search } from "./commands/search.js";
 import { info } from "./commands/info.js";
 import { install } from "./commands/install.js";
-import { publish } from "./commands/publish.js";
-import { convert } from "./commands/convert.js";
 import { registryRouteMap } from "./commands/registry/index.js";
 import { configRouteMap } from "./commands/config/index.js";
 import { completionRouteMap } from "./commands/completion/index.js";
@@ -58,8 +56,6 @@ const routes = buildRouteMap({
     search,
     info,
     install,
-    publish,
-    convert,
     registry: registryRouteMap,
     config: configRouteMap,
     completion: completionRouteMap,

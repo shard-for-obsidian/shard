@@ -2,13 +2,13 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { OciRegistryClient, parseRepoAndRef } from "@shard-for-obsidian/lib";
 import type { FetchAdapter } from "@shard-for-obsidian/lib";
-import { Logger } from "../lib/logger.js";
+import { CliLogger } from "../infrastructure/logger.js";
 
 export interface PullOptions {
   repository: string;
   output: string;
   token: string;
-  logger: Logger;
+  logger: CliLogger;
   adapter: FetchAdapter;
 }
 
@@ -28,7 +28,7 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
   const { repository, output, token, logger, adapter } = opts;
 
   // Step 1: Parse repository reference
-  logger.log(`Pulling ${repository}...`);
+  logger.info(`Pulling ${repository}...`);
   const ref = parseRepoAndRef(repository);
 
   if (!ref.tag && !ref.digest) {
@@ -43,23 +43,23 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
   });
 
   // Step 2: Fetch manifest and extract plugin manifest from config
-  logger.log("Fetching manifest...");
+  logger.info("Fetching manifest...");
   const refString = ref.tag || ref.digest || "";
   const pullResult = await client.pullPluginManifest({ ref: refString });
   const manifest = pullResult.manifest;
 
-  logger.log(`Manifest digest: ${pullResult.manifestDigest}`);
+  logger.info(`Manifest digest: ${pullResult.manifestDigest}`);
 
   // Step 3: Create output directory if needed
   const absOutput = path.resolve(output);
-  logger.log(`Creating output directory: ${absOutput}`);
+  logger.info(`Creating output directory: ${absOutput}`);
   await fs.mkdir(absOutput, { recursive: true });
 
   // Step 4: Write manifest.json from config
   const manifestPath = path.join(absOutput, "manifest.json");
   const manifestJson = JSON.stringify(pullResult.pluginManifest, null, 2);
   await fs.writeFile(manifestPath, manifestJson, "utf-8");
-  logger.log(`Wrote manifest.json (${manifestJson.length} bytes)`);
+  logger.info(`Wrote manifest.json (${manifestJson.length} bytes)`);
 
   const files: string[] = ["manifest.json"];
 
@@ -73,7 +73,7 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
       );
     }
 
-    logger.log(`Downloading ${filename}...`);
+    logger.info(`Downloading ${filename}...`);
 
     // Download blob
     const blobResult = await client.downloadBlob({
@@ -85,12 +85,12 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
     const buffer = Buffer.from(blobResult.buffer);
     await fs.writeFile(filePath, buffer);
 
-    logger.log(`Wrote ${filename} (${buffer.length} bytes)`);
+    logger.info(`Wrote ${filename} (${buffer.length} bytes)`);
     files.push(filename);
   }
 
   logger.success(`Successfully pulled ${repository}`);
-  logger.log(`Files extracted to: ${absOutput}`);
+  logger.info(`Files extracted to: ${absOutput}`);
 
   return {
     files,
