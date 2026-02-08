@@ -11,6 +11,7 @@ import { NodeFetchAdapter } from "./adapters/node-fetch-adapter.js";
 import { list } from "./commands/list.js";
 import { search } from "./commands/search.js";
 import { info } from "./commands/info.js";
+import { install } from "./commands/install.js";
 
 /**
  * Build the application context with shared services
@@ -51,6 +52,7 @@ const routes = buildRouteMap({
     list,
     search,
     info,
+    install,
   },
   docs: {
     brief: "Shard CLI - Plugin distribution for Obsidian",
