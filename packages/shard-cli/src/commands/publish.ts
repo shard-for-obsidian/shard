@@ -1,36 +1,35 @@
 import { buildCommand } from "@stricli/core";
 import type { AppContext } from "../infrastructure/context.js";
-import { convertCommand as convertLogic } from "./convert-old.js";
+import { pushCommand } from "./push-old.js";
 import { Logger } from "../lib/logger.js";
 
 /**
- * Flags for the convert command
+ * Flags for the publish command
  */
-export interface ConvertFlags {
-  version?: string;
+export interface PublishFlags {
   token?: string;
   json?: boolean;
   verbose?: boolean;
 }
 
 /**
- * Result returned by the convert command
+ * Result returned by the publish command
  */
-export interface ConvertResult {
-  pluginId: string;
-  version: string;
+export interface PublishResult {
   digest: string;
+  version: string;
   repository: string;
   size: number;
 }
 
 /**
- * Convert a legacy Obsidian plugin from GitHub releases to OCI format.
+ * Publish an Obsidian plugin to an OCI registry.
+ * Combines the old register/update commands.
  */
-async function convertCommandHandler(
+async function publishCommandHandler(
   this: AppContext,
-  flags: ConvertFlags,
-  pluginId: string,
+  flags: PublishFlags,
+  directory: string,
   repository: string,
 ): Promise<void> {
   const { logger, config, adapter } = this;
@@ -49,14 +48,13 @@ async function convertCommandHandler(
       process.exit(1);
     }
 
-    // Create a Logger instance for the convert logic
+    // Create a Logger instance for the push logic
     const legacyLogger = new Logger(flags.json);
 
-    // Call the existing convert logic
-    const result = await convertLogic({
-      pluginId,
+    // Call the existing push logic
+    const result = await pushCommand({
+      directory,
       repository,
-      version: flags.version,
       token,
       logger: legacyLogger,
       adapter,
@@ -64,10 +62,9 @@ async function convertCommandHandler(
 
     // JSON output mode
     if (flags.json) {
-      const output: ConvertResult = {
-        pluginId: result.pluginId,
-        version: result.version,
+      const output: PublishResult = {
         digest: result.digest,
+        version: result.tag,
         repository: result.repository,
         size: result.size,
       };
@@ -75,47 +72,41 @@ async function convertCommandHandler(
       return;
     }
 
-    // Normal output: show additional summary
+    // Normal output: show summary
     logger.success(
-      `Converted and published ${result.pluginId} version ${result.version}`,
+      `Published ${repository} version ${result.tag}`,
     );
     logger.info(`Digest: ${result.digest}`);
     logger.info(`Size: ${result.size} bytes`);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    logger.error(`Failed to convert plugin: ${message}`);
+    logger.error(`Failed to publish plugin: ${message}`);
     process.exit(1);
   }
 }
 
 /**
- * Build the convert command
+ * Build the publish command
  */
-export const convert = buildCommand({
-  func: convertCommandHandler,
+export const publish = buildCommand({
+  func: publishCommandHandler,
   parameters: {
     positional: {
       kind: "tuple",
       parameters: [
         {
-          brief: "Plugin ID from community plugins list",
+          brief: "Directory containing the plugin files",
           parse: String,
-          placeholder: "pluginId",
+          placeholder: "directory",
         },
         {
-          brief: "Target OCI repository (e.g., ghcr.io/owner/repo)",
+          brief: "OCI repository (e.g., ghcr.io/owner/repo)",
           parse: String,
           placeholder: "repository",
         },
       ],
     },
     flags: {
-      version: {
-        kind: "parsed",
-        parse: String,
-        brief: "Specific version to convert (default: latest)",
-        optional: true,
-      },
       token: {
         kind: "parsed",
         parse: String,
@@ -134,18 +125,17 @@ export const convert = buildCommand({
       },
     },
     aliases: {
-      v: "version",
       t: "token",
     },
   },
   docs: {
-    brief: "Convert legacy plugin to OCI format",
+    brief: "Publish plugin to registry",
     description:
-      "Convert a legacy Obsidian plugin from GitHub releases to OCI format and publish to a registry.",
+      "Publish an Obsidian plugin to an OCI registry. Replaces the old register/update commands.",
     customUsage: [
-      "shard convert obsidian-git ghcr.io/user/obsidian-git",
-      "shard convert obsidian-git ghcr.io/user/obsidian-git --version 2.10.0",
-      "shard convert dataview ghcr.io/user/dataview --token ghp_xxx",
+      "shard publish ./dist ghcr.io/user/my-plugin",
+      "shard publish ./build ghcr.io/user/my-plugin:1.0.0",
+      "shard publish ./dist ghcr.io/user/my-plugin --token ghp_xxx",
     ],
   },
 });
