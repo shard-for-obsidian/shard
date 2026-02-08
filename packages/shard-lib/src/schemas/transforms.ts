@@ -34,14 +34,38 @@ export function vcsUrlToGitHubUrl(vcsUrl: string): string {
 }
 
 /**
+ * Extract GitHub repository URL from GHCR registry URL
+ * @param registryUrl - GHCR URL (e.g., "ghcr.io/owner/repo/path")
+ * @returns GitHub repository URL (e.g., "https://github.com/owner/repo")
+ * @throws Error if GHCR URL format is invalid
+ */
+export function ghcrUrlToGitHubRepo(registryUrl: string): string {
+  // Remove protocol if present
+  const normalized = registryUrl.replace(/^https?:\/\//, "");
+
+  // Remove ghcr.io/ prefix
+  const path = normalized.replace(/^ghcr\.io\//, "");
+
+  // Extract first two segments (owner/repo)
+  const segments = path.split("/");
+  if (segments.length < 2) {
+    throw new Error(`Invalid GHCR URL: ${registryUrl}`);
+  }
+
+  return `https://github.com/${segments[0]}/${segments[1]}`;
+}
+
+/**
  * Create OCI annotations from Obsidian manifest
  * @param manifest - Obsidian plugin manifest
  * @param repo - Repository in "owner/repo" format
+ * @param registryUrl - GHCR registry URL (e.g., "ghcr.io/owner/repo/path")
  * @returns OCI manifest annotations
  */
 export function manifestToAnnotations(
   manifest: ObsidianManifest,
   repo: string,
+  registryUrl: string,
 ): PluginAnnotations {
   const annotations: Record<string, string> = {
     "vnd.obsidianmd.plugin.id": manifest.id,
@@ -51,6 +75,7 @@ export function manifestToAnnotations(
     "vnd.obsidianmd.plugin.author": manifest.author,
     "vnd.obsidianmd.plugin.source": repoToVcsUrl(repo),
     "vnd.obsidianmd.plugin.published-at": new Date().toISOString(),
+    "org.opencontainers.image.source": ghcrUrlToGitHubRepo(registryUrl),
   };
 
   // Add optional fields if present

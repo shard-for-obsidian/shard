@@ -16,25 +16,7 @@ The official Obsidian plugin system has several limitations that Shard aims to a
 
 The all or nothing approach of the official Obsidian plugin system forces users to either trust all community plugins or none at all. Shard aims to provide a more granular approach to plugin trust and verification.
 
-## Components
-
-- **Core Library**: A TypeScript library for interacting with GHCR, including functions for pushing, pulling, and managing plugin packages.
-- **Plugin Installer**: A plugin for Obsidian that allows users to browse, install, and manage plugins from GHCR repositories.
-- **CLI Tool**: A command-line interface for developers to easily push and pull plugins to/from GHCR.
-
-## Feature Roadmap
-
-- [x] Core library for GHCR interaction
-- [x] Obsidian plugin installer
-- [x] CLI tool for plugin management
-  - [x] Push plugins to GHCR
-  - [x] Pull plugins from GHCR
-  - [x] Marketplace registration and version querying
-- [x] GitHub hosted community marketplace for Shard plugins
-  - [x] Dynamic version querying from OCI registries
-  - [x] Individual plugin pages with markdown descriptions
-  - [x] Hugo-based static site generation
-- [x] Legacy Obsidian community plugin directory integration. Simple cli tooling for fetching an existing community plugin and packaging it as a Shard plugin.
+Though plugins have their source repository validated before being included in the community directory, there is no guarantee that the plugin bundle itself has not been tampered with after the fact. Further, subsequent releases don't receive any validation at all. By leveraging GHCR's support for image signing and vulnerability scanning, Shard can provide a more secure plugin distribution mechanism.
 
 ## Planned features
 
@@ -45,60 +27,3 @@ The all or nothing approach of the official Obsidian plugin system forces users 
 - [ ] Plugin signing and verification
 - [ ] Documentation and examples for developers
 - [ ] GitHub Actions for automated plugin publishing
-
-## Monorepo Structure
-
-This repository is organized as a pnpm monorepo with three packages:
-
-- **@shard-for-obsidian/lib** (`packages/shard-lib/`) - Core OCI registry client library
-- **shard-installer** (`packages/shard-installer/`) - Plugin installer for Obsidian
-- **@shard-for-obsidian/cli** (`packages/shard-cli/`) - CLI tool for pushing/pulling plugins to/from GHCR
-
-## NPM Packages
-
-This monorepo publishes two packages to npm:
-
-- **[@shard-for-obsidian/cli](https://www.npmjs.com/package/@shard-for-obsidian/cli)**: CLI tool for managing Obsidian plugins via GHCR
-- **[@shard-for-obsidian/lib](https://www.npmjs.com/package/@shard-for-obsidian/lib)**: Core library for OCI registry operations
-
-See [NPM_PUBLICATION.md](docs/NPM_PUBLICATION.md) for details on versioning and releasing.
-
-### Installation
-
-Install the CLI globally:
-
-```bash
-npm install -g @shard-for-obsidian/cli
-```
-
-Or use the library in your project:
-
-```bash
-npm install @shard-for-obsidian/lib
-```
-
-### Development
-
-Install dependencies:
-
-```bash
-pnpm install
-```
-
-Build all packages:
-
-```bash
-pnpm build
-```
-
-Build individual package:
-
-```bash
-cd packages/shard-installer && pnpm build
-```
-
-Lint:
-
-```bash
-pnpm lint
-```

@@ -174,8 +174,9 @@ export GITHUB_TOKEN=ghp_your_token_here
 1. Fetches the latest community plugins list from GitHub
 2. Converts each plugin using `shard convert`
 3. Pushes to `ghcr.io/shard-for-obsidian/shard/community/<plugin-id>`
-4. Logs each conversion to `./conversion-logs/<plugin-id>.log`
-5. Shows progress and summary statistics
+4. Adds `org.opencontainers.image.source` annotation for package permission inheritance
+5. Logs each conversion to `./conversion-logs/<plugin-id>.log`
+6. Shows progress and summary statistics
 
 ### Options
 

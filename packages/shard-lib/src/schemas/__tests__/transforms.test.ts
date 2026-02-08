@@ -1,7 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, test } from "vitest";
 import {
   repoToVcsUrl,
   vcsUrlToGitHubUrl,
+  ghcrUrlToGitHubRepo,
   manifestToAnnotations,
   annotationsToMarketplacePlugin,
 } from "../transforms.js";
@@ -33,6 +34,44 @@ describe("vcsUrlToGitHubUrl", () => {
   });
 });
 
+describe("ghcrUrlToGitHubRepo", () => {
+  test("converts standard GHCR URL", () => {
+    expect(ghcrUrlToGitHubRepo("ghcr.io/owner/repo")).toBe(
+      "https://github.com/owner/repo"
+    );
+  });
+
+  test("converts GHCR URL with subpath", () => {
+    expect(
+      ghcrUrlToGitHubRepo("ghcr.io/shard-for-obsidian/shard/community/plugin")
+    ).toBe("https://github.com/shard-for-obsidian/shard");
+  });
+
+  test("handles URL with https protocol", () => {
+    expect(ghcrUrlToGitHubRepo("https://ghcr.io/owner/repo")).toBe(
+      "https://github.com/owner/repo"
+    );
+  });
+
+  test("handles URL with http protocol", () => {
+    expect(ghcrUrlToGitHubRepo("http://ghcr.io/owner/repo")).toBe(
+      "https://github.com/owner/repo"
+    );
+  });
+
+  test("throws on invalid URL with single segment", () => {
+    expect(() => ghcrUrlToGitHubRepo("ghcr.io/invalid")).toThrow(
+      "Invalid GHCR URL: ghcr.io/invalid"
+    );
+  });
+
+  test("throws on invalid URL with no segments", () => {
+    expect(() => ghcrUrlToGitHubRepo("ghcr.io/")).toThrow(
+      "Invalid GHCR URL: ghcr.io/"
+    );
+  });
+});
+
 describe("manifestToAnnotations", () => {
   it("should create annotations from manifest", () => {
     const manifest = {
@@ -44,7 +83,11 @@ describe("manifestToAnnotations", () => {
       author: "Test Author",
     };
 
-    const result = manifestToAnnotations(manifest, "owner/repo");
+    const result = manifestToAnnotations(
+      manifest,
+      "owner/repo",
+      "ghcr.io/owner/repo"
+    );
 
     expect(result["vnd.obsidianmd.plugin.id"]).toBe("test-plugin");
     expect(result["vnd.obsidianmd.plugin.name"]).toBe("Test Plugin");
@@ -68,12 +111,58 @@ describe("manifestToAnnotations", () => {
       authorUrl: "https://example.com",
     };
 
-    const result = manifestToAnnotations(manifest, "owner/repo");
+    const result = manifestToAnnotations(
+      manifest,
+      "owner/repo",
+      "ghcr.io/owner/repo"
+    );
 
     expect(result["vnd.obsidianmd.plugin.author-url"]).toBe(
       "https://example.com",
     );
     expect(result["vnd.obsidianmd.plugin.min-app-version"]).toBe("1.0.0");
+  });
+
+  test("includes org.opencontainers.image.source annotation", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "0.15.0",
+      description: "A test plugin",
+      author: "Test Author",
+    };
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      "owner/repo",
+      "ghcr.io/shard-for-obsidian/shard/community/test-plugin"
+    );
+
+    expect(annotations["org.opencontainers.image.source"]).toBe(
+      "https://github.com/shard-for-obsidian/shard"
+    );
+  });
+
+  test("includes org.opencontainers.image.source with nested path", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "0.15.0",
+      description: "A test plugin",
+      author: "Test Author",
+    };
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      "owner/repo",
+      "ghcr.io/org/repo/deeply/nested/path"
+    );
+
+    expect(annotations["org.opencontainers.image.source"]).toBe(
+      "https://github.com/org/repo"
+    );
   });
 });
 
@@ -87,6 +176,7 @@ describe("annotationsToMarketplacePlugin", () => {
       "vnd.obsidianmd.plugin.author": "Test Author",
       "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
+      "org.opencontainers.image.source": "https://github.com/owner/repo",
     };
 
     const result = annotationsToMarketplacePlugin(
@@ -109,6 +199,7 @@ describe("annotationsToMarketplacePlugin", () => {
       "vnd.obsidianmd.plugin.author": "Test Author",
       "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
+      "org.opencontainers.image.source": "https://github.com/owner/repo",
       "vnd.obsidianmd.plugin.author-url": "https://example.com",
       "vnd.obsidianmd.plugin.min-app-version": "1.0.0",
     };
