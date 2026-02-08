@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import type {
   MarketplacePlugin,
   MarketplaceIndex,
-} from "../lib/marketplace-client.js";
+} from "@shard-for-obsidian/lib";
 
 describe("MarketplacePlugin types", () => {
   it("should support plugin with introduction and versions", () => {
