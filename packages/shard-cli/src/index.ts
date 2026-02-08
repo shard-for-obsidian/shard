@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { buildApplication, buildRouteMap, run } from "@stricli/core";
 import * as os from "node:os";
 import * as path from "node:path";
