@@ -32,7 +32,7 @@
 
   <Card.Content class="flex-1 py-0">
     <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
-      {plugin.description}
+      {plugin.description.trim() || "No description provided."}
     </p>
 
     <div class="text-xs text-muted-foreground space-y-1">

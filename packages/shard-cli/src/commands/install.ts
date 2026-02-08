@@ -46,7 +46,7 @@ async function installCommand(
     );
     spinner?.start();
 
-    const client = new MarketplaceClient(adapter);
+    const client = new MarketplaceClient({ adapter });
     const plugin = await client.findPluginById(pluginId);
 
     if (!plugin) {

@@ -16,3 +16,12 @@ export type { RegistryClientOptions } from "./client/RegistryClientOptions.js";
 
 // Schema exports
 export * from "./schemas/index.js";
+
+// OCI exports
+export * from "./oci/index.js";
+
+// Marketplace exports
+export * from "./marketplace/index.js";
+
+// Adapter exports
+export * from "./adapters/index.js";

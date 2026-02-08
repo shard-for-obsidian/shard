@@ -20,7 +20,7 @@ async function listCommand(
   const { logger, adapter } = this;
 
   try {
-    const client = new MarketplaceClient(adapter);
+    const client = new MarketplaceClient({ adapter });
 
     logger.info("Fetching marketplace plugins...");
     const plugins = await client.fetchPlugins();

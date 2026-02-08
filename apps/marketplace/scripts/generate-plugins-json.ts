@@ -14,25 +14,17 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import matter from "gray-matter";
-import { queryOciTags, queryTagMetadata } from "../../packages/shard-cli/src/lib/oci-tags.js";
-import type { FetchAdapter } from "../../packages/shard-lib/src/client/FetchAdapter.js";
-import type { MarketplacePlugin, PluginVersion, MarketplaceIndex } from "../../packages/shard-installer/src/marketplace/types.js";
+import {
+  queryOciTags,
+  queryTagMetadata,
+  NodeFetchAdapter,
+  type MarketplacePlugin,
+  type PluginVersion,
+  type MarketplaceIndex,
+} from "@shard-for-obsidian/lib";
 
-// Node.js fetch adapter
-const nodeFetchAdapter: FetchAdapter = {
-  fetch: async (url, options) => {
-    const response = await fetch(url, options);
-    return {
-      ok: response.ok,
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers,
-      json: async () => response.json(),
-      text: async () => response.text(),
-      arrayBuffer: async () => response.arrayBuffer(),
-    };
-  },
-};
+// Create Node.js fetch adapter
+const nodeFetchAdapter = new NodeFetchAdapter();
 
 interface PluginFrontmatter {
   id: string;
@@ -50,17 +42,11 @@ interface PluginFrontmatter {
 async function generatePluginsJson(): Promise<void> {
   console.log("🔨 Generating plugins.json from markdown files...\n");
 
-  const pluginsDir = path.join(process.cwd(), "marketplace/plugins");
-  const dataDir = path.join(process.cwd(), "marketplace/data");
-  const staticDir = path.join(process.cwd(), "marketplace/static");
+  const pluginsDir = path.join(process.cwd(), "apps/marketplace/content/plugins");
   const appsStaticDir = path.join(process.cwd(), "apps/marketplace/static");
-  const outputPath = path.join(dataDir, "plugins.json");
-  const staticOutputPath = path.join(staticDir, "plugins.json");
   const appsOutputPath = path.join(appsStaticDir, "plugins.json");
 
   // Ensure directories exist
-  await fs.mkdir(dataDir, { recursive: true });
-  await fs.mkdir(staticDir, { recursive: true });
   await fs.mkdir(appsStaticDir, { recursive: true });
 
   // Read all markdown files
@@ -157,19 +143,11 @@ async function generatePluginsJson(): Promise<void> {
     generatedAt: new Date().toISOString(),
   };
 
-  // Write to data directory
+  // Write to SvelteKit static directory
   const jsonContent = JSON.stringify(index, null, 2);
-  await fs.writeFile(outputPath, jsonContent, "utf-8");
-
-  // Copy to Hugo static directory
-  await fs.writeFile(staticOutputPath, jsonContent, "utf-8");
-
-  // Copy to SvelteKit static directory
   await fs.writeFile(appsOutputPath, jsonContent, "utf-8");
 
-  console.log(`✅ Generated ${outputPath}`);
-  console.log(`✅ Copied to ${staticOutputPath}`);
-  console.log(`✅ Copied to ${appsOutputPath}`);
+  console.log(`✅ Generated ${appsOutputPath}`);
   console.log(`   ${plugins.length} plugin(s) total`);
   console.log(`   ${plugins.reduce((sum, p) => sum + (p.versions?.length || 0), 0)} version(s) total`);
 }
