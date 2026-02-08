@@ -13,8 +13,10 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "dependencies": {
+    "@lucide/svelte": "^0.563.1",
     "clsx": "^2.1.1",
     "lunr": "^2.3.9",
+    "mode-watcher": "^1.1.0",
     "tailwind-merge": "^2.5.5",
     "tailwind-variants": "^0.2.1"
   },
@@ -24,6 +26,7 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.4",
     "@tailwindcss/vite": "^4.0.0",
     "@types/lunr": "^2.3.7",
+    "bits-ui": "^2.15.5",
     "svelte": "^5.21.0",
     "svelte-check": "^4.1.5",
     "tailwindcss": "^4.0.0",

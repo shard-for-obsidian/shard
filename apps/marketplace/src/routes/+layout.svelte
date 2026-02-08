@@ -2,7 +2,9 @@
   import "../app.css";
   import SearchBar from "$lib/components/SearchBar.svelte";
   import type { Snippet } from "svelte";
-  import { asset, base, resolve } from "$app/paths";
+  import { asset, resolve } from "$app/paths";
+  import { ModeWatcher } from "mode-watcher";
+  import ModeToggle from "$lib/components/ModeToggle.svelte";
 
   interface Props {
     children: Snippet;
@@ -15,6 +17,7 @@
   let { children, data }: Props = $props();
 </script>
 
+<ModeWatcher />
 <div class="app">
   <header class="border-b">
     <div
@@ -38,7 +41,10 @@
           <small class="text-xs uppercase text-gray-500">Marketplace</small>
         </div>
       </div>
-      <SearchBar />
+      <div class="flex items-center flex-row gap-4 w-full max-w-md">
+        <SearchBar />
+        <ModeToggle />
+      </div>
     </div>
   </header>
 
