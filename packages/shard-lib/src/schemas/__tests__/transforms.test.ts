@@ -176,6 +176,7 @@ describe("annotationsToMarketplacePlugin", () => {
       "vnd.obsidianmd.plugin.author": "Test Author",
       "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
+      "org.opencontainers.image.source": "https://github.com/owner/repo",
     };
 
     const result = annotationsToMarketplacePlugin(
@@ -198,6 +199,7 @@ describe("annotationsToMarketplacePlugin", () => {
       "vnd.obsidianmd.plugin.author": "Test Author",
       "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
+      "org.opencontainers.image.source": "https://github.com/owner/repo",
       "vnd.obsidianmd.plugin.author-url": "https://example.com",
       "vnd.obsidianmd.plugin.min-app-version": "1.0.0",
     };

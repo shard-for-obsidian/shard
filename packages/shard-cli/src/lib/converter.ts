@@ -230,7 +230,11 @@ export class PluginConverter {
 
     // Push manifest with vendor annotations
     // Create annotations using schema transform
-    const baseAnnotations = manifestToAnnotations(pluginData.manifest, githubRepo);
+    const baseAnnotations = manifestToAnnotations(
+      pluginData.manifest,
+      githubRepo,
+      repository
+    );
 
     // Add converted flag for legacy plugins
     const annotations: Record<string, string> = {
