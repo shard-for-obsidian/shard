@@ -4,7 +4,7 @@ set -euo pipefail
 # Configuration
 COMMUNITY_PLUGINS_URL="https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugins.json"
 REGISTRY_BASE="ghcr.io/shard-for-obsidian/shard/community"
-SHARD_CLI="node packages/shard-cli/dist/index.js"  # Relative to repo root
+SHARD_CLI="pnpm shard"  # Relative to repo root
 LOG_DIR="./conversion-logs"
 GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 
@@ -23,11 +23,11 @@ if [ -z "$GITHUB_TOKEN" ]; then
 fi
 
 # Check if shard CLI is built
-if [ ! -f "$SHARD_CLI" ]; then
-    echo -e "${RED}Error: Shard CLI not found at $SHARD_CLI${NC}"
-    echo "Please build it first with: pnpm build"
-    exit 1
-fi
+# if [ ! -f "$SHARD_CLI" ]; then
+#     echo -e "${RED}Error: Shard CLI not found at $SHARD_CLI${NC}"
+#     echo "Please build it first with: pnpm build"
+#     exit 1
+# fi
 
 # Create log directory
 mkdir -p "$LOG_DIR"
