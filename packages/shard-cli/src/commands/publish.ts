@@ -148,7 +148,7 @@ async function publishCommandHandler(
     const ownerRepo = `${repoParts[0]}/${repoParts[1]}`;
 
     // Use manifestToAnnotations to create annotations with VCS URL format
-    const annotations = manifestToAnnotations(manifest, ownerRepo);
+    const annotations = manifestToAnnotations(manifest, ownerRepo, repository);
 
     // Step 6: Push plugin manifest
     logger.info("Finalizing manifest...");
