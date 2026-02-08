@@ -35,7 +35,7 @@ describe("CliLogger", () => {
 
       // Verify stderr was called with user-friendly messages
       expect(stderrSpy).toHaveBeenCalled();
-      const stderrOutput = stderrSpy.mock.calls.map((call) => call[0]).join("");
+      const stderrOutput = stderrSpy.mock.calls.map((call: unknown[]) => call[0]).join("");
 
       expect(stderrOutput).toContain("Test info message");
       expect(stderrOutput).toContain("Test success message");
@@ -49,7 +49,7 @@ describe("CliLogger", () => {
       logger.debug("Test debug message");
       logger.trace("Test trace message");
 
-      const stderrOutput = stderrSpy.mock.calls.map((call) => call[0]).join("");
+      const stderrOutput = stderrSpy.mock.calls.map((call: unknown[]) => call[0]).join("");
 
       // Debug and trace should not appear in stderr for normal mode
       expect(stderrOutput).not.toContain("Test debug message");
