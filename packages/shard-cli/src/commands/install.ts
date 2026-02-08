@@ -86,7 +86,7 @@ async function installCommand(
           }
         }
       }
-    } catch (error) {
+    } catch {
       logger.error(
         "GitHub token required. Use --token flag, set GITHUB_TOKEN environment variable, or configure with: shard config set token <token>",
       );

@@ -68,7 +68,7 @@ async function versionsCommandHandler(
           tag,
           ...metadata,
         });
-      } catch (error) {
+      } catch {
         // Skip tags that fail to fetch metadata
         logger.warn(`Failed to fetch metadata for tag ${tag}`);
       }

@@ -5,6 +5,7 @@ import type { ConfigService } from "./config.js";
  * Adapter interface for OCI operations
  * This will be implemented by the OCI adapter
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Adapter {
   // Placeholder - actual adapter methods will be defined later
   // when implementing OCI operations

@@ -1,7 +1,6 @@
 import { buildCommand } from "@stricli/core";
 import type { AppContext } from "../infrastructure/context.js";
 import { MarketplaceClient } from "../lib/marketplace-client.js";
-import type { MarketplacePlugin } from "../lib/marketplace-client.js";
 
 /**
  * Flags for the list command
