@@ -83,7 +83,11 @@ describe("manifestToAnnotations", () => {
       author: "Test Author",
     };
 
-    const result = manifestToAnnotations(manifest, "owner/repo");
+    const result = manifestToAnnotations(
+      manifest,
+      "owner/repo",
+      "ghcr.io/owner/repo"
+    );
 
     expect(result["vnd.obsidianmd.plugin.id"]).toBe("test-plugin");
     expect(result["vnd.obsidianmd.plugin.name"]).toBe("Test Plugin");
@@ -107,12 +111,58 @@ describe("manifestToAnnotations", () => {
       authorUrl: "https://example.com",
     };
 
-    const result = manifestToAnnotations(manifest, "owner/repo");
+    const result = manifestToAnnotations(
+      manifest,
+      "owner/repo",
+      "ghcr.io/owner/repo"
+    );
 
     expect(result["vnd.obsidianmd.plugin.author-url"]).toBe(
       "https://example.com",
     );
     expect(result["vnd.obsidianmd.plugin.min-app-version"]).toBe("1.0.0");
+  });
+
+  test("includes org.opencontainers.image.source annotation", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "0.15.0",
+      description: "A test plugin",
+      author: "Test Author",
+    };
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      "owner/repo",
+      "ghcr.io/shard-for-obsidian/shard/community/test-plugin"
+    );
+
+    expect(annotations["org.opencontainers.image.source"]).toBe(
+      "https://github.com/shard-for-obsidian/shard"
+    );
+  });
+
+  test("includes org.opencontainers.image.source with nested path", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "0.15.0",
+      description: "A test plugin",
+      author: "Test Author",
+    };
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      "owner/repo",
+      "ghcr.io/org/repo/deeply/nested/path"
+    );
+
+    expect(annotations["org.opencontainers.image.source"]).toBe(
+      "https://github.com/org/repo"
+    );
   });
 });
 

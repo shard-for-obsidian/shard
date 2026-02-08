@@ -25,6 +25,8 @@ export const PluginAnnotationsSchema = z.object({
   "vnd.obsidianmd.plugin.author-url": z.string().url().optional(),
   /** Minimum Obsidian version required */
   "vnd.obsidianmd.plugin.min-app-version": z.string().optional(),
+  /** OCI image source repository URL */
+  "org.opencontainers.image.source": z.string().url(),
 });
 
 /**

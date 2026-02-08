@@ -59,11 +59,13 @@ export function ghcrUrlToGitHubRepo(registryUrl: string): string {
  * Create OCI annotations from Obsidian manifest
  * @param manifest - Obsidian plugin manifest
  * @param repo - Repository in "owner/repo" format
+ * @param registryUrl - GHCR registry URL (e.g., "ghcr.io/owner/repo/path")
  * @returns OCI manifest annotations
  */
 export function manifestToAnnotations(
   manifest: ObsidianManifest,
   repo: string,
+  registryUrl: string,
 ): PluginAnnotations {
   const annotations: Record<string, string> = {
     "vnd.obsidianmd.plugin.id": manifest.id,
@@ -73,6 +75,7 @@ export function manifestToAnnotations(
     "vnd.obsidianmd.plugin.author": manifest.author,
     "vnd.obsidianmd.plugin.source": repoToVcsUrl(repo),
     "vnd.obsidianmd.plugin.published-at": new Date().toISOString(),
+    "org.opencontainers.image.source": ghcrUrlToGitHubRepo(registryUrl),
   };
 
   // Add optional fields if present
