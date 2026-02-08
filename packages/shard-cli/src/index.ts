@@ -10,6 +10,7 @@ import type { AppContext } from "./infrastructure/context.js";
 import { NodeFetchAdapter } from "./adapters/node-fetch-adapter.js";
 import { list } from "./commands/list.js";
 import { search } from "./commands/search.js";
+import { info } from "./commands/info.js";
 
 /**
  * Build the application context with shared services
@@ -49,6 +50,7 @@ const routes = buildRouteMap({
   routes: {
     list,
     search,
+    info,
   },
   docs: {
     brief: "Shard CLI - Plugin distribution for Obsidian",
