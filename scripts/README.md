@@ -70,6 +70,85 @@ Short description of the plugin
 
 Additional metadata fields (like `minObsidianVersion`, `authorUrl`, etc.) can be added manually or will be resolved when the marketplace site is built.
 
+## make-packages-public.sh
+
+Changes the visibility of all packages under `ghcr.io/shard-for-obsidian/shard/community` to public.
+
+### Prerequisites
+
+- GitHub CLI (`gh`) installed and authenticated
+- Appropriate permissions to modify package visibility in the organization
+
+### Usage
+
+```bash
+# Authenticate with GitHub CLI (if not already)
+gh auth login
+
+# Run from repository root
+./scripts/make-packages-public.sh
+```
+
+### What it does
+
+1. Fetches all container packages from the `shard-for-obsidian` organization
+2. Filters for packages under the `shard/community/` namespace
+3. Checks current visibility of each package
+4. Changes visibility to `public` if not already public
+5. Skips packages that are already public
+6. Shows progress and summary statistics
+
+### Example output
+
+```
+Fetching packages from shard-for-obsidian/shard...
+
+Found 50 package(s) under community/
+
+Processing packages...
+====================
+
+[1/50] Processing: shard/community/nldates-obsidian
+  Current visibility: private
+  ✓ Changed to public
+
+[2/50] Processing: shard/community/hotkeysplus-obsidian
+  Current visibility: public
+  ℹ Already public, skipping
+
+...
+
+====================
+Processing Complete
+====================
+Changed to public: 45
+Already public:    5
+Failed:            0
+```
+
+### Installing GitHub CLI
+
+**macOS:**
+
+```bash
+brew install gh
+```
+
+**Ubuntu/Debian:**
+
+```bash
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+```
+
+**Windows:**
+
+```bash
+winget install --id GitHub.cli
+```
+
 ## convert-community-plugins.sh
 
 Batch converts all plugins from the Obsidian community plugins list to OCI format and pushes them to the Shard registry.
