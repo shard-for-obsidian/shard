@@ -14,7 +14,12 @@ await esbuild.build({
   banner: {
     js: "#!/usr/bin/env node"
   },
-  external: [],
+  external: [
+    "pino",
+    "pino-pretty",
+    "ora",
+    "cli-progress",
+  ],
 });
 
 console.log("✓ shard-cli built successfully");
