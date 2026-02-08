@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "apps/marketplace/**"
-      - "packages/shard-lib/**"
+      - "packages/lib/**"
       - "scripts/generate-plugin-markdown.sh"
       - ".github/workflows/marketplace.yml"
   workflow_dispatch:

@@ -1,5 +1,5 @@
 packages:
   - "apps/*"
-  - "packages/shard-cli"
-  - "packages/shard-installer"
-  - "packages/shard-lib"
+  - "packages/cli"
+  - "packages/plugin"
+  - "packages/lib"

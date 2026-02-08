@@ -2,11 +2,6 @@
   "name": "shard-monorepo",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "packages/shard-cli",
-    "packages/shard-installer",
-    "packages/shard-lib"
-  ],
   "scripts": {
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
