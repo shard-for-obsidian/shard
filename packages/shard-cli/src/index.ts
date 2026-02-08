@@ -16,6 +16,7 @@ import { publish } from "./commands/publish.js";
 import { convert } from "./commands/convert.js";
 import { registryRouteMap } from "./commands/registry/index.js";
 import { configRouteMap } from "./commands/config/index.js";
+import { completionRouteMap } from "./commands/completion/index.js";
 
 /**
  * Build the application context with shared services
@@ -61,6 +62,7 @@ const routes = buildRouteMap({
     convert,
     registry: registryRouteMap,
     config: configRouteMap,
+    completion: completionRouteMap,
   },
   docs: {
     brief: "Shard CLI - Plugin distribution for Obsidian",
