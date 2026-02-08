@@ -4,19 +4,20 @@ on:
   push:
     branches: [main]
     paths:
-      - 'apps/marketplace/**'
-      - 'packages/shard-lib/**'
-      - 'scripts/generate-plugin-markdown.sh'
-      - '.github/workflows/marketplace.yml'
+      - "apps/marketplace/**"
+      - "packages/shard-lib/**"
+      - "scripts/generate-plugin-markdown.sh"
+      - ".github/workflows/marketplace.yml"
   workflow_dispatch:
 
 permissions:
+  packages: read
   contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: false
 
 jobs:
@@ -35,7 +36,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
