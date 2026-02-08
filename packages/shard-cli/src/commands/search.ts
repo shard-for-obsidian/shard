@@ -21,7 +21,7 @@ async function searchCommand(
   const { logger, adapter } = this;
 
   try {
-    const client = new MarketplaceClient(adapter);
+    const client = new MarketplaceClient({ adapter });
 
     logger.info(`Searching for "${keyword}"...`);
     const plugins = await client.searchPlugins(keyword);

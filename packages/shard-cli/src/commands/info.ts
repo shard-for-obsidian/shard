@@ -21,7 +21,7 @@ async function infoCommand(
   const { logger, adapter } = this;
 
   try {
-    const client = new MarketplaceClient(adapter);
+    const client = new MarketplaceClient({ adapter });
 
     logger.info(`Fetching plugin "${pluginId}"...`);
     const plugin = await client.findPluginById(pluginId);

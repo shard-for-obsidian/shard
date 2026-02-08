@@ -1,10 +1,11 @@
-import { ItemView, WorkspaceLeaf, Notice } from "obsidian";
+import { ItemView, WorkspaceLeaf, Notice, requestUrl } from "obsidian";
 import type GHCRTagBrowserPlugin from "../main";
 import { MarketplaceClient } from "./marketplace-client";
 import type { MarketplacePlugin } from "./types";
 import { VersionSelectionModal } from "../version-selection-modal";
 import { GHCRWrapper } from "../ghcr-wrapper";
 import { Installer } from "../installer/installer.js";
+import { ObsidianFetchAdapter } from "../adapters/obsidian-fetch-adapter";
 import {
   LoadingSpinner,
   ErrorBanner,
@@ -36,10 +37,15 @@ export class MarketplaceView extends ItemView {
   constructor(leaf: WorkspaceLeaf, plugin: GHCRTagBrowserPlugin) {
     super(leaf);
     this.plugin = plugin;
-    this.client = new MarketplaceClient(
-      this.plugin.settings.marketplaceUrl,
-      this.plugin.settings.marketplaceCacheTTL,
-    );
+    const adapter = new ObsidianFetchAdapter(requestUrl);
+    this.client = new MarketplaceClient({
+      adapter,
+      marketplaceUrl: this.plugin.settings.marketplaceUrl,
+      cache: {
+        enabled: true,
+        ttl: this.plugin.settings.marketplaceCacheTTL,
+      },
+    });
   }
 
   getViewType(): string {
