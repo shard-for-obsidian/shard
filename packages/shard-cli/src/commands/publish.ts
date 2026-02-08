@@ -1,27 +1,27 @@
 import { buildCommand } from "@stricli/core";
-import type { AppContext } from "../../infrastructure/context.js";
-import { resolveAuthToken } from "../../lib/auth.js";
+import type { AppContext } from "../infrastructure/context.js";
+import { resolveAuthToken } from "../lib/auth.js";
 import { OciRegistryClient, parseRepoAndRef } from "@shard-for-obsidian/lib";
 import type {
   ManifestOCIDescriptor,
   ObsidianManifest,
 } from "@shard-for-obsidian/lib";
 import { manifestToAnnotations } from "@shard-for-obsidian/lib/schemas";
-import { discoverPlugin } from "../../lib/plugin.js";
+import { discoverPlugin } from "../lib/plugin.js";
 
 /**
- * Flags for the push command
+ * Flags for the publish command
  */
-export interface PushFlags {
+export interface PublishFlags {
   token?: string;
   json?: boolean;
   verbose?: boolean;
 }
 
 /**
- * Result returned by the push command
+ * Result returned by the publish command
  */
-export interface PushResult {
+export interface PublishResult {
   digest: string;
   tag: string;
   size: number;
@@ -30,7 +30,6 @@ export interface PushResult {
 
 /**
  * Derive GitHub repository URL from registry remote name.
- * Takes the first two path components to form owner/repo.
  */
 function deriveGitHubUrl(remoteName: string): string {
   const parts = remoteName.split("/");
@@ -46,11 +45,12 @@ function deriveGitHubUrl(remoteName: string): string {
 }
 
 /**
- * Push an Obsidian plugin to an OCI registry
+ * Publish a plugin to an OCI registry
+ * This combines the functionality of the old register/update commands
  */
-async function pushCommandHandler(
+async function publishCommandHandler(
   this: AppContext,
-  flags: PushFlags,
+  flags: PublishFlags,
   directory: string,
   repository: string,
 ): Promise<void> {
@@ -82,14 +82,14 @@ async function pushCommandHandler(
     }
 
     // Step 2: Discover plugin files
-    logger.info(`Discovering plugin files in ${directory}...`);
+    logger.info(`Publishing plugin from ${directory}...`);
     const plugin = await discoverPlugin(directory);
     const version = plugin.manifest.parsed.version;
-    logger.info(`Found plugin version ${version}`);
+    logger.info(`Plugin: ${plugin.manifest.parsed.name} (v${version})`);
 
     // Step 3: Parse repository and add version tag
     const fullRef = repository.includes(":") ? repository : `${repository}:${version}`;
-    logger.info(`Pushing to ${fullRef}...`);
+    logger.info(`Target: ${fullRef}`);
 
     const ref = parseRepoAndRef(fullRef);
     const client = new OciRegistryClient({
@@ -104,7 +104,7 @@ async function pushCommandHandler(
     const layers: ManifestOCIDescriptor[] = [];
 
     // Push main.js
-    logger.info("Pushing main.js...");
+    logger.info("Uploading main.js...");
     const mainJsResult = await client.pushBlob({
       data: plugin.mainJs.content,
     });
@@ -117,12 +117,12 @@ async function pushCommandHandler(
       },
     });
     logger.debug(
-      `Pushed main.js: ${mainJsResult.digest.slice(0, 19)}... (${mainJsResult.size} bytes)`,
+      `Uploaded main.js: ${mainJsResult.digest.slice(0, 19)}... (${mainJsResult.size} bytes)`,
     );
 
     // Push styles.css if present
     if (plugin.stylesCss) {
-      logger.info("Pushing styles.css...");
+      logger.info("Uploading styles.css...");
       const stylesCssResult = await client.pushBlob({
         data: plugin.stylesCss.content,
       });
@@ -135,7 +135,7 @@ async function pushCommandHandler(
         },
       });
       logger.debug(
-        `Pushed styles.css: ${stylesCssResult.digest.slice(0, 19)}... (${stylesCssResult.size} bytes)`,
+        `Uploaded styles.css: ${stylesCssResult.digest.slice(0, 19)}... (${stylesCssResult.size} bytes)`,
       );
     }
 
@@ -151,7 +151,7 @@ async function pushCommandHandler(
     const annotations = manifestToAnnotations(manifest, ownerRepo);
 
     // Step 6: Push plugin manifest
-    logger.info("Pushing plugin manifest...");
+    logger.info("Finalizing manifest...");
     const manifestPushResult = await client.pushPluginManifest({
       ref: ref.tag || version,
       pluginManifest: manifest as unknown as ObsidianManifest,
@@ -159,9 +159,10 @@ async function pushCommandHandler(
       annotations,
     });
 
-    logger.success(`Successfully pushed ${fullRef}`);
-    logger.info(`Manifest digest: ${manifestPushResult.digest}`);
-    logger.info(`GitHub repository: ${githubUrl}`);
+    logger.success(`Successfully published ${plugin.manifest.parsed.name} v${version}`);
+    logger.info(`Repository: ${fullRef}`);
+    logger.info(`Digest: ${manifestPushResult.digest}`);
+    logger.info(`GitHub: ${githubUrl}`);
 
     // Calculate total size
     const totalSize = manifestPushResult.manifest.layers.reduce(
@@ -171,7 +172,7 @@ async function pushCommandHandler(
 
     // Step 7: JSON output if requested
     if (flags.json) {
-      const result: PushResult = {
+      const result: PublishResult = {
         digest: manifestPushResult.digest,
         tag: ref.tag || version,
         size: totalSize,
@@ -181,16 +182,16 @@ async function pushCommandHandler(
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    logger.error(`Failed to push plugin: ${message}`);
+    logger.error(`Failed to publish plugin: ${message}`);
     this.process.exit(1);
   }
 }
 
 /**
- * Build the push command
+ * Build the publish command
  */
-export const push = buildCommand({
-  func: pushCommandHandler,
+export const publish = buildCommand({
+  func: publishCommandHandler,
   parameters: {
     positional: {
       kind: "tuple",
@@ -221,7 +222,7 @@ export const push = buildCommand({
       },
       verbose: {
         kind: "boolean",
-        brief: "Show detailed output",
+        brief: "Show detailed progress information",
         optional: true,
       },
     },
@@ -230,10 +231,10 @@ export const push = buildCommand({
     },
   },
   docs: {
-    brief: "Push a plugin to an OCI registry",
+    brief: "Publish a plugin to the registry",
     customUsage: [
-      "shard registry push ./dist ghcr.io/user/my-plugin",
-      "shard registry push ./dist ghcr.io/user/my-plugin:1.0.0",
+      "shard publish ./dist ghcr.io/user/my-plugin",
+      "shard publish ./dist ghcr.io/user/my-plugin:1.0.0 --token ghp_xxx",
     ],
   },
 });
