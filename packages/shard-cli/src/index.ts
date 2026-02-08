@@ -9,6 +9,7 @@ import { createContext } from "./infrastructure/context.js";
 import type { AppContext } from "./infrastructure/context.js";
 import { NodeFetchAdapter } from "./adapters/node-fetch-adapter.js";
 import { list } from "./commands/list.js";
+import { search } from "./commands/search.js";
 
 /**
  * Build the application context with shared services
@@ -47,6 +48,7 @@ function determineLogMode(args: readonly string[]): LogMode {
 const routes = buildRouteMap({
   routes: {
     list,
+    search,
   },
   docs: {
     brief: "Shard CLI - Plugin distribution for Obsidian",
