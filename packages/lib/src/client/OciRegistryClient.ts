@@ -667,12 +667,13 @@ export class OciRegistryClient {
    * <https://github.com/opencontainers/distribution-spec/blob/main/spec.md#post-then-put>
    *
    * @param opts.data The blob data as ArrayBuffer or Uint8Array
-   * @param opts.digest Optional digest. If not provided, it will be calculated.
-   * @returns Object with digest and size of the uploaded blob
+   * @param opts.annotations Optional annotations for the blob
+   * @returns Object with digest, size, and annotations (with auto-added ORAS title if applicable)
    */
   async pushBlob(opts: {
     data: ArrayBuffer | Uint8Array;
-  }): Promise<{ digest: string; size: number }> {
+    annotations?: Record<string, string>;
+  }): Promise<{ digest: string; size: number; annotations?: Record<string, string> }> {
     await this.login();
 
     // Convert to ArrayBuffer if needed
@@ -743,7 +744,13 @@ export class OciRegistryClient {
       );
     }
 
-    return { digest, size: buffer.byteLength };
+    // Handle annotations - automatically add ORAS-compatible title from filename
+    let annotations = opts.annotations ? { ...opts.annotations } : undefined;
+    if (annotations && annotations['vnd.obsidianmd.layer.filename']) {
+      annotations['org.opencontainers.image.title'] = annotations['vnd.obsidianmd.layer.filename'];
+    }
+
+    return { digest, size: buffer.byteLength, annotations };
   }
 
   /**
@@ -800,6 +807,57 @@ export class OciRegistryClient {
     }
 
     return { digest, size: manifestBuffer.byteLength };
+  }
+
+  /**
+   * Push a manifest with multiple tags atomically.
+   * Pushes the manifest once with the first tag, then tags the remaining tags
+   * by pushing the same manifest content.
+   *
+   * @param opts.tags Array of tags to apply (must not be empty)
+   * @param opts.manifest The manifest object to upload
+   * @param opts.annotations Optional annotations to merge with manifest annotations
+   * @returns Object with digest, tags array, and size
+   */
+  async pushManifestWithTags(opts: {
+    tags: string[];
+    manifest: ManifestOCI;
+    annotations?: Record<string, string>;
+  }): Promise<{ digest: string; tags: string[]; size: number }> {
+    if (opts.tags.length === 0) {
+      throw new Error('tags array cannot be empty');
+    }
+
+    // Merge annotations: manifest.annotations + opts.annotations
+    const mergedManifest = {
+      ...opts.manifest,
+      annotations: {
+        ...(opts.manifest.annotations || {}),
+        ...(opts.annotations || {}),
+      },
+    };
+
+    // Push manifest with first tag
+    const result = await this.pushManifest({
+      ref: opts.tags[0]!,
+      manifest: mergedManifest,
+      mediaType: opts.manifest.mediaType || MEDIATYPE_OCI_MANIFEST_V1,
+    });
+
+    // Tag remaining tags by pushing the same manifest
+    for (let i = 1; i < opts.tags.length; i++) {
+      await this.pushManifest({
+        ref: opts.tags[i]!,
+        manifest: mergedManifest,
+        mediaType: opts.manifest.mediaType || MEDIATYPE_OCI_MANIFEST_V1,
+      });
+    }
+
+    return {
+      digest: result.digest,
+      tags: opts.tags,
+      size: result.size,
+    };
   }
 
   /**
