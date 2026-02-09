@@ -19,14 +19,24 @@ export const PluginAnnotationsSchema = z.object({
   "vnd.obsidianmd.plugin.source": z.string().regex(/^git\+https:\/\//),
   /** Publication timestamp (ISO 8601) */
   "vnd.obsidianmd.plugin.published-at": z.string().datetime(),
+  /** Plugin introduction from community-plugins.json (required) */
+  "vnd.obsidianmd.plugin.introduction": z.string(),
+  /** Funding URL - string or JSON-serialized object (optional) */
+  "vnd.obsidianmd.plugin.funding-url": z.string().optional(),
+  /** Is desktop only - string representation of boolean (required) */
+  "vnd.obsidianmd.plugin.is-desktop-only": z.string(),
   /** Indicates plugin was converted from legacy format */
   "vnd.obsidianmd.plugin.converted": z.string().optional(),
   /** Author URL */
   "vnd.obsidianmd.plugin.author-url": z.string().url().optional(),
-  /** Minimum Obsidian version required */
-  "vnd.obsidianmd.plugin.min-app-version": z.string().optional(),
+  /** Minimum Obsidian version required (required) */
+  "vnd.obsidianmd.plugin.min-app-version": z.string(),
   /** OCI image source repository URL */
   "org.opencontainers.image.source": z.string().url(),
+  /** OCI standard: Plugin title */
+  "org.opencontainers.image.title": z.string(),
+  /** OCI standard: Creation timestamp (RFC 3339) */
+  "org.opencontainers.image.created": z.string().datetime(),
 });
 
 /**

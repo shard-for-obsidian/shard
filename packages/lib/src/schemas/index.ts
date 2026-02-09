@@ -23,4 +23,5 @@ export {
   vcsUrlToGitHubUrl,
   manifestToAnnotations,
   annotationsToMarketplacePlugin,
+  type CommunityPluginMetadata,
 } from "./transforms.js";

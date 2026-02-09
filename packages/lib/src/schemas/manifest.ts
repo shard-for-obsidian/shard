@@ -11,7 +11,7 @@ export const ObsidianManifestSchema = z.object({
   name: z.string(),
   /** Plugin version */
   version: z.string(),
-  /** Minimum Obsidian version required */
+  /** Minimum Obsidian version required (required) */
   minAppVersion: z.string(),
   /** Plugin description */
   description: z.string(),
