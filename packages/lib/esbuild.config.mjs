@@ -16,4 +16,4 @@ await esbuild.build({
   treeShaking: true,
 });
 
-console.log("✓ shard-lib built successfully");
+console.log("✓ lib built successfully");

@@ -22,4 +22,4 @@ await esbuild.build({
   ],
 });
 
-console.log("✓ shard-cli built successfully");
+console.log("✓ cli built successfully");
