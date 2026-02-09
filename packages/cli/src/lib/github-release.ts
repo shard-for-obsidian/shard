@@ -18,6 +18,8 @@ export interface GitHubRelease {
   tag_name: string;
   /** Array of release assets */
   assets: GitHubReleaseAsset[];
+  /** Publication timestamp (ISO 8601) */
+  published_at: string;
 }
 
 /**

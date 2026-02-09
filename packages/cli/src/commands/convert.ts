@@ -7,6 +7,7 @@ import { resolveAuthToken } from "../lib/auth.js";
  * Flags for the convert command
  */
 export interface ConvertFlags {
+  namespace: string;
   token?: string;
   json?: boolean;
   verbose?: boolean;
@@ -31,7 +32,6 @@ async function convertCommandHandler(
   this: AppContext,
   flags: ConvertFlags,
   pluginId: string,
-  namespace: string,
 ): Promise<void> {
   const { logger, adapter, config } = this;
 
@@ -69,7 +69,7 @@ async function convertCommandHandler(
 
     const convertResult = await converter.convertPlugin({
       pluginId,
-      namespace,
+      namespace: flags.namespace,
       token,
     });
 
@@ -136,14 +136,15 @@ export const convert = buildCommand({
           parse: String,
           placeholder: "plugin-id",
         },
-        {
-          brief: "Target OCI namespace (e.g., ghcr.io/owner/)",
-          parse: String,
-          placeholder: "namespace",
-        },
       ],
     },
     flags: {
+      namespace: {
+        kind: "parsed",
+        parse: String,
+        brief: "Target OCI namespace (e.g., ghcr.io/owner/)",
+        optional: false,
+      },
       token: {
         kind: "parsed",
         parse: String,
@@ -162,14 +163,15 @@ export const convert = buildCommand({
       },
     },
     aliases: {
+      n: "namespace",
       t: "token",
     },
   },
   docs: {
     brief: "Convert a legacy plugin to OCI format",
     customUsage: [
-      "shard convert obsidian-git ghcr.io/owner/",
-      "shard convert calendar ghcr.io/owner/",
+      "shard convert obsidian-git --namespace ghcr.io/owner/",
+      "shard convert calendar --namespace ghcr.io/owner/",
     ],
   },
 });

@@ -150,15 +150,6 @@ describe('OciRegistryClient.pushPluginManifest', () => {
   });
 
   it('should automatically add org.opencontainers.image.title to layer annotations', async () => {
-    const pluginManifest: ObsidianManifest = {
-      id: 'test-plugin',
-      name: 'Test Plugin',
-      version: '1.0.0',
-      minAppVersion: '0.15.0',
-      description: 'A test plugin',
-      author: 'Test Author',
-    };
-
     // Create layer data that will be pushed as a blob
     const layerData = new TextEncoder().encode('console.log("test");');
 
@@ -254,8 +245,8 @@ describe('OciRegistryClient.pushManifestWithTags', () => {
 
   it('should push manifest with multiple tags', async () => {
     const manifest = {
-      schemaVersion: 2,
-      mediaType: 'application/vnd.oci.image.manifest.v1+json',
+      schemaVersion: 2 as const,
+      mediaType: 'application/vnd.oci.image.manifest.v1+json' as const,
       artifactType: 'application/vnd.obsidian.plugin.v1+json',
       config: {
         mediaType: 'application/vnd.obsidianmd.plugin-manifest.v1+json',
@@ -317,8 +308,8 @@ describe('OciRegistryClient.pushManifestWithTags', () => {
 
   it('should merge manifest annotations with provided annotations', async () => {
     const manifest = {
-      schemaVersion: 2,
-      mediaType: 'application/vnd.oci.image.manifest.v1+json',
+      schemaVersion: 2 as const,
+      mediaType: 'application/vnd.oci.image.manifest.v1+json' as const,
       artifactType: 'application/vnd.obsidian.plugin.v1+json',
       config: {
         mediaType: 'application/vnd.obsidianmd.plugin-manifest.v1+json',
@@ -369,8 +360,8 @@ describe('OciRegistryClient.pushManifestWithTags', () => {
 
   it('should throw error when tags array is empty', async () => {
     const manifest = {
-      schemaVersion: 2,
-      mediaType: 'application/vnd.oci.image.manifest.v1+json',
+      schemaVersion: 2 as const,
+      mediaType: 'application/vnd.oci.image.manifest.v1+json' as const,
       artifactType: 'application/vnd.obsidian.plugin.v1+json',
       config: {
         mediaType: 'application/vnd.obsidianmd.plugin-manifest.v1+json',

@@ -745,10 +745,12 @@ export class OciRegistryClient {
     }
 
     // Handle annotations - automatically add ORAS-compatible title from filename
-    let annotations = opts.annotations ? { ...opts.annotations } : undefined;
-    if (annotations && annotations['vnd.obsidianmd.layer.filename']) {
-      annotations['org.opencontainers.image.title'] = annotations['vnd.obsidianmd.layer.filename'];
-    }
+    const annotations = opts.annotations && opts.annotations['vnd.obsidianmd.layer.filename']
+      ? {
+          ...opts.annotations,
+          'org.opencontainers.image.title': opts.annotations['vnd.obsidianmd.layer.filename']
+        }
+      : opts.annotations ? { ...opts.annotations } : undefined;
 
     return { digest, size: buffer.byteLength, annotations };
   }

@@ -6,7 +6,7 @@ import type {
   ManifestOCIDescriptor,
   ObsidianManifest,
 } from "@shard-for-obsidian/lib";
-import { manifestToAnnotations } from "@shard-for-obsidian/lib/schemas";
+import { manifestToAnnotationsLegacy } from "@shard-for-obsidian/lib/schemas";
 import { discoverPlugin } from "../../lib/plugin.js";
 
 /**
@@ -147,8 +147,8 @@ async function pushCommandHandler(
     const repoParts = ref.remoteName.split("/");
     const ownerRepo = `${repoParts[0]}/${repoParts[1]}`;
 
-    // Use manifestToAnnotations to create annotations with VCS URL format
-    const annotations = manifestToAnnotations(manifest, ownerRepo, repository);
+    // Use manifestToAnnotationsLegacy to create annotations with VCS URL format
+    const annotations = manifestToAnnotationsLegacy(manifest, ownerRepo, repository);
 
     // Step 6: Push plugin manifest
     logger.info("Pushing plugin manifest...");
