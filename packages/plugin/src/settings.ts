@@ -76,7 +76,9 @@ export class GHCRSettingTab extends PluginSettingTab {
         text
           .setPlaceholder("60")
           .setValue(
-            String(Math.floor(this.plugin.settings.marketplaceCacheTTL / 60000)),
+            String(
+              Math.floor(this.plugin.settings.marketplaceCacheTTL / 60000),
+            ),
           )
           .onChange(async (value) => {
             const minutes = parseInt(value, 10);
@@ -163,7 +165,7 @@ export class GHCRSettingTab extends PluginSettingTab {
       normalized = `ghcr.io/${normalized}`;
     }
 
-    // Validate format using shard-lib parser (supports nested repos)
+    // Validate format using lib parser (supports nested repos)
     try {
       parseRepoAndRef(normalized);
     } catch (error) {

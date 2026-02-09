@@ -7,7 +7,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/shard-for-obsidian/shard.git",
-    "directory": "packages/shard-cli"
+    "directory": "packages/cli"
   },
   "homepage": "https://github.com/shard-for-obsidian/shard#readme",
   "bugs": "https://github.com/shard-for-obsidian/shard/issues",
