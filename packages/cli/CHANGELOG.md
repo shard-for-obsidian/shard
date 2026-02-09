@@ -1,5 +1,16 @@
 # shard-cli
 
+## 0.4.0
+
+### Minor Changes
+
+- dbca3f2: Change behavior of convert command so data is mapped to annotations from community plugin registry and plugin manifest.
+
+### Patch Changes
+
+- Updated dependencies [dbca3f2]
+  - @shard-for-obsidian/lib@0.3.0
+
 ## 0.2.4
 
 ### Patch Changes
