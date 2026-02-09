@@ -43,7 +43,6 @@
       </div>
       <div class="flex items-center flex-row gap-4 w-full max-w-md">
         <SearchBar />
-        <ModeToggle />
       </div>
     </div>
   </header>
@@ -54,14 +53,20 @@
 
   <footer class="border-t">
     <div
-      class="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground"
+      class="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground flex flex-row justify-between items-center"
     >
-      <p><a href="https://github.com/shard-for-obsidian/shard">GitHub</a></p>
-      {#if data.generatedAt}
-        <p class="text-xs mt-1">
-          Last updated: {new Date(data.generatedAt).toLocaleDateString()}
-        </p>
-      {/if}
+      <div></div>
+      <div>
+        <p><a href="https://github.com/shard-for-obsidian/shard">GitHub</a></p>
+        {#if data.generatedAt}
+          <p class="text-xs mt-1">
+            Last updated: {new Date(data.generatedAt).toLocaleDateString()}
+          </p>
+        {/if}
+      </div>
+      <div>
+        <ModeToggle />
+      </div>
     </div>
   </footer>
 </div>
