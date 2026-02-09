@@ -7,7 +7,7 @@ import { resolveAuthToken } from "../lib/auth.js";
  * Flags for the convert command
  */
 export interface ConvertFlags {
-  version?: string;
+  namespace: string;
   token?: string;
   json?: boolean;
   verbose?: boolean;
@@ -21,6 +21,7 @@ export interface ConvertResult {
   version: string;
   repository: string;
   digest: string;
+  tags: string[];
   size: number;
 }
 
@@ -31,7 +32,6 @@ async function convertCommandHandler(
   this: AppContext,
   flags: ConvertFlags,
   pluginId: string,
-  repository: string,
 ): Promise<void> {
   const { logger, adapter, config } = this;
 
@@ -63,18 +63,13 @@ async function convertCommandHandler(
     // Step 2: Create converter
     const converter = new PluginConverter(adapter);
 
-    // Step 3: Convert plugin from GitHub releases
+    // Step 3: Convert plugin from GitHub releases (always uses latest version)
     logger.info(`Converting plugin "${pluginId}"...`);
-    if (flags.version) {
-      logger.info(`Using specific version: ${flags.version}`);
-    } else {
-      logger.info("Using latest version");
-    }
+    logger.info("Using latest version");
 
     const convertResult = await converter.convertPlugin({
       pluginId,
-      version: flags.version,
-      repository,
+      namespace: flags.namespace,
       token,
     });
 
@@ -91,8 +86,9 @@ async function convertCommandHandler(
     logger.info(`\nPushing to ${convertResult.repository}...`);
     const pushResult = await converter.pushToRegistry({
       repository: convertResult.repository,
-      githubRepo: convertResult.githubRepo,
       token,
+      communityPlugin: convertResult.communityPlugin,
+      publishedAt: convertResult.publishedAt,
       pluginData: {
         manifest: convertResult.manifest,
         mainJs: convertResult.mainJs,
@@ -105,6 +101,7 @@ async function convertCommandHandler(
     );
     logger.info(`Repository: ${pushResult.repository}`);
     logger.info(`Digest: ${pushResult.digest}`);
+    logger.info(`Tags: ${pushResult.tags.join(", ")}`);
 
     // Step 5: JSON output if requested
     if (flags.json) {
@@ -113,6 +110,7 @@ async function convertCommandHandler(
         version: convertResult.version,
         repository: pushResult.repository,
         digest: pushResult.digest,
+        tags: pushResult.tags,
         size: pushResult.size,
       };
       this.process.stdout.write(JSON.stringify(result, null, 2) + "\n");
@@ -138,19 +136,14 @@ export const convert = buildCommand({
           parse: String,
           placeholder: "plugin-id",
         },
-        {
-          brief: "Target OCI repository (e.g., ghcr.io/owner/repo)",
-          parse: String,
-          placeholder: "repository",
-        },
       ],
     },
     flags: {
-      version: {
+      namespace: {
         kind: "parsed",
         parse: String,
-        brief: "Specific version to convert (default: latest)",
-        optional: true,
+        brief: "Target OCI namespace (e.g., ghcr.io/owner/)",
+        optional: false,
       },
       token: {
         kind: "parsed",
@@ -170,15 +163,15 @@ export const convert = buildCommand({
       },
     },
     aliases: {
-      v: "version",
+      n: "namespace",
       t: "token",
     },
   },
   docs: {
     brief: "Convert a legacy plugin to OCI format",
     customUsage: [
-      "shard convert obsidian-git ghcr.io/user/obsidian-git",
-      "shard convert calendar ghcr.io/user/calendar --version 1.5.3",
+      "shard convert obsidian-git --namespace ghcr.io/owner/",
+      "shard convert calendar --namespace ghcr.io/owner/",
     ],
   },
 });

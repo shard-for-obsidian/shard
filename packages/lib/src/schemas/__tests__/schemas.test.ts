@@ -59,7 +59,12 @@ describe("PluginAnnotationsSchema", () => {
       "vnd.obsidianmd.plugin.author": "Test Author",
       "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
+      "vnd.obsidianmd.plugin.introduction": "# Test Plugin\n\nA test introduction.",
+      "vnd.obsidianmd.plugin.is-desktop-only": "false",
+      "vnd.obsidianmd.plugin.min-app-version": "1.0.0",
       "org.opencontainers.image.source": "https://github.com/owner/repo",
+      "org.opencontainers.image.title": "Test Plugin",
+      "org.opencontainers.image.created": "2026-02-07T10:00:00Z",
     };
 
     const result = PluginAnnotationsSchema.safeParse(validAnnotations);
@@ -90,10 +95,15 @@ describe("PluginAnnotationsSchema", () => {
       "vnd.obsidianmd.plugin.author": "Test Author",
       "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
+      "vnd.obsidianmd.plugin.introduction": "# Test Plugin\n\nA test introduction.",
+      "vnd.obsidianmd.plugin.is-desktop-only": "false",
+      "vnd.obsidianmd.plugin.min-app-version": "1.0.0",
       "org.opencontainers.image.source": "https://github.com/owner/repo",
+      "org.opencontainers.image.title": "Test Plugin",
+      "org.opencontainers.image.created": "2026-02-07T10:00:00Z",
       "vnd.obsidianmd.plugin.converted": "true",
       "vnd.obsidianmd.plugin.author-url": "https://example.com",
-      "vnd.obsidianmd.plugin.min-app-version": "1.0.0",
+      "vnd.obsidianmd.plugin.funding-url": "https://github.com/sponsors/test",
     };
 
     const result = PluginAnnotationsSchema.safeParse(annotationsWithOptionals);

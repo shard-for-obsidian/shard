@@ -73,7 +73,145 @@ describe("ghcrUrlToGitHubRepo", () => {
 });
 
 describe("manifestToAnnotations", () => {
-  it("should create annotations from manifest", () => {
+  const communityPlugin = {
+    id: "test-plugin",
+    name: "Test Plugin",
+    description: "A test plugin",
+    author: "Test Author",
+    repo: "owner/repo",
+  };
+
+  it("should create annotations from manifest with community plugin data", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "1.0.0",
+      description: "A test plugin",
+      author: "Test Author",
+    };
+
+    const publishedAt = "2026-02-09T10:00:00Z";
+    const registryUrl = "ghcr.io/owner/repo";
+
+    const result = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      registryUrl,
+      publishedAt
+    );
+
+    expect(result["vnd.obsidianmd.plugin.id"]).toBe("test-plugin");
+    expect(result["vnd.obsidianmd.plugin.name"]).toBe("Test Plugin");
+    expect(result["vnd.obsidianmd.plugin.version"]).toBe("1.0.0");
+    expect(result["vnd.obsidianmd.plugin.source"]).toBe(
+      "git+https://github.com/owner/repo.git",
+    );
+    expect(result["vnd.obsidianmd.plugin.published-at"]).toBe(publishedAt);
+    expect(result["vnd.obsidianmd.plugin.min-app-version"]).toBe("1.0.0");
+  });
+
+  it("should include introduction field from community plugin", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "1.0.0",
+      description: "A test plugin",
+      author: "Test Author",
+    };
+
+    const communityPluginWithIntro = {
+      ...communityPlugin,
+      introduction: "# Test Plugin\n\nThis is a detailed introduction.",
+    };
+
+    const result = manifestToAnnotations(
+      manifest,
+      communityPluginWithIntro,
+      "ghcr.io/owner/repo",
+      "2026-02-09T10:00:00Z"
+    );
+
+    expect(result["vnd.obsidianmd.plugin.introduction"]).toBe(
+      "# Test Plugin\n\nThis is a detailed introduction.",
+    );
+  });
+
+  it("should serialize funding-url as JSON when it's an object", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "1.0.0",
+      description: "A test plugin",
+      author: "Test Author",
+      fundingUrl: {
+        "Buy Me a Coffee": "https://buymeacoffee.com/test",
+        "GitHub Sponsors": "https://github.com/sponsors/test",
+      },
+    };
+
+    const result = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      "2026-02-09T10:00:00Z"
+    );
+
+    expect(result["vnd.obsidianmd.plugin.funding-url"]).toBe(
+      JSON.stringify({
+        "Buy Me a Coffee": "https://buymeacoffee.com/test",
+        "GitHub Sponsors": "https://github.com/sponsors/test",
+      }),
+    );
+  });
+
+  it("should include funding-url as string when it's a string", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "1.0.0",
+      description: "A test plugin",
+      author: "Test Author",
+      fundingUrl: "https://github.com/sponsors/test",
+    };
+
+    const result = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      "2026-02-09T10:00:00Z"
+    );
+
+    expect(result["vnd.obsidianmd.plugin.funding-url"]).toBe(
+      "https://github.com/sponsors/test",
+    );
+  });
+
+  it("should convert is-desktop-only to string representation", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "1.0.0",
+      description: "A test plugin",
+      author: "Test Author",
+      isDesktopOnly: true,
+    };
+
+    const result = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      "2026-02-09T10:00:00Z"
+    );
+
+    expect(result["vnd.obsidianmd.plugin.is-desktop-only"]).toBe("true");
+  });
+
+  it("should default is-desktop-only to 'false' when not present", () => {
     const manifest = {
       id: "test-plugin",
       name: "Test Plugin",
@@ -85,22 +223,64 @@ describe("manifestToAnnotations", () => {
 
     const result = manifestToAnnotations(
       manifest,
-      "owner/repo",
-      "ghcr.io/owner/repo"
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      "2026-02-09T10:00:00Z"
     );
 
-    expect(result["vnd.obsidianmd.plugin.id"]).toBe("test-plugin");
-    expect(result["vnd.obsidianmd.plugin.name"]).toBe("Test Plugin");
-    expect(result["vnd.obsidianmd.plugin.version"]).toBe("1.0.0");
-    expect(result["vnd.obsidianmd.plugin.source"]).toBe(
-      "git+https://github.com/owner/repo.git",
+    expect(result["vnd.obsidianmd.plugin.is-desktop-only"]).toBe("false");
+  });
+
+  it("should include OCI standard annotations", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "1.0.0",
+      description: "A test plugin",
+      author: "Test Author",
+    };
+
+    const publishedAt = "2026-02-09T10:00:00Z";
+
+    const result = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      publishedAt
     );
-    expect(result["vnd.obsidianmd.plugin.published-at"]).toMatch(
-      /^\d{4}-\d{2}-\d{2}T/,
+
+    expect(result["org.opencontainers.image.title"]).toBe("Test Plugin");
+    expect(result["org.opencontainers.image.created"]).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    expect(result["org.opencontainers.image.source"]).toBe(
+      "https://github.com/owner/repo"
     );
   });
 
-  it("should include optional fields if present", () => {
+  it("should handle RFC 3339 timestamp format", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "1.0.0",
+      description: "A test plugin",
+      author: "Test Author",
+    };
+
+    const publishedAt = "2026-02-09T10:30:45.123Z";
+
+    const result = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      publishedAt
+    );
+
+    expect(result["vnd.obsidianmd.plugin.published-at"]).toBe(publishedAt);
+    expect(result["org.opencontainers.image.created"]).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+  });
+
+  it("should include optional author-url if present", () => {
     const manifest = {
       id: "test-plugin",
       name: "Test Plugin",
@@ -113,34 +293,13 @@ describe("manifestToAnnotations", () => {
 
     const result = manifestToAnnotations(
       manifest,
-      "owner/repo",
-      "ghcr.io/owner/repo"
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      "2026-02-09T10:00:00Z"
     );
 
     expect(result["vnd.obsidianmd.plugin.author-url"]).toBe(
       "https://example.com",
-    );
-    expect(result["vnd.obsidianmd.plugin.min-app-version"]).toBe("1.0.0");
-  });
-
-  test("includes org.opencontainers.image.source annotation", () => {
-    const manifest = {
-      id: "test-plugin",
-      name: "Test Plugin",
-      version: "1.0.0",
-      minAppVersion: "0.15.0",
-      description: "A test plugin",
-      author: "Test Author",
-    };
-
-    const annotations = manifestToAnnotations(
-      manifest,
-      "owner/repo",
-      "ghcr.io/shard-for-obsidian/shard/community/test-plugin"
-    );
-
-    expect(annotations["org.opencontainers.image.source"]).toBe(
-      "https://github.com/shard-for-obsidian/shard"
     );
   });
 
@@ -156,8 +315,9 @@ describe("manifestToAnnotations", () => {
 
     const annotations = manifestToAnnotations(
       manifest,
-      "owner/repo",
-      "ghcr.io/org/repo/deeply/nested/path"
+      communityPlugin,
+      "ghcr.io/org/repo/deeply/nested/path",
+      "2026-02-09T10:00:00Z"
     );
 
     expect(annotations["org.opencontainers.image.source"]).toBe(
@@ -176,7 +336,12 @@ describe("annotationsToMarketplacePlugin", () => {
       "vnd.obsidianmd.plugin.author": "Test Author",
       "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
+      "vnd.obsidianmd.plugin.introduction": "Test plugin introduction",
+      "vnd.obsidianmd.plugin.is-desktop-only": "false",
+      "vnd.obsidianmd.plugin.min-app-version": "1.0.0",
       "org.opencontainers.image.source": "https://github.com/owner/repo",
+      "org.opencontainers.image.title": "Test Plugin",
+      "org.opencontainers.image.created": new Date().toISOString(),
     };
 
     const result = annotationsToMarketplacePlugin(
@@ -199,9 +364,13 @@ describe("annotationsToMarketplacePlugin", () => {
       "vnd.obsidianmd.plugin.author": "Test Author",
       "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
-      "org.opencontainers.image.source": "https://github.com/owner/repo",
-      "vnd.obsidianmd.plugin.author-url": "https://example.com",
+      "vnd.obsidianmd.plugin.introduction": "Test plugin introduction",
+      "vnd.obsidianmd.plugin.is-desktop-only": "false",
       "vnd.obsidianmd.plugin.min-app-version": "1.0.0",
+      "org.opencontainers.image.source": "https://github.com/owner/repo",
+      "org.opencontainers.image.title": "Test Plugin",
+      "org.opencontainers.image.created": new Date().toISOString(),
+      "vnd.obsidianmd.plugin.author-url": "https://example.com",
     };
 
     const result = annotationsToMarketplacePlugin(
@@ -211,5 +380,247 @@ describe("annotationsToMarketplacePlugin", () => {
 
     expect(result.authorUrl).toBe("https://example.com");
     expect(result.minObsidianVersion).toBe("1.0.0");
+  });
+});
+
+describe("manifestToAnnotations - integration tests", () => {
+  it("should create complete annotations for realistic plugin with all features", () => {
+    // Realistic community plugin data based on obsidian-git
+    const communityPlugin = {
+      id: "obsidian-git",
+      name: "Obsidian Git",
+      description: "Backup your vault with git",
+      author: "denolehov",
+      repo: "denolehov/obsidian-git",
+      introduction: "# Obsidian Git\n\nSimple plugin to backup your Obsidian.md vault with git.",
+    };
+
+    const manifest = {
+      id: "obsidian-git",
+      name: "Obsidian Git",
+      version: "2.36.1",
+      minAppVersion: "0.15.0",
+      description: "Backup your vault with git",
+      author: "denolehov",
+      authorUrl: "https://github.com/denolehov",
+      fundingUrl: "https://github.com/sponsors/denolehov",
+      isDesktopOnly: false,
+    };
+
+    const publishedAt = "2024-01-15T10:30:45Z";
+    const registryUrl = "ghcr.io/user/obsidian-git";
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      registryUrl,
+      publishedAt
+    );
+
+    // Verify all Obsidian-specific annotations
+    expect(annotations["vnd.obsidianmd.plugin.id"]).toBe("obsidian-git");
+    expect(annotations["vnd.obsidianmd.plugin.name"]).toBe("Obsidian Git");
+    expect(annotations["vnd.obsidianmd.plugin.version"]).toBe("2.36.1");
+    expect(annotations["vnd.obsidianmd.plugin.description"]).toBe("Backup your vault with git");
+    expect(annotations["vnd.obsidianmd.plugin.author"]).toBe("denolehov");
+    expect(annotations["vnd.obsidianmd.plugin.author-url"]).toBe("https://github.com/denolehov");
+    expect(annotations["vnd.obsidianmd.plugin.source"]).toBe("git+https://github.com/denolehov/obsidian-git.git");
+    expect(annotations["vnd.obsidianmd.plugin.published-at"]).toBe(publishedAt);
+    expect(annotations["vnd.obsidianmd.plugin.introduction"]).toBe(
+      "# Obsidian Git\n\nSimple plugin to backup your Obsidian.md vault with git."
+    );
+    expect(annotations["vnd.obsidianmd.plugin.funding-url"]).toBe("https://github.com/sponsors/denolehov");
+    expect(annotations["vnd.obsidianmd.plugin.is-desktop-only"]).toBe("false");
+    expect(annotations["vnd.obsidianmd.plugin.min-app-version"]).toBe("0.15.0");
+
+    // Verify all OCI standard annotations
+    expect(annotations["org.opencontainers.image.title"]).toBe("Obsidian Git");
+    expect(annotations["org.opencontainers.image.source"]).toBe("https://github.com/user/obsidian-git");
+    expect(annotations["org.opencontainers.image.created"]).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+  });
+
+  it("should handle plugin with object-form funding URL", () => {
+    const communityPlugin = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      description: "Test description",
+      author: "Test Author",
+      repo: "owner/repo",
+    };
+
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "0.15.0",
+      description: "Test description",
+      author: "Test Author",
+      fundingUrl: {
+        "Buy Me a Coffee": "https://buymeacoffee.com/test",
+        "GitHub Sponsors": "https://github.com/sponsors/test",
+      },
+    };
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      "2024-01-15T10:00:00Z"
+    );
+
+    // Verify funding URL is serialized as JSON string
+    expect(annotations["vnd.obsidianmd.plugin.funding-url"]).toBe(
+      JSON.stringify({
+        "Buy Me a Coffee": "https://buymeacoffee.com/test",
+        "GitHub Sponsors": "https://github.com/sponsors/test",
+      })
+    );
+  });
+
+  it("should handle desktop-only plugin", () => {
+    const communityPlugin = {
+      id: "desktop-plugin",
+      name: "Desktop Plugin",
+      description: "Desktop only",
+      author: "author",
+      repo: "owner/desktop-plugin",
+    };
+
+    const manifest = {
+      id: "desktop-plugin",
+      name: "Desktop Plugin",
+      version: "1.0.0",
+      minAppVersion: "0.15.0",
+      description: "Desktop only",
+      author: "author",
+      isDesktopOnly: true,
+    };
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      "ghcr.io/owner/desktop-plugin",
+      "2024-01-15T10:00:00Z"
+    );
+
+    expect(annotations["vnd.obsidianmd.plugin.is-desktop-only"]).toBe("true");
+  });
+
+  it("should handle plugin without optional introduction field", () => {
+    const communityPlugin = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      description: "Test description",
+      author: "Test Author",
+      repo: "owner/repo",
+      // No introduction field
+    };
+
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "0.15.0",
+      description: "Test description",
+      author: "Test Author",
+    };
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      "2024-01-15T10:00:00Z"
+    );
+
+    // Introduction should be empty string when not present
+    expect(annotations["vnd.obsidianmd.plugin.introduction"]).toBe("");
+  });
+
+  it("should correctly transform repository URL from namespace with nested path", () => {
+    const communityPlugin = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      description: "Test description",
+      author: "Test Author",
+      repo: "owner/repo",
+    };
+
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "0.15.0",
+      description: "Test description",
+      author: "Test Author",
+    };
+
+    // Registry URL with nested path
+    const registryUrl = "ghcr.io/shard-for-obsidian/shard/community/test-plugin";
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      registryUrl,
+      "2024-01-15T10:00:00Z"
+    );
+
+    // Should extract only owner/repo from nested path
+    expect(annotations["org.opencontainers.image.source"]).toBe(
+      "https://github.com/shard-for-obsidian/shard"
+    );
+    expect(annotations["vnd.obsidianmd.plugin.source"]).toBe("git+https://github.com/owner/repo.git");
+  });
+
+  it("should ensure all required annotations are present", () => {
+    const communityPlugin = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      description: "Test description",
+      author: "Test Author",
+      repo: "owner/repo",
+    };
+
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "0.15.0",
+      description: "Test description",
+      author: "Test Author",
+    };
+
+    const annotations = manifestToAnnotations(
+      manifest,
+      communityPlugin,
+      "ghcr.io/owner/repo",
+      "2024-01-15T10:00:00Z"
+    );
+
+    // Required Obsidian annotations
+    const requiredObsidianFields = [
+      "vnd.obsidianmd.plugin.id",
+      "vnd.obsidianmd.plugin.name",
+      "vnd.obsidianmd.plugin.version",
+      "vnd.obsidianmd.plugin.description",
+      "vnd.obsidianmd.plugin.author",
+      "vnd.obsidianmd.plugin.source",
+      "vnd.obsidianmd.plugin.published-at",
+      "vnd.obsidianmd.plugin.introduction",
+      "vnd.obsidianmd.plugin.is-desktop-only",
+      "vnd.obsidianmd.plugin.min-app-version",
+    ];
+
+    // Required OCI annotations
+    const requiredOciFields = [
+      "org.opencontainers.image.title",
+      "org.opencontainers.image.source",
+      "org.opencontainers.image.created",
+    ];
+
+    // Verify all required fields are present
+    for (const field of [...requiredObsidianFields, ...requiredOciFields]) {
+      expect(annotations).toHaveProperty(field);
+      expect(annotations[field as keyof typeof annotations]).toBeDefined();
+    }
   });
 });

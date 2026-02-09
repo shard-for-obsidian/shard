@@ -56,16 +56,73 @@ export function ghcrUrlToGitHubRepo(registryUrl: string): string {
 }
 
 /**
+ * Community plugin metadata from community-plugins.json
+ */
+export interface CommunityPluginMetadata {
+  id: string;
+  name: string;
+  description: string;
+  author: string;
+  repo: string;
+  introduction?: string;
+}
+
+/**
+ * Create OCI annotations from Obsidian manifest (legacy signature for local plugins)
+ * @param manifest - Obsidian plugin manifest
+ * @param ownerRepo - GitHub repository in "owner/repo" format
+ * @param registryUrl - GHCR registry URL (e.g., "ghcr.io/owner/repo/path")
+ * @returns Partial OCI manifest annotations (without community-specific fields)
+ */
+export function manifestToAnnotationsLegacy(
+  manifest: ObsidianManifest,
+  ownerRepo: string,
+  registryUrl: string,
+): Partial<PluginAnnotations> {
+  const annotations: Record<string, string> = {
+    "vnd.obsidianmd.plugin.id": manifest.id,
+    "vnd.obsidianmd.plugin.name": manifest.name,
+    "vnd.obsidianmd.plugin.version": manifest.version,
+    "vnd.obsidianmd.plugin.description": manifest.description,
+    "vnd.obsidianmd.plugin.author": manifest.author,
+    "vnd.obsidianmd.plugin.source": repoToVcsUrl(ownerRepo),
+    "vnd.obsidianmd.plugin.is-desktop-only": String(manifest.isDesktopOnly ?? false),
+    "vnd.obsidianmd.plugin.min-app-version": manifest.minAppVersion,
+    "org.opencontainers.image.source": ghcrUrlToGitHubRepo(registryUrl),
+    "org.opencontainers.image.title": manifest.name,
+    "org.opencontainers.image.created": new Date().toISOString(),
+  };
+
+  // Add optional fields if present
+  if (manifest.authorUrl) {
+    annotations["vnd.obsidianmd.plugin.author-url"] = manifest.authorUrl;
+  }
+
+  // Handle funding URL - serialize as JSON if object, otherwise as string
+  if (manifest.fundingUrl) {
+    if (typeof manifest.fundingUrl === "string") {
+      annotations["vnd.obsidianmd.plugin.funding-url"] = manifest.fundingUrl;
+    } else {
+      annotations["vnd.obsidianmd.plugin.funding-url"] = JSON.stringify(manifest.fundingUrl);
+    }
+  }
+
+  return annotations as Partial<PluginAnnotations>;
+}
+
+/**
  * Create OCI annotations from Obsidian manifest
  * @param manifest - Obsidian plugin manifest
- * @param repo - Repository in "owner/repo" format
+ * @param communityPlugin - Community plugin metadata from community-plugins.json
  * @param registryUrl - GHCR registry URL (e.g., "ghcr.io/owner/repo/path")
+ * @param publishedAt - ISO 8601 timestamp of publication
  * @returns OCI manifest annotations
  */
 export function manifestToAnnotations(
   manifest: ObsidianManifest,
-  repo: string,
+  communityPlugin: CommunityPluginMetadata,
   registryUrl: string,
+  publishedAt: string,
 ): PluginAnnotations {
   const annotations: Record<string, string> = {
     "vnd.obsidianmd.plugin.id": manifest.id,
@@ -73,18 +130,28 @@ export function manifestToAnnotations(
     "vnd.obsidianmd.plugin.version": manifest.version,
     "vnd.obsidianmd.plugin.description": manifest.description,
     "vnd.obsidianmd.plugin.author": manifest.author,
-    "vnd.obsidianmd.plugin.source": repoToVcsUrl(repo),
-    "vnd.obsidianmd.plugin.published-at": new Date().toISOString(),
+    "vnd.obsidianmd.plugin.source": repoToVcsUrl(communityPlugin.repo),
+    "vnd.obsidianmd.plugin.published-at": publishedAt,
+    "vnd.obsidianmd.plugin.introduction": communityPlugin.introduction ?? "",
+    "vnd.obsidianmd.plugin.is-desktop-only": String(manifest.isDesktopOnly ?? false),
+    "vnd.obsidianmd.plugin.min-app-version": manifest.minAppVersion,
     "org.opencontainers.image.source": ghcrUrlToGitHubRepo(registryUrl),
+    "org.opencontainers.image.title": manifest.name,
+    "org.opencontainers.image.created": new Date().toISOString(),
   };
 
   // Add optional fields if present
   if (manifest.authorUrl) {
     annotations["vnd.obsidianmd.plugin.author-url"] = manifest.authorUrl;
   }
-  if (manifest.minAppVersion) {
-    annotations["vnd.obsidianmd.plugin.min-app-version"] =
-      manifest.minAppVersion;
+
+  // Handle funding URL - serialize as JSON if object, otherwise as string
+  if (manifest.fundingUrl) {
+    if (typeof manifest.fundingUrl === "string") {
+      annotations["vnd.obsidianmd.plugin.funding-url"] = manifest.fundingUrl;
+    } else {
+      annotations["vnd.obsidianmd.plugin.funding-url"] = JSON.stringify(manifest.fundingUrl);
+    }
   }
 
   return annotations as PluginAnnotations;
