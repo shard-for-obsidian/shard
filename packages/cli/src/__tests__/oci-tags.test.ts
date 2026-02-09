@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { queryOciTags, queryTagMetadata } from "../lib/oci-tags.js";
+import { queryOciTags, queryTagMetadata, generateVersionTags } from "../lib/oci-tags.js";
 import type { FetchAdapter } from "@shard-for-obsidian/lib";
 
 describe("OCI Tags Query", () => {
@@ -46,6 +46,52 @@ describe("OCI Tags Query", () => {
     expect(metadata.size).toBe(245678); // sum of layers
     expect(metadata.annotations["vnd.obsidianmd.plugin.commit"]).toBe(
       "abc123",
+    );
+  });
+});
+
+describe("generateVersionTags", () => {
+  it("should generate tags from standard semver", () => {
+    const tags = generateVersionTags("2.36.1");
+    expect(tags).toEqual(["2.36.1", "2.36", "2", "latest"]);
+  });
+
+  it("should handle patch version 0", () => {
+    const tags = generateVersionTags("1.5.0");
+    expect(tags).toEqual(["1.5.0", "1.5", "1", "latest"]);
+  });
+
+  it("should handle major version 0", () => {
+    const tags = generateVersionTags("0.15.3");
+    expect(tags).toEqual(["0.15.3", "0.15", "0", "latest"]);
+  });
+
+  it("should strip leading 'v' prefix", () => {
+    const tags = generateVersionTags("v2.36.1");
+    expect(tags).toEqual(["2.36.1", "2.36", "2", "latest"]);
+  });
+
+  it("should throw error for invalid semver format", () => {
+    expect(() => generateVersionTags("invalid")).toThrow(
+      "Invalid semantic version format: invalid. Expected format: X.Y.Z"
+    );
+  });
+
+  it("should throw error for incomplete version", () => {
+    expect(() => generateVersionTags("1.2")).toThrow(
+      "Invalid semantic version format: 1.2. Expected format: X.Y.Z"
+    );
+  });
+
+  it("should throw error for version with too many parts", () => {
+    expect(() => generateVersionTags("1.2.3.4")).toThrow(
+      "Invalid semantic version format: 1.2.3.4. Expected format: X.Y.Z"
+    );
+  });
+
+  it("should throw error for version with non-numeric parts", () => {
+    expect(() => generateVersionTags("1.2.beta")).toThrow(
+      "Invalid semantic version format: 1.2.beta. Expected format: X.Y.Z"
     );
   });
 });
