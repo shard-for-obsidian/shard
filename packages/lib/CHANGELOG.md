@@ -1,5 +1,11 @@
 # shard-lib
 
+## 0.3.0
+
+### Minor Changes
+
+- dbca3f2: Change behavior of convert command so data is mapped to annotations from community plugin registry and plugin manifest.
+
 ## 0.2.4
 
 ### Patch Changes
