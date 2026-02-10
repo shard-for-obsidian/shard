@@ -122,8 +122,8 @@
             <Card.Title>About</Card.Title>
           </Card.Header>
           <Card.Content>
-            <div class="prose prose-sm max-w-none">
-              {@html plugin.introduction.replace(/\n/g, "<br>")}
+            <div class="prose prose-sm max-w-none whitespace-pre-wrap">
+              {plugin.introduction}
             </div>
           </Card.Content>
         </Card.Root>
