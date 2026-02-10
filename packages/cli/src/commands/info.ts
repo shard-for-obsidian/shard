@@ -73,7 +73,7 @@ async function infoCommand(
 
       for (const version of versionsToShow) {
         const date = new Date(version.publishedAt).toISOString().split("T")[0];
-        logger.info(`  - ${version.tag} (${date})`);
+        logger.info(`  - ${version.canonicalTag} (${date})`);
 
         // In verbose mode, show additional version details
         if (flags.verbose) {
@@ -98,7 +98,7 @@ async function infoCommand(
     logger.info("=".repeat(60) + "\n");
     const latestVersion =
       plugin.versions && plugin.versions.length > 0
-        ? plugin.versions[0].tag
+        ? plugin.versions[0].canonicalTag
         : "latest";
     logger.info(
       `shard pull ${plugin.registryUrl}:${latestVersion} --output <path>`,

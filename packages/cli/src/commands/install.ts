@@ -56,7 +56,7 @@ async function installCommand(
     }
 
     // Step 2: Determine version to install
-    const versionToInstall = flags.version || plugin.versions?.[0]?.tag;
+    const versionToInstall = flags.version || plugin.versions?.[0]?.canonicalTag;
 
     if (!versionToInstall) {
       spinner?.fail();
