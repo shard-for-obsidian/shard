@@ -1,5 +1,13 @@
 # marketplace
 
+## 0.1.3
+
+### Patch Changes
+
+- 2ec495d: Update namespace behavior to treat it as a container. Move to treating the manifest annotations as source of truth.
+- Updated dependencies [2ec495d]
+  - @shard-for-obsidian/lib@0.3.2
+
 ## 0.1.2
 
 ### Patch Changes
