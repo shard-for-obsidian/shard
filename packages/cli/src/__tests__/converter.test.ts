@@ -310,6 +310,74 @@ describe("PluginConverter", () => {
   });
 
   describe("pushToRegistry", () => {
+    it('should annotate config blob with "manifest.json" title for ORAS compatibility', async () => {
+      // Mock OciRegistryClient methods
+      const pushBlobSpy = vi.fn();
+      const pushManifestWithTagsSpy = vi.fn().mockResolvedValue({
+        digest: "sha256:manifest123",
+        tags: ["1.0.0"],
+      });
+
+      // Track pushBlob calls to inspect annotations
+      pushBlobSpy
+        // First call: main.js
+        .mockResolvedValueOnce({
+          digest: "sha256:mainjs123",
+          size: 100,
+          annotations: {
+            "vnd.obsidianmd.layer.filename": "main.js",
+            "org.opencontainers.image.title": "main.js",
+          },
+        })
+        // Second call: config (manifest.json)
+        .mockResolvedValueOnce({
+          digest: "sha256:config123",
+          size: 200,
+          annotations: {},
+        });
+
+      // Mock the OciRegistryClient class
+      const { OciRegistryClient } = await import("@shard-for-obsidian/lib");
+      vi.spyOn(OciRegistryClient.prototype, "pushBlob").mockImplementation(
+        pushBlobSpy,
+      );
+      vi.spyOn(
+        OciRegistryClient.prototype,
+        "pushManifestWithTags",
+      ).mockImplementation(pushManifestWithTagsSpy);
+
+      await converter.pushToRegistry({
+        repository: "ghcr.io/test/plugin",
+        token: "test-token",
+        communityPlugin: {
+          id: "test-plugin",
+          name: "Test Plugin",
+          author: "Test Author",
+          description: "Test description",
+          repo: "test/repo",
+        },
+        publishedAt: "2024-01-01T00:00:00Z",
+        pluginData: {
+          manifest: {
+            id: "test-plugin",
+            name: "Test Plugin Name",
+            version: "1.0.0",
+            minAppVersion: "0.15.0",
+            description: "Test",
+            author: "test",
+          },
+          mainJs: 'console.log("test")',
+        },
+      });
+
+      // Find the config blob push (should be the second call)
+      expect(pushBlobSpy).toHaveBeenCalledTimes(2);
+      const configBlobCall = pushBlobSpy.mock.calls[1];
+      expect(configBlobCall[0].annotations["org.opencontainers.image.title"]).toBe(
+        "manifest.json",
+      );
+    });
+
     it("should have correct method signature", () => {
       // Type test - ensures method exists and has correct interface
       expect(typeof converter.pushToRegistry).toBe("function");
@@ -397,6 +465,131 @@ describe("PluginConverter", () => {
         "2024-01-15T10:30:00.000Z",
       );
     });
+  });
+
+  it("should insert slash between namespace and plugin ID", async () => {
+    const namespace = "ghcr.io/owner/repo";
+    const pluginId = "test-plugin";
+
+    // Mock community plugin lookup
+    vi.mocked(mockAdapter.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => [
+          {
+            id: "test-plugin",
+            name: "Test Plugin",
+            author: "Test Author",
+            description: "Test description",
+            repo: "test/repo",
+          },
+        ],
+      } as Response)
+      // Mock GitHub release fetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          tag_name: "1.0.0",
+          published_at: "2024-01-01T00:00:00Z",
+          assets: [
+            {
+              name: "manifest.json",
+              browser_download_url: "https://example.com/manifest.json",
+            },
+            {
+              name: "main.js",
+              browser_download_url: "https://example.com/main.js",
+            },
+          ],
+        }),
+      } as Response)
+      // Mock manifest.json download
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () =>
+          JSON.stringify({
+            id: "test-plugin",
+            name: "Test Plugin",
+            version: "1.0.0",
+            minAppVersion: "0.15.0",
+          }),
+      } as Response)
+      // Mock main.js download
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () => "// test code",
+      } as Response);
+
+    const result = await converter.convertPlugin({
+      pluginId,
+      namespace,
+      token: "test-token",
+    });
+
+    expect(result.repository).toBe("ghcr.io/owner/repo/test-plugin");
+  });
+
+  it("should insert slash even when namespace has trailing slash", async () => {
+    const namespace = "ghcr.io/owner/repo/"; // Note trailing slash
+    const pluginId = "test-plugin";
+
+    // Mock community plugin lookup
+    vi.mocked(mockAdapter.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => [
+          {
+            id: "test-plugin",
+            name: "Test Plugin",
+            author: "Test Author",
+            description: "Test description",
+            repo: "test/repo",
+          },
+        ],
+      } as Response)
+      // Mock GitHub release fetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          tag_name: "1.0.0",
+          published_at: "2024-01-01T00:00:00Z",
+          assets: [
+            {
+              name: "manifest.json",
+              browser_download_url: "https://example.com/manifest.json",
+            },
+            {
+              name: "main.js",
+              browser_download_url: "https://example.com/main.js",
+            },
+          ],
+        }),
+      } as Response)
+      // Mock manifest.json download
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () =>
+          JSON.stringify({
+            id: "test-plugin",
+            name: "Test Plugin",
+            version: "1.0.0",
+            minAppVersion: "0.15.0",
+          }),
+      } as Response)
+      // Mock main.js download
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () => "// test code",
+      } as Response);
+
+    const result = await converter.convertPlugin({
+      pluginId,
+      namespace,
+      token: "test-token",
+    });
+
+    // normalizeNamespace should strip trailing slash, then we add separator
+    expect(result.repository).toBe("ghcr.io/owner/repo/test-plugin");
   });
 
   describe("end-to-end integration", () => {

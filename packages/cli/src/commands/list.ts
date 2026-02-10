@@ -41,7 +41,7 @@ async function listCommand(
 
       // Display latest version if available
       if (plugin.versions && plugin.versions.length > 0) {
-        logger.info(`  Latest Version: ${plugin.versions[0].tag}`);
+        logger.info(`  Latest Version: ${plugin.versions[0].canonicalTag}`);
       }
 
       logger.info(`  Registry: ${plugin.registryUrl}`);

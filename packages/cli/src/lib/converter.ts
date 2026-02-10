@@ -10,6 +10,7 @@ import { CommunityPluginsCache } from "./community-cache.js";
 import { GitHubReleaseFetcher } from "./github-release.js";
 import { generateVersionTags } from "./oci-tags.js";
 import type { CommunityPlugin } from "./community-plugins.js";
+import { normalizeNamespace } from "./namespace.js";
 
 // Asset filename constants
 const ASSET_MANIFEST_JSON = "manifest.json";
@@ -183,7 +184,8 @@ export class PluginConverter {
     }
 
     // Step 6: Build repository from namespace + normalized plugin ID
-    const repository = `${namespace}${normalizedPluginId}`;
+    const normalizedNamespace = normalizeNamespace(namespace);
+    const repository = `${normalizedNamespace}/${normalizedPluginId}`;
 
     return {
       pluginId,
@@ -287,7 +289,7 @@ export class PluginConverter {
     const configResult = await client.pushBlob({
       data: manifestBuffer,
       annotations: {
-        "org.opencontainers.image.title": pluginData.manifest.name,
+        "org.opencontainers.image.title": ASSET_MANIFEST_JSON,
       },
     });
 

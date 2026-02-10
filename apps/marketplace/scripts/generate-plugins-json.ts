@@ -19,31 +19,22 @@ import {
   queryTagMetadata,
   NodeFetchAdapter,
   type MarketplacePlugin,
-  type PluginVersion,
   type MarketplaceIndex,
+  ociAnnotationsToFrontmatter,
+  groupVersionsBySha,
+  type RawVersion,
+  type PluginFrontmatter,
 } from "@shard-for-obsidian/lib";
 
 // Create Node.js fetch adapter
 const nodeFetchAdapter = new NodeFetchAdapter();
 
-interface PluginFrontmatter {
-  id: string;
-  registryUrl: string;
-  name: string;
-  author: string;
-  description: string;
-  license?: string;
-  minObsidianVersion?: string;
-  authorUrl?: string;
-  repository?: string;
-  tags?: string[];
-}
 
 async function generatePluginsJson(): Promise<void> {
   console.log("🔨 Generating plugins.json from markdown files...\n");
 
-  const pluginsDir = path.join(process.cwd(), "apps/marketplace/content/plugins");
-  const appsStaticDir = path.join(process.cwd(), "apps/marketplace/static");
+  const pluginsDir = path.join(process.cwd(), "content/plugins");
+  const appsStaticDir = path.join(process.cwd(), "static");
   const appsOutputPath = path.join(appsStaticDir, "plugins.json");
 
   // Ensure directories exist
@@ -69,7 +60,7 @@ async function generatePluginsJson(): Promise<void> {
     console.log(`📦 Processing: ${frontmatter.name} (${frontmatter.id})`);
 
     // Query OCI tags for this plugin
-    const versions: PluginVersion[] = [];
+    const rawVersions: RawVersion[] = [];
     try {
       const tags = await queryOciTags({
         registryUrl: frontmatter.registryUrl,
@@ -77,7 +68,7 @@ async function generatePluginsJson(): Promise<void> {
         token,
       });
 
-      console.log(`   Found ${tags.length} version(s)`);
+      console.log(`   Found ${tags.length} tag(s)`);
 
       // Query metadata for each tag
       for (const tag of tags) {
@@ -89,14 +80,15 @@ async function generatePluginsJson(): Promise<void> {
             token,
           });
 
-          versions.push({
+          rawVersions.push({
             tag,
+            sha: metadata.digest,
             publishedAt: metadata.publishedAt,
             size: metadata.size,
             annotations: metadata.annotations,
           });
 
-          console.log(`   - ${tag} (${(metadata.size / 1024).toFixed(0)} KB)`);
+          console.log(`   - ${tag} (${(metadata.size / 1024).toFixed(0)} KB) [${metadata.digest.substring(0, 12)}]`);
         } catch (error) {
           console.warn(`   ⚠️  Failed to query metadata for ${tag}: ${error}`);
         }
@@ -105,32 +97,77 @@ async function generatePluginsJson(): Promise<void> {
       console.warn(`   ⚠️  Failed to query tags: ${error}`);
     }
 
-    // Build plugin object
+    // Group versions by SHA
+    const groupedVersions = groupVersionsBySha(rawVersions);
+
+    console.log(`   Grouped into ${groupedVersions.length} unique version(s)`);
+
+    // Convert to PluginVersion format
+    const versions = groupedVersions.map(v => ({
+      canonicalTag: v.canonicalTag,
+      additionalTags: v.additionalTags.length > 0 ? v.additionalTags : undefined,
+      sha: v.sha,
+      publishedAt: v.publishedAt,
+      size: v.size,
+      annotations: v.annotations,
+    }));
+
+    // Fetch latest tag annotations to sync frontmatter
+    let computedFrontmatter: PluginFrontmatter | undefined;
+    if (groupedVersions.length > 0) {
+      try {
+        // Find latest tag (first grouped version's canonical tag)
+        const latestTag = groupedVersions[0].canonicalTag;
+        const latestMetadata = await queryTagMetadata({
+          registryUrl: frontmatter.registryUrl,
+          tag: latestTag,
+          adapter: nodeFetchAdapter,
+          token,
+        });
+
+        computedFrontmatter = ociAnnotationsToFrontmatter(
+          latestMetadata.annotations,
+          frontmatter.registryUrl
+        );
+
+        console.log(`   Synced frontmatter from ${latestTag}`);
+      } catch (error) {
+        console.warn(`   ⚠️  Failed to sync frontmatter: ${error}`);
+      }
+    }
+
+    // Merge: markdown frontmatter overrides computed values
+    const mergedFrontmatter = {
+      ...computedFrontmatter,
+      ...frontmatter, // Markdown takes precedence
+    };
+
+    // Build plugin object with merged frontmatter
     const plugin: MarketplacePlugin = {
-      id: frontmatter.id,
-      registryUrl: frontmatter.registryUrl,
-      name: frontmatter.name,
-      author: frontmatter.author,
-      description: frontmatter.description,
+      id: mergedFrontmatter.id,
+      registryUrl: mergedFrontmatter.registryUrl,
+      name: mergedFrontmatter.name,
+      author: mergedFrontmatter.author,
+      description: mergedFrontmatter.description,
       introduction: content.trim(),
       versions,
     };
 
-    // Add optional fields
-    if (frontmatter.license) {
-      plugin.license = frontmatter.license;
+    // Add optional fields from merged frontmatter
+    if (mergedFrontmatter.license) {
+      plugin.license = mergedFrontmatter.license;
     }
-    if (frontmatter.minObsidianVersion) {
-      plugin.minObsidianVersion = frontmatter.minObsidianVersion;
+    if (mergedFrontmatter.minObsidianVersion) {
+      plugin.minObsidianVersion = mergedFrontmatter.minObsidianVersion;
     }
-    if (frontmatter.authorUrl) {
-      plugin.authorUrl = frontmatter.authorUrl;
+    if (mergedFrontmatter.authorUrl) {
+      plugin.authorUrl = mergedFrontmatter.authorUrl;
     }
-    if (frontmatter.repository) {
-      plugin.repository = frontmatter.repository;
+    if (mergedFrontmatter.repository) {
+      plugin.repository = mergedFrontmatter.repository;
     }
-    if (frontmatter.tags) {
-      plugin.tags = frontmatter.tags;
+    if (mergedFrontmatter.tags) {
+      plugin.tags = mergedFrontmatter.tags;
     }
 
     plugins.push(plugin);
