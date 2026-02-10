@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -42,5 +43,19 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Test
-        run: pnpm test
+      - name: Test with coverage
+        run: pnpm -r test:coverage
+
+      - name: Coverage report (lib)
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: lib
+          working-directory: ./packages/lib
+
+      - name: Coverage report (cli)
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: cli
+          working-directory: ./packages/cli
