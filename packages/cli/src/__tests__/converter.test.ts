@@ -310,6 +310,74 @@ describe("PluginConverter", () => {
   });
 
   describe("pushToRegistry", () => {
+    it('should annotate config blob with "manifest.json" title for ORAS compatibility', async () => {
+      // Mock OciRegistryClient methods
+      const pushBlobSpy = vi.fn();
+      const pushManifestWithTagsSpy = vi.fn().mockResolvedValue({
+        digest: "sha256:manifest123",
+        tags: ["1.0.0"],
+      });
+
+      // Track pushBlob calls to inspect annotations
+      pushBlobSpy
+        // First call: main.js
+        .mockResolvedValueOnce({
+          digest: "sha256:mainjs123",
+          size: 100,
+          annotations: {
+            "vnd.obsidianmd.layer.filename": "main.js",
+            "org.opencontainers.image.title": "main.js",
+          },
+        })
+        // Second call: config (manifest.json)
+        .mockResolvedValueOnce({
+          digest: "sha256:config123",
+          size: 200,
+          annotations: {},
+        });
+
+      // Mock the OciRegistryClient class
+      const { OciRegistryClient } = await import("@shard-for-obsidian/lib");
+      vi.spyOn(OciRegistryClient.prototype, "pushBlob").mockImplementation(
+        pushBlobSpy,
+      );
+      vi.spyOn(
+        OciRegistryClient.prototype,
+        "pushManifestWithTags",
+      ).mockImplementation(pushManifestWithTagsSpy);
+
+      await converter.pushToRegistry({
+        repository: "ghcr.io/test/plugin",
+        token: "test-token",
+        communityPlugin: {
+          id: "test-plugin",
+          name: "Test Plugin",
+          author: "Test Author",
+          description: "Test description",
+          repo: "test/repo",
+        },
+        publishedAt: "2024-01-01T00:00:00Z",
+        pluginData: {
+          manifest: {
+            id: "test-plugin",
+            name: "Test Plugin Name",
+            version: "1.0.0",
+            minAppVersion: "0.15.0",
+            description: "Test",
+            author: "test",
+          },
+          mainJs: 'console.log("test")',
+        },
+      });
+
+      // Find the config blob push (should be the second call)
+      expect(pushBlobSpy).toHaveBeenCalledTimes(2);
+      const configBlobCall = pushBlobSpy.mock.calls[1];
+      expect(configBlobCall[0].annotations["org.opencontainers.image.title"]).toBe(
+        "manifest.json",
+      );
+    });
+
     it("should have correct method signature", () => {
       // Type test - ensures method exists and has correct interface
       expect(typeof converter.pushToRegistry).toBe("function");

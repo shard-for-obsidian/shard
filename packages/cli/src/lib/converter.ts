@@ -289,7 +289,7 @@ export class PluginConverter {
     const configResult = await client.pushBlob({
       data: manifestBuffer,
       annotations: {
-        "org.opencontainers.image.title": pluginData.manifest.name,
+        "org.opencontainers.image.title": ASSET_MANIFEST_JSON,
       },
     });
 
