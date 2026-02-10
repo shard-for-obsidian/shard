@@ -4,8 +4,12 @@ import { z } from "zod";
  * Plugin version information from OCI registry
  */
 export const PluginVersionSchema = z.object({
-  /** Version tag */
-  tag: z.string(),
+  /** Canonical version tag (highest priority) */
+  canonicalTag: z.string(),
+  /** Additional tags pointing to same SHA */
+  additionalTags: z.array(z.string()).optional(),
+  /** SHA digest */
+  sha: z.string(),
   /** Publication timestamp (ISO 8601) */
   publishedAt: z.string(),
   /** Size in bytes */

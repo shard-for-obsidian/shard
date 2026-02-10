@@ -140,7 +140,8 @@ describe("MarketplacePluginSchema", () => {
       introduction: "# Test Plugin\n\nThis is a test.",
       versions: [
         {
-          tag: "1.0.0",
+          canonicalTag: "1.0.0",
+          sha: "sha256:abc123",
           publishedAt: "2026-02-07T10:00:00Z",
           size: 12345,
           annotations: { "vnd.obsidianmd.plugin.id": "test-plugin" },
@@ -156,7 +157,8 @@ describe("MarketplacePluginSchema", () => {
 describe("PluginVersionSchema", () => {
   it("should validate valid plugin version", () => {
     const validVersion = {
-      tag: "1.0.0",
+      canonicalTag: "1.0.0",
+      sha: "sha256:abc123",
       publishedAt: "2026-02-07T10:00:00Z",
       size: 12345,
       annotations: {},
