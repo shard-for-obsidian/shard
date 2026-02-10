@@ -1,5 +1,11 @@
 # shard-cli
 
+## 0.4.2
+
+### Patch Changes
+
+- 5b008df: Clean up dependencies.
+
 ## 0.4.1
 
 ### Patch Changes
