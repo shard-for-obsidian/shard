@@ -2,7 +2,7 @@ import { buildCommand } from "@stricli/core";
 import * as path from "node:path";
 import type { AppContext } from "../infrastructure/context.js";
 import { verifyPlugin } from "../lib/verify.js";
-import { inferNamespace } from "../lib/namespace.js";
+import { DEFAULT_NAMESPACE } from "../lib/namespace.js";
 
 /**
  * Flags for the verify command
@@ -27,13 +27,12 @@ async function verifyCommand(
     // Resolve the plugin directory to an absolute path
     const absolutePluginDir = path.resolve(pluginDirectory);
 
-    // Infer namespace from config if not provided
-    const namespace =
-      flags.namespace ?? (await inferNamespace({ config, logger }));
+    // Use provided namespace or fall back to default
+    const namespace = flags.namespace ?? DEFAULT_NAMESPACE;
 
     // Get token from config
     const token = await config.get("token");
-    if (!token) {
+    if (!token || typeof token !== "string") {
       logger.error("No authentication token found. Please run 'shard login'");
       this.process.exit(1);
     }
