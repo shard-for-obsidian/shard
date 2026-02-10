@@ -1,330 +1,79 @@
 {
   "plugins": [
     {
-      "id": "calendar",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/calendar",
-      "name": "Calendar",
-      "author": "Liam Cain",
-      "description": "Simple calendar widget.",
-      "introduction": "Simple calendar widget.",
+      "id": "notebook-navigator",
+      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community-plugins/notebook-navigator",
+      "name": "Notebook Navigator",
+      "author": "Johan Sanneblad",
+      "description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
+      "introduction": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
       "versions": [
         {
-          "tag": "2.0.0-beta.2",
-          "publishedAt": "2026-02-08T17:18:08.050Z",
-          "size": 489677,
+          "canonicalTag": "2.3.0",
+          "additionalTags": ["latest", "2.3", "2"],
+          "sha": "sha256:e5f8524527844ba1f84c8f6d2eb39418de1d53d67b41bb9bfc876505ae243323",
+          "publishedAt": "2026-02-10T18:55:41.155Z",
+          "size": 3973310,
           "annotations": {
-            "vnd.obsidianmd.plugin.id": "calendar-beta",
-            "vnd.obsidianmd.plugin.name": "Calendar (Beta)",
-            "vnd.obsidianmd.plugin.version": "2.0.0",
-            "vnd.obsidianmd.plugin.description": "Calendar view of your daily notes",
-            "vnd.obsidianmd.plugin.author": "Liam Cain",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/liamcain/obsidian-calendar-plugin.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:06:24.921Z",
-            "vnd.obsidianmd.plugin.author-url": "https://github.com/liamcain/",
-            "vnd.obsidianmd.plugin.min-app-version": "0.9.11",
+            "vnd.obsidianmd.plugin.id": "notebook-navigator",
+            "vnd.obsidianmd.plugin.name": "Notebook Navigator",
+            "vnd.obsidianmd.plugin.version": "2.3.0",
+            "vnd.obsidianmd.plugin.description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
+            "org.opencontainers.image.description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
+            "vnd.obsidianmd.plugin.author": "Johan Sanneblad",
+            "vnd.obsidianmd.plugin.source": "https://github.com/johansan/notebook-navigator",
+            "vnd.obsidianmd.plugin.published-at": "2026-02-10T11:22:36Z",
+            "vnd.obsidianmd.plugin.introduction": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options.",
+            "vnd.obsidianmd.plugin.is-desktop-only": "false",
+            "vnd.obsidianmd.plugin.min-app-version": "1.8.7",
+            "org.opencontainers.image.source": "https://github.com/shard-for-obsidian/shard",
+            "org.opencontainers.image.title": "Notebook Navigator",
+            "org.opencontainers.image.created": "2026-02-10T18:38:23.350Z",
+            "vnd.obsidianmd.plugin.author-url": "https://github.com/johansan",
+            "vnd.obsidianmd.plugin.funding-url": "https://github.com/sponsors/johansan/",
             "vnd.obsidianmd.plugin.converted": "true"
           }
         }
       ],
-      "repository": "https://github.com/liamcain/obsidian-calendar-plugin"
-    },
-    {
-      "id": "hotkeysplus-obsidian",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/hotkeysplus-obsidian",
-      "name": "Hotkeys++",
-      "author": "Argentina Ortega Sainz",
-      "description": "Additional hotkeys to do common things.",
-      "introduction": "Additional hotkeys to do common things.",
-      "versions": [
-        {
-          "tag": "0.2.7",
-          "publishedAt": "2026-02-08T17:18:08.729Z",
-          "size": 55946,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "hotkeysplus-obsidian",
-            "vnd.obsidianmd.plugin.name": "Hotkeys++",
-            "vnd.obsidianmd.plugin.version": "0.2.7",
-            "vnd.obsidianmd.plugin.description": "Additional hotkeys to do common things in Obsidian",
-            "vnd.obsidianmd.plugin.author": "Argentina Ortega Sainz",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/argenos/hotkeysplus-obsidian.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:05:21.307Z",
-            "vnd.obsidianmd.plugin.author-url": "https://argentinaos.com",
-            "vnd.obsidianmd.plugin.min-app-version": "0.12.19",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/argenos/hotkeysplus-obsidian"
-    },
-    {
-      "id": "leader-hotkeys-obsidian",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/leader-hotkeys-obsidian",
-      "name": "Leader Hotkeys",
-      "author": "Tony Grosinger",
-      "description": "Add leader hotkey support to any command (like tmux or vim).",
-      "introduction": "Add leader hotkey support to any command (like tmux or vim).",
-      "versions": [
-        {
-          "tag": "0.2.1",
-          "publishedAt": "2026-02-08T17:18:09.363Z",
-          "size": 142294,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "leader-hotkeys-obsidian",
-            "vnd.obsidianmd.plugin.name": "Leader Hotkeys",
-            "vnd.obsidianmd.plugin.version": "0.2.1",
-            "vnd.obsidianmd.plugin.description": "Add leader hotkey support to any command (like tmux or vim)",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/tgrosinger/leader-hotkeys-obsidian.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:05:49.773Z",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/tgrosinger/leader-hotkeys-obsidian"
-    },
-    {
-      "id": "ledger-obsidian",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/ledger-obsidian",
-      "name": "Ledger",
-      "author": "Tony Grosinger",
-      "description": "Plain text accounting.",
-      "introduction": "Plain text accounting.",
-      "versions": [
-        {
-          "tag": "0.3.3",
-          "publishedAt": "2026-02-08T17:18:09.944Z",
-          "size": 4900157,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "ledger-obsidian",
-            "vnd.obsidianmd.plugin.name": "Ledger",
-            "vnd.obsidianmd.plugin.version": "0.3.3",
-            "vnd.obsidianmd.plugin.description": "Plain text accounting",
-            "vnd.obsidianmd.plugin.author": "Tony Grosinger",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/tgrosinger/ledger-obsidian.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:06:09.108Z",
-            "vnd.obsidianmd.plugin.author-url": "https://grosinger.net",
-            "vnd.obsidianmd.plugin.min-app-version": "0.11.12",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/tgrosinger/ledger-obsidian"
-    },
-    {
-      "id": "mrj-jump-to-link",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/mrj-jump-to-link",
-      "name": "Jump to link",
-      "author": "MrJackphil",
-      "description": "Quickly navigate between links, or jump to any word on the page using hotkeys.",
-      "introduction": "Quickly navigate between links, or jump to any word on the page using hotkeys.",
-      "versions": [
-        {
-          "tag": "0.5.15",
-          "publishedAt": "2026-02-08T17:18:10.533Z",
-          "size": 172069,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "mrj-jump-to-link",
-            "vnd.obsidianmd.plugin.name": "Jump to link",
-            "vnd.obsidianmd.plugin.version": "0.5.15",
-            "vnd.obsidianmd.plugin.description": "This plugin allows open a link in current document or regex based navigation in editor mode using hotkey",
-            "vnd.obsidianmd.plugin.author": "MrJackphil",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/mrjackphil/obsidian-jump-to-link.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:06:38.106Z",
-            "vnd.obsidianmd.plugin.author-url": "https://mrjackphil.com",
-            "vnd.obsidianmd.plugin.min-app-version": "0.15.0",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/mrjackphil/obsidian-jump-to-link"
-    },
-    {
-      "id": "mrj-text-expand",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/mrj-text-expand",
-      "name": "Text expand",
-      "author": "MrJackphil",
-      "description": "Search and paste/transclude links to found files.",
-      "introduction": "Search and paste/transclude links to found files.",
-      "versions": [
-        {
-          "tag": "0.11.5",
-          "publishedAt": "2026-02-08T17:18:11.054Z",
-          "size": 244113,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "mrj-text-expand",
-            "vnd.obsidianmd.plugin.name": "Text expand",
-            "vnd.obsidianmd.plugin.version": "0.11.5",
-            "vnd.obsidianmd.plugin.description": "Search and paste/transclude links to located files.",
-            "vnd.obsidianmd.plugin.author": "MrJackphil",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/mrjackphil/obsidian-text-expand.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:06:30.851Z",
-            "vnd.obsidianmd.plugin.author-url": "https://mrjackphil.com",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/mrjackphil/obsidian-text-expand"
-    },
-    {
-      "id": "nldates-obsidian",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/nldates-obsidian",
-      "name": "Natural Language Dates",
-      "author": "Argentina Ortega Sainz",
-      "description": "Create date-links based on natural language.",
-      "introduction": "Create date-links based on natural language.",
-      "versions": [
-        {
-          "tag": "0.6.2",
-          "publishedAt": "2026-02-08T17:18:11.586Z",
-          "size": 1376761,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "nldates-obsidian",
-            "vnd.obsidianmd.plugin.name": "Natural Language Dates",
-            "vnd.obsidianmd.plugin.version": "0.6.2",
-            "vnd.obsidianmd.plugin.description": "Create date-links based on natural language",
-            "vnd.obsidianmd.plugin.author": "Argentina Ortega Sainz",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/argenos/nldates-obsidian.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:05:16.067Z",
-            "vnd.obsidianmd.plugin.author-url": "https://argentinaos.com/",
-            "vnd.obsidianmd.plugin.min-app-version": "1.0.0",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/argenos/nldates-obsidian"
-    },
-    {
-      "id": "note-refactor-obsidian",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/note-refactor-obsidian",
-      "name": "Note Refactor",
-      "author": "James Lynch",
-      "description": "Extract note content into new notes and split notes.",
-      "introduction": "Extract note content into new notes and split notes.",
-      "versions": [
-        {
-          "tag": "1.8.2",
-          "publishedAt": "2026-02-08T17:18:12.227Z",
-          "size": 852815,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "note-refactor-obsidian",
-            "vnd.obsidianmd.plugin.name": "Note Refactor",
-            "vnd.obsidianmd.plugin.version": "1.8.2",
-            "vnd.obsidianmd.plugin.description": "Extract note content into new notes and split notes",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/lynchjames/note-refactor-obsidian.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:06:17.317Z",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/lynchjames/note-refactor-obsidian"
+      "minObsidianVersion": "1.8.7",
+      "repository": "https://github.com/johansan/notebook-navigator"
     },
     {
       "id": "obsidian-git",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/obsidian-git",
+      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community-plugins/obsidian-git",
       "name": "Git",
-      "author": "Vinzent, (Denis Olehov)",
+      "author": "Vinzent",
       "description": "Integrate Git version control with automatic backup and other advanced features.",
       "introduction": "Integrate Git version control with automatic backup and other advanced features.",
       "versions": [
         {
-          "tag": "2.36.1",
-          "publishedAt": "2026-02-08T17:18:12.859Z",
+          "canonicalTag": "2.36.1",
+          "additionalTags": ["latest", "2.36", "2"],
+          "sha": "sha256:5118b8896807d868a9f8f160149c66b4f468b22de183095ff30c14cb3e9e4b28",
+          "publishedAt": "2026-02-10T18:55:43.743Z",
           "size": 741202,
           "annotations": {
             "vnd.obsidianmd.plugin.id": "obsidian-git",
             "vnd.obsidianmd.plugin.name": "Git",
             "vnd.obsidianmd.plugin.version": "2.36.1",
             "vnd.obsidianmd.plugin.description": "Integrate Git version control with automatic backup and other advanced features.",
+            "org.opencontainers.image.description": "Integrate Git version control with automatic backup and other advanced features.",
             "vnd.obsidianmd.plugin.author": "Vinzent",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/Vinzent03/obsidian-git.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:05:29.071Z",
+            "vnd.obsidianmd.plugin.source": "https://github.com/Vinzent03/obsidian-git",
+            "vnd.obsidianmd.plugin.published-at": "2026-01-11T19:16:36Z",
+            "vnd.obsidianmd.plugin.introduction": "Integrate Git version control with automatic backup and other advanced features.",
+            "vnd.obsidianmd.plugin.is-desktop-only": "false",
+            "org.opencontainers.image.source": "https://github.com/shard-for-obsidian/shard",
+            "org.opencontainers.image.title": "Git",
+            "org.opencontainers.image.created": "2026-02-10T18:54:40.658Z",
             "vnd.obsidianmd.plugin.author-url": "https://github.com/Vinzent03",
+            "vnd.obsidianmd.plugin.funding-url": "https://ko-fi.com/vinzent",
             "vnd.obsidianmd.plugin.converted": "true"
           }
         }
       ],
       "repository": "https://github.com/Vinzent03/obsidian-git"
-    },
-    {
-      "id": "recent-files-obsidian",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/recent-files-obsidian",
-      "name": "Recent Files",
-      "author": "Tony Grosinger",
-      "description": "Display a list of recently opened files.",
-      "introduction": "Display a list of recently opened files.",
-      "versions": [
-        {
-          "tag": "1.7.6",
-          "publishedAt": "2026-02-08T17:18:13.422Z",
-          "size": 55018,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "recent-files-obsidian",
-            "vnd.obsidianmd.plugin.name": "Recent Files",
-            "vnd.obsidianmd.plugin.version": "1.7.6",
-            "vnd.obsidianmd.plugin.description": "List files by most recently opened",
-            "vnd.obsidianmd.plugin.author": "Tony Grosinger",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/tgrosinger/recent-files-obsidian.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:05:56.538Z",
-            "vnd.obsidianmd.plugin.author-url": "https://grosinger.net",
-            "vnd.obsidianmd.plugin.min-app-version": "0.16.3",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/tgrosinger/recent-files-obsidian"
-    },
-    {
-      "id": "table-editor-obsidian",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/table-editor-obsidian",
-      "name": "Advanced Tables",
-      "author": "Tony Grosinger",
-      "description": "Improved table navigation, formatting, and manipulation.",
-      "introduction": "Improved table navigation, formatting, and manipulation.",
-      "versions": [
-        {
-          "tag": "0.22.1",
-          "publishedAt": "2026-02-08T17:18:13.952Z",
-          "size": 273983,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "table-editor-obsidian",
-            "vnd.obsidianmd.plugin.name": "Advanced Tables",
-            "vnd.obsidianmd.plugin.version": "0.22.1",
-            "vnd.obsidianmd.plugin.description": "Improved table navigation, formatting, manipulation, and formulas",
-            "vnd.obsidianmd.plugin.author": "Tony Grosinger",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/tgrosinger/advanced-tables-obsidian.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:05:42.298Z",
-            "vnd.obsidianmd.plugin.author-url": "https://grosinger.net",
-            "vnd.obsidianmd.plugin.min-app-version": "1.0.0",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/tgrosinger/advanced-tables-obsidian"
-    },
-    {
-      "id": "url-into-selection",
-      "registryUrl": "ghcr.io/shard-for-obsidian/shard/community/url-into-selection",
-      "name": "Paste URL into selection",
-      "author": "Denis Olehov",
-      "description": "Paste URL \"into\" selected text.",
-      "introduction": "Paste URL \"into\" selected text.",
-      "versions": [
-        {
-          "tag": "1.11.4",
-          "publishedAt": "2026-02-08T17:18:14.463Z",
-          "size": 8085,
-          "annotations": {
-            "vnd.obsidianmd.plugin.id": "url-into-selection",
-            "vnd.obsidianmd.plugin.name": "Paste URL into selection",
-            "vnd.obsidianmd.plugin.version": "1.11.4",
-            "vnd.obsidianmd.plugin.description": "Paste URL \"into\" selected text to create markdown links.",
-            "vnd.obsidianmd.plugin.source": "git+https://github.com/denolehov/obsidian-url-into-selection.git",
-            "vnd.obsidianmd.plugin.published-at": "2026-02-08T11:05:34.722Z",
-            "vnd.obsidianmd.plugin.converted": "true"
-          }
-        }
-      ],
-      "repository": "https://github.com/denolehov/obsidian-url-into-selection"
     }
   ],
-  "generatedAt": "2026-02-08T17:18:14.464Z"
+  "generatedAt": "2026-02-10T18:55:45.375Z"
 }

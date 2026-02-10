@@ -21,6 +21,7 @@ interface AuthChallenge {
 }
 
 export interface TagMetadata {
+  digest: string;
   publishedAt: string;
   size: number;
   annotations: Record<string, string>;
@@ -189,6 +190,9 @@ export async function queryTagMetadata(
     annotations?: Record<string, string>;
   };
 
+  // Extract digest from Docker-Content-Digest header
+  const digest = response.headers.get("docker-content-digest") || "";
+
   // Extract metadata
   const publishedAt = manifest.created || new Date().toISOString();
   const layerSizes = manifest.layers?.map((l) => l.size) || [];
@@ -196,6 +200,7 @@ export async function queryTagMetadata(
   const annotations = manifest.annotations || {};
 
   return {
+    digest,
     publishedAt,
     size,
     annotations,

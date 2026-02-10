@@ -53,7 +53,15 @@ export async function generatePluginsJson(): Promise<void> {
 
     // Parse frontmatter and markdown body
     const { data, content } = matter(fileContent);
-    const frontmatter = data as PluginFrontmatter;
+
+    // Normalize frontmatter: support both old format (id, registryUrl) and
+    // new sync format (url) — derive id from filename if missing
+    const rawFrontmatter = data as Record<string, unknown>;
+    const frontmatter = {
+      ...rawFrontmatter,
+      id: rawFrontmatter.id ?? path.basename(file, ".md"),
+      registryUrl: rawFrontmatter.registryUrl ?? rawFrontmatter.url,
+    } as PluginFrontmatter;
 
     console.log(`📦 Processing: ${frontmatter.name} (${frontmatter.id})`);
 
@@ -141,13 +149,15 @@ export async function generatePluginsJson(): Promise<void> {
     };
 
     // Build plugin object with merged frontmatter
+    // Use markdown body as description if not in frontmatter
+    const bodyText = content.trim();
     const plugin: MarketplacePlugin = {
       id: mergedFrontmatter.id,
       registryUrl: mergedFrontmatter.registryUrl,
       name: mergedFrontmatter.name,
-      author: mergedFrontmatter.author,
-      description: mergedFrontmatter.description,
-      introduction: content.trim(),
+      author: mergedFrontmatter.author ?? "",
+      description: mergedFrontmatter.description ?? bodyText,
+      introduction: bodyText,
       versions,
     };
 
