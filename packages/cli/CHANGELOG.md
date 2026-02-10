@@ -1,5 +1,13 @@
 # shard-cli
 
+## 0.4.1
+
+### Patch Changes
+
+- 632aaca: Add verify command
+- Updated dependencies [632aaca]
+  - @shard-for-obsidian/lib@0.3.1
+
 ## 0.4.0
 
 ### Minor Changes
