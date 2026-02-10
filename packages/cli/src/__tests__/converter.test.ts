@@ -399,6 +399,131 @@ describe("PluginConverter", () => {
     });
   });
 
+  it("should insert slash between namespace and plugin ID", async () => {
+    const namespace = "ghcr.io/owner/repo";
+    const pluginId = "test-plugin";
+
+    // Mock community plugin lookup
+    vi.mocked(mockAdapter.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => [
+          {
+            id: "test-plugin",
+            name: "Test Plugin",
+            author: "Test Author",
+            description: "Test description",
+            repo: "test/repo",
+          },
+        ],
+      } as Response)
+      // Mock GitHub release fetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          tag_name: "1.0.0",
+          published_at: "2024-01-01T00:00:00Z",
+          assets: [
+            {
+              name: "manifest.json",
+              browser_download_url: "https://example.com/manifest.json",
+            },
+            {
+              name: "main.js",
+              browser_download_url: "https://example.com/main.js",
+            },
+          ],
+        }),
+      } as Response)
+      // Mock manifest.json download
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () =>
+          JSON.stringify({
+            id: "test-plugin",
+            name: "Test Plugin",
+            version: "1.0.0",
+            minAppVersion: "0.15.0",
+          }),
+      } as Response)
+      // Mock main.js download
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () => "// test code",
+      } as Response);
+
+    const result = await converter.convertPlugin({
+      pluginId,
+      namespace,
+      token: "test-token",
+    });
+
+    expect(result.repository).toBe("ghcr.io/owner/repo/test-plugin");
+  });
+
+  it("should insert slash even when namespace has trailing slash", async () => {
+    const namespace = "ghcr.io/owner/repo/"; // Note trailing slash
+    const pluginId = "test-plugin";
+
+    // Mock community plugin lookup
+    vi.mocked(mockAdapter.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => [
+          {
+            id: "test-plugin",
+            name: "Test Plugin",
+            author: "Test Author",
+            description: "Test description",
+            repo: "test/repo",
+          },
+        ],
+      } as Response)
+      // Mock GitHub release fetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          tag_name: "1.0.0",
+          published_at: "2024-01-01T00:00:00Z",
+          assets: [
+            {
+              name: "manifest.json",
+              browser_download_url: "https://example.com/manifest.json",
+            },
+            {
+              name: "main.js",
+              browser_download_url: "https://example.com/main.js",
+            },
+          ],
+        }),
+      } as Response)
+      // Mock manifest.json download
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () =>
+          JSON.stringify({
+            id: "test-plugin",
+            name: "Test Plugin",
+            version: "1.0.0",
+            minAppVersion: "0.15.0",
+          }),
+      } as Response)
+      // Mock main.js download
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () => "// test code",
+      } as Response);
+
+    const result = await converter.convertPlugin({
+      pluginId,
+      namespace,
+      token: "test-token",
+    });
+
+    // normalizeNamespace should strip trailing slash, then we add separator
+    expect(result.repository).toBe("ghcr.io/owner/repo/test-plugin");
+  });
+
   describe("end-to-end integration", () => {
     it("should convert plugin with realistic community data and manifest", async () => {
       // Realistic community plugin data based on obsidian-git

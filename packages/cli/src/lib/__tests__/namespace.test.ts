@@ -43,4 +43,20 @@ describe("normalizeNamespace", () => {
       normalizeNamespace("ghcr.io/shard-for-obsidian/shard/community-plugins"),
     ).toBe("ghcr.io/shard-for-obsidian/shard/community-plugins");
   });
+
+  it('documents container semantics (namespace + "/" + pluginId)', () => {
+    const namespace = normalizeNamespace("ghcr.io/owner/repo");
+    const pluginId = "my-plugin";
+    const repository = `${namespace}/${pluginId}`;
+
+    expect(repository).toBe("ghcr.io/owner/repo/my-plugin");
+  });
+
+  it("strips trailing slash before container concatenation", () => {
+    const namespace = normalizeNamespace("ghcr.io/owner/repo/");
+    const pluginId = "my-plugin";
+    const repository = `${namespace}/${pluginId}`;
+
+    expect(repository).toBe("ghcr.io/owner/repo/my-plugin");
+  });
 });
