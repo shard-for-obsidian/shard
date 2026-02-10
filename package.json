@@ -12,9 +12,8 @@
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
     "prepare": "husky",
-    "marketplace:generate": "tsx apps/marketplace/scripts/generate-plugins-json.ts",
-    "marketplace:dev": "pnpm marketplace:generate && pnpm --filter marketplace dev",
-    "marketplace:build": "pnpm marketplace:generate && pnpm --filter marketplace build",
+    "marketplace:dev": "pnpm --filter marketplace dev",
+    "marketplace:build": "pnpm --filter marketplace build",
     "marketplace:preview": "pnpm --filter marketplace preview",
     "shard": "pnpm --filter @shard-for-obsidian/cli start"
   },

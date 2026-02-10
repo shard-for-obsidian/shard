@@ -1,5 +1,3 @@
-#!/usr/bin/env tsx
-
 /**
  * Generate plugins.json from markdown files with OCI version data
  *
@@ -30,7 +28,7 @@ import {
 const nodeFetchAdapter = new NodeFetchAdapter();
 
 
-async function generatePluginsJson(): Promise<void> {
+export async function generatePluginsJson(): Promise<void> {
   console.log("🔨 Generating plugins.json from markdown files...\n");
 
   const pluginsDir = path.join(process.cwd(), "content/plugins");
@@ -189,8 +187,11 @@ async function generatePluginsJson(): Promise<void> {
   console.log(`   ${plugins.reduce((sum, p) => sum + (p.versions?.length || 0), 0)} version(s) total`);
 }
 
-// Run the script
-generatePluginsJson().catch((error) => {
-  console.error("❌ Failed to generate plugins.json:", error);
-  process.exit(1);
-});
+// Run standalone when executed directly
+const isMainModule = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, "/"));
+if (isMainModule) {
+  generatePluginsJson().catch((error) => {
+    console.error("Failed to generate plugins.json:", error);
+    process.exit(1);
+  });
+}

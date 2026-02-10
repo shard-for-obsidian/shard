@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:search": "tsx scripts/build-search-index.ts",
-    "prebuild": "pnpm build:search",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"

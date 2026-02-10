@@ -113,7 +113,7 @@ async function pushCommandHandler(
       digest: mainJsResult.digest,
       size: mainJsResult.size,
       annotations: {
-        "vnd.obsidianmd.layer.filename": "main.js",
+        "org.opencontainers.image.title": "main.js",
       },
     });
     logger.debug(
@@ -131,7 +131,7 @@ async function pushCommandHandler(
         digest: stylesCssResult.digest,
         size: stylesCssResult.size,
         annotations: {
-          "vnd.obsidianmd.layer.filename": "styles.css",
+          "org.opencontainers.image.title": "styles.css",
         },
       });
       logger.debug(

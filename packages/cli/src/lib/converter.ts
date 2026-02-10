@@ -4,7 +4,7 @@ import type {
   ManifestOCIDescriptor,
   CommunityPluginMetadata,
 } from "@shard-for-obsidian/lib";
-import { OciRegistryClient, parseRepoAndRef } from "@shard-for-obsidian/lib";
+import { OciRegistryClient, parseRepoAndRef, MEDIATYPE_OBSIDIAN_PLUGIN_CONFIG_V1 } from "@shard-for-obsidian/lib";
 import { manifestToAnnotations } from "@shard-for-obsidian/lib/schemas";
 import { CommunityPluginsCache } from "./community-cache.js";
 import { GitHubReleaseFetcher } from "./github-release.js";
@@ -228,7 +228,6 @@ export class PluginConverter {
     const mainJsResult = await client.pushBlob({
       data: new TextEncoder().encode(pluginData.mainJs),
       annotations: {
-        "vnd.obsidianmd.layer.filename": ASSET_MAIN_JS,
         "org.opencontainers.image.title": ASSET_MAIN_JS,
       },
     });
@@ -244,7 +243,6 @@ export class PluginConverter {
       const stylesCssResult = await client.pushBlob({
         data: new TextEncoder().encode(pluginData.stylesCss),
         annotations: {
-          "vnd.obsidianmd.layer.filename": ASSET_STYLES_CSS,
           "org.opencontainers.image.title": ASSET_STYLES_CSS,
         },
       });
@@ -299,7 +297,7 @@ export class PluginConverter {
       mediaType: "application/vnd.oci.image.manifest.v1+json" as const,
       artifactType: "application/vnd.obsidian.plugin.v1+json",
       config: {
-        mediaType: "application/vnd.obsidian.plugin.config.v1+json",
+        mediaType: MEDIATYPE_OBSIDIAN_PLUGIN_CONFIG_V1,
         digest: configResult.digest,
         size: configResult.size,
         annotations: configResult.annotations,
