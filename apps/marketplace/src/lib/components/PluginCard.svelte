@@ -10,7 +10,7 @@
 
   let { plugin }: Props = $props();
 
-  const latestVersion = $derived(plugin.versions?.[0]?.tag || "N/A");
+  const latestVersion = $derived(plugin.versions?.[0]?.canonicalTag || "N/A");
   const installCommand = $derived(
     `shard install ${plugin.registryUrl}:${latestVersion}`,
   );

@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
   import { Button } from "$lib/components/ui/button";
+  import * as Collapsible from "$lib/components/ui/collapsible";
   import { base } from "$app/paths";
   import type { MarketplacePlugin } from "$lib/types";
 
@@ -13,7 +14,7 @@
   let { data }: Props = $props();
   const plugin = $derived(data.plugin);
 
-  const latestVersion = $derived(plugin.versions?.[0]?.tag || "N/A");
+  const latestVersion = $derived(plugin.versions?.[0]?.canonicalTag || "N/A");
   const installCommand = $derived(
     `shard install ${plugin.registryUrl}:${latestVersion}`,
   );
@@ -145,8 +146,13 @@
                 <div class="border rounded-lg p-4">
                   <div class="flex items-start justify-between mb-2">
                     <div>
-                      <p class="font-mono font-semibold">{version.tag}</p>
-                      <p class="text-xs text-muted-foreground">
+                      <p class="font-mono font-semibold">{version.canonicalTag}</p>
+                      {#if version.additionalTags && version.additionalTags.length > 0}
+                        <p class="text-xs text-muted-foreground mt-1">
+                          Also tagged as: {version.additionalTags.join(", ")}
+                        </p>
+                      {/if}
+                      <p class="text-xs text-muted-foreground mt-1">
                         Published: {formatDate(version.publishedAt)}
                       </p>
                     </div>
@@ -158,19 +164,26 @@
                   </div>
 
                   {#if version.annotations && Object.keys(version.annotations).length > 0}
-                    <div class="mt-2 space-y-1">
-                      {#each Object.entries(version.annotations) as [key, value]}
-                        <p class="text-xs text-muted-foreground">
-                          <span class="font-mono">{key}:</span>
-                          {value}
-                        </p>
-                      {/each}
-                    </div>
+                    <Collapsible.Root class="mt-3">
+                      <Collapsible.Trigger
+                        class="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                      >
+                        <span>Show annotations ({Object.keys(version.annotations).length})</span>
+                      </Collapsible.Trigger>
+                      <Collapsible.Content class="mt-2 space-y-1 pl-2">
+                        {#each Object.entries(version.annotations) as [key, value]}
+                          <p class="text-xs text-muted-foreground">
+                            <span class="font-mono">{key}:</span>
+                            {value}
+                          </p>
+                        {/each}
+                      </Collapsible.Content>
+                    </Collapsible.Root>
                   {/if}
 
                   <div class="mt-3">
                     <code class="text-xs bg-muted px-2 py-1 rounded">
-                      shard install {plugin.registryUrl}:{version.tag}
+                      shard install {plugin.registryUrl}:{version.canonicalTag}
                     </code>
                   </div>
                 </div>
