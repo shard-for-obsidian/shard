@@ -6,7 +6,6 @@ on:
     paths:
       - "apps/marketplace/**"
       - "packages/lib/**"
-      - "scripts/generate-plugin-markdown.sh"
       - ".github/workflows/marketplace.yml"
   workflow_dispatch:
 
@@ -44,15 +43,11 @@ jobs:
       - name: Build packages
         run: pnpm build
 
-      - name: Generate plugins data
-        run: pnpm marketplace:generate
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build SvelteKit site
-        run: pnpm --filter marketplace build
+      - name: Build marketplace
+        run: pnpm marketplace:build
         env:
           NODE_ENV: production
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
