@@ -25,6 +25,9 @@ describe("OCI Tags Query", () => {
       fetch: vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
+        headers: new Headers({
+          "docker-content-digest": "sha256:abc123",
+        }),
         json: async () => ({
           created: "2026-02-06T01:25:08Z",
           config: { size: 1234 },
@@ -42,6 +45,7 @@ describe("OCI Tags Query", () => {
       adapter: mockAdapter,
     });
 
+    expect(metadata.digest).toBe("sha256:abc123");
     expect(metadata.publishedAt).toBe("2026-02-06T01:25:08Z");
     expect(metadata.size).toBe(245678); // sum of layers
     expect(metadata.annotations["vnd.obsidianmd.plugin.commit"]).toBe(

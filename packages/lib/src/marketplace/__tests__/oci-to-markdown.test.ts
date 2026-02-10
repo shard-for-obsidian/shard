@@ -8,10 +8,10 @@ describe('ociAnnotationsToFrontmatter', () => {
       'vnd.obsidianmd.plugin.name': 'Test Plugin',
       'vnd.obsidianmd.plugin.author': 'Test Author',
       'vnd.obsidianmd.plugin.description': 'A test plugin',
-      'vnd.obsidianmd.plugin.repo': 'testuser/test-plugin',
+      'vnd.obsidianmd.plugin.source': 'https://github.com/testuser/test-plugin',
       'org.opencontainers.image.source': 'https://github.com/testuser/test-plugin',
       'org.opencontainers.image.licenses': 'MIT',
-      'vnd.obsidianmd.plugin.minAppVersion': '0.15.0',
+      'vnd.obsidianmd.plugin.min-app-version': '0.15.0',
     };
 
     const result = ociAnnotationsToFrontmatter(annotations, 'ghcr.io/test/test-plugin');
@@ -34,7 +34,7 @@ describe('ociAnnotationsToFrontmatter', () => {
       'vnd.obsidianmd.plugin.name': 'Minimal Plugin',
       'vnd.obsidianmd.plugin.author': 'Author',
       'vnd.obsidianmd.plugin.description': 'Description',
-      'vnd.obsidianmd.plugin.repo': 'author/minimal',
+      'vnd.obsidianmd.plugin.source': 'https://github.com/author/minimal',
     };
 
     const result = ociAnnotationsToFrontmatter(annotations, 'ghcr.io/test/minimal-plugin');
@@ -44,6 +44,7 @@ describe('ociAnnotationsToFrontmatter', () => {
       name: 'Minimal Plugin',
       author: 'Author',
       description: 'Description',
+      repository: 'https://github.com/author/minimal',
       registryUrl: 'ghcr.io/test/minimal-plugin',
     });
   });
