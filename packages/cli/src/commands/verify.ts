@@ -3,14 +3,15 @@ import * as path from "node:path";
 import type { AppContext } from "../infrastructure/context.js";
 import { verifyPlugin } from "../lib/verify.js";
 import { DEFAULT_NAMESPACE } from "../lib/namespace.js";
+import { resolveAuthToken } from "../lib/auth.js";
 
 /**
  * Flags for the verify command
  */
 export interface VerifyFlags {
   namespace?: string;
+  token?: string;
   json?: boolean;
-  verbose?: boolean;
 }
 
 /**
@@ -27,15 +28,35 @@ async function verifyCommand(
     // Resolve the plugin directory to an absolute path
     const absolutePluginDir = path.resolve(pluginDirectory);
 
-    // Use provided namespace or fall back to default
-    const namespace = flags.namespace ?? DEFAULT_NAMESPACE;
-
-    // Get token from config
-    const token = await config.get("token");
-    if (!token || typeof token !== "string") {
-      logger.error("No authentication token found. Please run 'shard login'");
+    // Step 1: Resolve authentication token
+    let token: string;
+    try {
+      if (flags.token) {
+        token = flags.token;
+      } else {
+        try {
+          token = resolveAuthToken();
+        } catch {
+          const configToken = await config.get("token");
+          if (typeof configToken === "string" && configToken) {
+            token = configToken;
+          } else {
+            throw new Error("No token found");
+          }
+        }
+      }
+    } catch {
+      logger.error(
+        "GitHub token required. Use --token flag, set GITHUB_TOKEN environment variable, or configure with: shard config set token <token>",
+      );
       this.process.exit(1);
     }
+
+    // Step 2: Resolve namespace
+    const namespace =
+      flags.namespace ??
+      ((await config.get("namespace")) as string) ??
+      DEFAULT_NAMESPACE;
 
     // Perform verification
     logger.info(`Verifying plugin in ${absolutePluginDir}...`);
@@ -73,7 +94,7 @@ async function verifyCommand(
       const status = file.verified ? "✓ PASS" : "✗ FAIL";
       logger.info(`${status} ${file.filename}`);
 
-      if (flags.verbose || !file.verified) {
+      if (!file.verified) {
         if (file.error) {
           logger.error(`  Error: ${file.error}`);
         } else {
@@ -105,11 +126,6 @@ async function verifyCommand(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Verification failed: ${message}`);
-
-    if (flags.verbose && error instanceof Error && error.stack) {
-      logger.error(`Stack trace:\n${error.stack}`);
-    }
-
     this.process.exit(1);
   }
 }
@@ -136,25 +152,28 @@ export const verify = buildCommand({
         brief: "OCI registry namespace (e.g., ghcr.io/user)",
         optional: true,
       },
+      token: {
+        kind: "parsed",
+        parse: String,
+        brief: "GitHub token for authentication",
+        optional: true,
+      },
       json: {
         kind: "boolean",
         brief: "Output JSON instead of human-readable format",
         optional: true,
       },
-      verbose: {
-        kind: "boolean",
-        brief: "Show detailed hash information for all files",
-        optional: true,
-      },
     },
-    aliases: {},
+    aliases: {
+      n: "namespace",
+      t: "token",
+    },
   },
   docs: {
     brief: "Verify a locally installed plugin against its OCI registry source",
     customUsage: [
       "shard verify ~/.obsidian/plugins/my-plugin",
       "shard verify ./plugin-dir --namespace ghcr.io/myorg",
-      "shard verify ./plugin-dir --verbose",
       "shard verify ./plugin-dir --json",
     ],
   },
