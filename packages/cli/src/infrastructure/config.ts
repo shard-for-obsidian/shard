@@ -6,6 +6,7 @@ import * as path from "node:path";
  */
 export interface Config {
   token?: string;
+  namespace?: string;
   defaults?: {
     output?: string;
   };
