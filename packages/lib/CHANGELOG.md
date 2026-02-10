@@ -1,5 +1,11 @@
 # shard-lib
 
+## 0.3.1
+
+### Patch Changes
+
+- 632aaca: Add verify command
+
 ## 0.3.0
 
 ### Minor Changes
