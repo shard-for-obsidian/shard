@@ -16,9 +16,7 @@ await esbuild.build({
   },
   external: [
     "pino",
-    "pino-pretty",
     "ora",
-    "cli-progress",
   ],
 });
 
