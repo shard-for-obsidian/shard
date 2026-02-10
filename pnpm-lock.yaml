@@ -144,25 +144,19 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
+      ora:
+        specifier: ^9.3.0
+        version: 9.3.0
       pino:
         specifier: ^10.3.0
         version: 10.3.0
     devDependencies:
-      '@types/cli-progress':
-        specifier: ^3.11.6
-        version: 3.11.6
       '@types/node':
         specifier: ^25.2.0
         version: 25.2.0
       '@vitest/ui':
         specifier: ^4.0.18
         version: 4.0.18(vitest@4.0.18)
-      cli-progress:
-        specifier: ^3.12.0
-        version: 3.12.0
-      ora:
-        specifier: ^9.3.0
-        version: 9.3.0
       pino-pretty:
         specifier: ^13.1.3
         version: 13.1.3
@@ -1026,9 +1020,6 @@ packages:
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
-  '@types/cli-progress@3.11.6':
-    resolution: {integrity: sha512-cE3+jb9WRlu+uOSAugewNpITJDt1VF8dHOopPO4IABFc3SXYL5WE/+PTz/FCdZRRfIujiWW3n3aMbv1eIGVRWA==}
-
   '@types/codemirror@5.60.8':
     resolution: {integrity: sha512-VjFgDF/eB+Aklcy15TtOTLQeMjTo07k7KAjql8OK5Dirr7a6sJY4T1uVBDuTVG9VEmn1uUsohOpYnVfgC6/jyw==}
 
@@ -1356,10 +1347,6 @@ packages:
     resolution: {integrity: sha512-aCj4O5wKyszjMmDT4tZj93kxyydN/K5zPWSCe6/0AV/AA1pqe5ZBIw0a2ZfPQV7lL5/yb5HsUreJ6UFAF1tEQw==}
     engines: {node: '>=18'}
 
-  cli-progress@3.12.0:
-    resolution: {integrity: sha512-tRkV3HJ1ASwm19THiiLIXLO7Im7wlTuKnvkYaTkyoAPefqjNg7W7DHKUlGRxy9vxDvbyCYQkQozvptuMkGCg8A==}
-    engines: {node: '>=4'}
-
   cli-spinners@3.4.0:
     resolution: {integrity: sha512-bXfOC4QcT1tKXGorxL3wbJm6XJPDqEnij2gQ2m7ESQuE+/z9YFIWnl/5RpTiKWbMq3EVKR4fRLJGn6DVfu0mpw==}
     engines: {node: '>=18.20'}
@@ -1482,9 +1469,6 @@ packages:
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
-
-  emoji-regex@8.0.0:
-    resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
   empathic@2.0.0:
     resolution: {integrity: sha512-i6UzDscO/XfAcNYD75CfICkmfLedpyPDdozrLMmQc5ORaQcdMoc21OnlEylMIqI7U8eniKrPMxxtj8k0vhmJhA==}
@@ -1990,10 +1974,6 @@ packages:
   is-finalizationregistry@1.1.1:
     resolution: {integrity: sha512-1pC6N8qWJbWoPtEjgcL2xyhQOP491EQjeUo3qTKcmV8YSDDJrOepfG8pcC7h/QgnQHYSv0mJ3Z/ZWxmatVrysg==}
     engines: {node: '>= 0.4'}
-
-  is-fullwidth-code-point@3.0.0:
-    resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
-    engines: {node: '>=8'}
 
   is-fullwidth-code-point@5.1.0:
     resolution: {integrity: sha512-5XHYaSyiqADb4RnZ1Bdad6cPp8Toise4TzEjcOYDHZkTCbKgiUl7WTUCpNWHuxmDt91wnsZBc9xinNzopv3JMQ==}
@@ -2843,10 +2823,6 @@ packages:
   string-argv@0.3.2:
     resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
     engines: {node: '>=0.6.19'}
-
-  string-width@4.2.3:
-    resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
-    engines: {node: '>=8'}
 
   string-width@7.2.0:
     resolution: {integrity: sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==}
@@ -3931,10 +3907,6 @@ snapshots:
       '@types/deep-eql': 4.0.2
       assertion-error: 2.0.1
 
-  '@types/cli-progress@3.11.6':
-    dependencies:
-      '@types/node': 25.2.0
-
   '@types/codemirror@5.60.8':
     dependencies:
       '@types/tern': 0.23.9
@@ -4341,10 +4313,6 @@ snapshots:
     dependencies:
       restore-cursor: 5.1.0
 
-  cli-progress@3.12.0:
-    dependencies:
-      string-width: 4.2.3
-
   cli-spinners@3.4.0: {}
 
   cli-truncate@5.1.1:
@@ -4449,8 +4417,6 @@ snapshots:
       gopd: 1.2.0
 
   emoji-regex@10.6.0: {}
-
-  emoji-regex@8.0.0: {}
 
   empathic@2.0.0: {}
 
@@ -5160,8 +5126,6 @@ snapshots:
   is-finalizationregistry@1.1.1:
     dependencies:
       call-bound: 1.0.4
-
-  is-fullwidth-code-point@3.0.0: {}
 
   is-fullwidth-code-point@5.1.0:
     dependencies:
@@ -6043,12 +6007,6 @@ snapshots:
       internal-slot: 1.1.0
 
   string-argv@0.3.2: {}
-
-  string-width@4.2.3:
-    dependencies:
-      emoji-regex: 8.0.0
-      is-fullwidth-code-point: 3.0.0
-      strip-ansi: 6.0.1
 
   string-width@7.2.0:
     dependencies:
