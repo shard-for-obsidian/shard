@@ -3,138 +3,35 @@
     "version": "2.3.9",
     "fields": ["name", "author", "description", "tags"],
     "fieldVectors": [
-      ["name/calendar", [0, 20.253]],
-      ["author/calendar", [1, 10.977, 2, 10.977]],
-      ["description/calendar", [0, 2.025, 3, 2.653, 4, 2.653]],
-      ["tags/calendar", []],
-      ["name/hotkeysplus-obsidian", [5, 10.567]],
-      ["author/hotkeysplus-obsidian", [6, 6.986, 7, 6.986, 8, 6.986]],
+      ["name/notebook-navigator", [0, 6.1, 1, 1.604]],
+      ["author/notebook-navigator", [2, 3.05, 3, 3.05]],
       [
-        "description/hotkeysplus-obsidian",
-        [5, 0.968, 9, 2.431, 10, 2.431, 11, 2.431]
-      ],
-      ["tags/hotkeysplus-obsidian", []],
-      ["name/leader-hotkeys-obsidian", [5, 8.294, 12, 15.895]],
-      ["author/leader-hotkeys-obsidian", [13, 5.393, 14, 5.393]],
-      [
-        "description/leader-hotkeys-obsidian",
+        "description/notebook-navigator",
         [
-          5, 0.774, 12, 1.483, 15, 1.943, 16, 1.943, 17, 1.943, 18, 1.943, 19,
-          1.943
+          1, 0.151, 4, 0.575, 5, 0.575, 6, 0.836, 7, 0.575, 8, 0.575, 9, 0.575,
+          10, 0.575, 11, 0.575, 12, 0.151, 13, 0.575, 14, 0.575, 15, 0.575, 16,
+          0.575, 17, 0.575, 18, 0.575, 19, 0.575, 20, 0.575, 21, 0.575, 22,
+          0.575, 23, 0.575, 24, 0.575, 25, 0.575
         ]
       ],
-      ["tags/leader-hotkeys-obsidian", []],
-      ["name/ledger-obsidian", [20, 26.528]],
-      ["author/ledger-obsidian", [13, 5.393, 14, 5.393]],
-      ["description/ledger-obsidian", [21, 2.653, 22, 1.612, 23, 2.653]],
-      ["tags/ledger-obsidian", []],
-      ["name/mrj-jump-to-link", [24, 15.895, 25, 10.228]],
-      ["author/mrj-jump-to-link", [26, 10.471]],
-      [
-        "description/mrj-jump-to-link",
-        [
-          5, 0.683, 24, 1.308, 25, 0.842, 27, 1.713, 28, 1.308, 29, 1.713, 30,
-          1.713, 31, 1.713, 32, 1.713
-        ]
-      ],
-      ["tags/mrj-jump-to-link", []],
-      ["name/mrj-text-expand", [22, 12.651, 33, 20.821]],
-      ["author/mrj-text-expand", [26, 10.471]],
-      [
-        "description/mrj-text-expand",
-        [25, 1.102, 34, 2.243, 35, 2.243, 36, 2.243, 37, 1.363]
-      ],
-      ["tags/mrj-text-expand", []],
-      ["name/nldates-obsidian", [38, 13.081, 39, 13.081, 40, 13.081]],
-      ["author/nldates-obsidian", [6, 6.986, 7, 6.986, 8, 6.986]],
-      [
-        "description/nldates-obsidian",
-        [25, 1.023, 38, 1.59, 39, 1.59, 40, 1.59, 41, 2.082, 42, 2.082]
-      ],
-      ["tags/nldates-obsidian", []],
-      ["name/note-refactor-obsidian", [43, 15.895, 44, 20.821]],
-      ["author/note-refactor-obsidian", [45, 10.977, 46, 10.977]],
-      [
-        "description/note-refactor-obsidian",
-        [43, 2.448, 47, 1.943, 48, 1.943, 49, 1.943, 50, 1.943]
-      ],
-      ["tags/note-refactor-obsidian", []],
-      ["name/obsidian-git", [51, 20.253]],
-      ["author/obsidian-git", [52, 9.15, 53, 6.986, 54, 6.986]],
+      ["tags/notebook-navigator", []],
+      ["name/obsidian-git", [26, 2.111]],
+      ["author/obsidian-git", [27, 4.013]],
       [
         "description/obsidian-git",
         [
-          51, 1.39, 55, 1.821, 56, 1.821, 57, 1.821, 58, 1.821, 59, 1.821, 60,
-          1.39, 61, 1.821
+          12, 0.229, 26, 0.229, 28, 0.871, 29, 0.871, 30, 0.871, 31, 0.871, 32,
+          0.871, 33, 0.871
         ]
       ],
-      ["tags/obsidian-git", []],
-      ["name/recent-files-obsidian", [37, 12.651, 62, 15.895]],
-      ["author/recent-files-obsidian", [13, 5.393, 14, 5.393]],
-      [
-        "description/recent-files-obsidian",
-        [37, 1.363, 62, 1.712, 63, 2.243, 64, 2.243, 65, 2.243]
-      ],
-      ["tags/recent-files-obsidian", []],
-      ["name/table-editor-obsidian", [60, 15.895, 66, 15.895]],
-      ["author/table-editor-obsidian", [13, 5.393, 14, 5.393]],
-      [
-        "description/table-editor-obsidian",
-        [28, 1.712, 66, 1.712, 67, 2.243, 68, 2.243, 69, 2.243]
-      ],
-      ["tags/table-editor-obsidian", []],
-      ["name/url-into-selection", [70, 13.081, 71, 13.081, 72, 13.081]],
-      ["author/url-into-selection", [53, 8.38, 54, 8.38]],
-      [
-        "description/url-into-selection",
-        [22, 1.477, 70, 1.856, 71, 1.856, 72, 1.856]
-      ],
-      ["tags/url-into-selection", []]
+      ["tags/obsidian-git", []]
     ],
     "invertedIndex": [
       [
-        "account",
-        {
-          "_index": 23,
-          "name": {},
-          "author": {},
-          "description": {
-            "ledger-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "add",
-        {
-          "_index": 15,
-          "name": {},
-          "author": {},
-          "description": {
-            "leader-hotkeys-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "addit",
-        {
-          "_index": 9,
-          "name": {},
-          "author": {},
-          "description": {
-            "hotkeysplus-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
         "advanc",
         {
-          "_index": 60,
-          "name": {
-            "table-editor-obsidian": {}
-          },
+          "_index": 33,
+          "name": {},
           "author": {},
           "description": {
             "obsidian-git": {}
@@ -143,22 +40,9 @@
         }
       ],
       [
-        "argentina",
-        {
-          "_index": 6,
-          "name": {},
-          "author": {
-            "hotkeysplus-obsidian": {},
-            "nldates-obsidian": {}
-          },
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
         "automat",
         {
-          "_index": 58,
+          "_index": 31,
           "name": {},
           "author": {},
           "description": {
@@ -170,7 +54,7 @@
       [
         "backup",
         {
-          "_index": 59,
+          "_index": 32,
           "name": {},
           "author": {},
           "description": {
@@ -180,87 +64,25 @@
         }
       ],
       [
-        "base",
+        "brows",
         {
-          "_index": 42,
+          "_index": 16,
           "name": {},
           "author": {},
           "description": {
-            "nldates-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "between",
+        "clean",
         {
-          "_index": 29,
+          "_index": 8,
           "name": {},
           "author": {},
           "description": {
-            "mrj-jump-to-link": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "cain",
-        {
-          "_index": 2,
-          "name": {},
-          "author": {
-            "calendar": {}
-          },
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "calendar",
-        {
-          "_index": 0,
-          "name": {
-            "calendar": {}
-          },
-          "author": {},
-          "description": {
-            "calendar": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "command",
-        {
-          "_index": 17,
-          "name": {},
-          "author": {},
-          "description": {
-            "leader-hotkeys-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "common",
-        {
-          "_index": 10,
-          "name": {},
-          "author": {},
-          "description": {
-            "hotkeysplus-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "content",
-        {
-          "_index": 48,
-          "name": {},
-          "author": {},
-          "description": {
-            "note-refactor-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
@@ -268,7 +90,7 @@
       [
         "control",
         {
-          "_index": 57,
+          "_index": 30,
           "name": {},
           "author": {},
           "description": {
@@ -278,76 +100,73 @@
         }
       ],
       [
-        "creat",
+        "customiz",
         {
-          "_index": 41,
+          "_index": 23,
           "name": {},
           "author": {},
           "description": {
-            "nldates-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "date",
+        "default",
         {
-          "_index": 40,
-          "name": {
-            "nldates-obsidian": {}
-          },
+          "_index": 5,
+          "name": {},
           "author": {},
           "description": {
-            "nldates-obsidian": {}
+            "notebook-navigator": {}
           },
-          "tags": {}
-        }
-      ],
-      [
-        "deni",
-        {
-          "_index": 53,
-          "name": {},
-          "author": {
-            "obsidian-git": {},
-            "url-into-selection": {}
-          },
-          "description": {},
           "tags": {}
         }
       ],
       [
         "display",
         {
-          "_index": 63,
+          "_index": 24,
           "name": {},
           "author": {},
           "description": {
-            "recent-files-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "expand",
+        "drag",
         {
-          "_index": 33,
-          "name": {
-            "mrj-text-expand": {}
-          },
+          "_index": 19,
+          "name": {},
           "author": {},
-          "description": {},
+          "description": {
+            "notebook-navigator": {}
+          },
           "tags": {}
         }
       ],
       [
-        "extract",
+        "drop",
         {
-          "_index": 47,
+          "_index": 20,
           "name": {},
           "author": {},
           "description": {
-            "note-refactor-obsidian": {}
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "explor",
+        {
+          "_index": 7,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
           },
           "tags": {}
         }
@@ -355,10 +174,11 @@
       [
         "featur",
         {
-          "_index": 61,
+          "_index": 12,
           "name": {},
           "author": {},
           "description": {
+            "notebook-navigator": {},
             "obsidian-git": {}
           },
           "tags": {}
@@ -367,38 +187,23 @@
       [
         "file",
         {
-          "_index": 37,
-          "name": {
-            "recent-files-obsidian": {}
-          },
+          "_index": 6,
+          "name": {},
           "author": {},
           "description": {
-            "mrj-text-expand": {},
-            "recent-files-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "format",
+        "folder",
         {
-          "_index": 68,
+          "_index": 13,
           "name": {},
           "author": {},
           "description": {
-            "table-editor-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "found",
-        {
-          "_index": 36,
-          "name": {},
-          "author": {},
-          "description": {
-            "mrj-text-expand": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
@@ -406,57 +211,13 @@
       [
         "git",
         {
-          "_index": 51,
+          "_index": 26,
           "name": {
             "obsidian-git": {}
           },
           "author": {},
           "description": {
             "obsidian-git": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "grosing",
-        {
-          "_index": 14,
-          "name": {},
-          "author": {
-            "leader-hotkeys-obsidian": {},
-            "ledger-obsidian": {},
-            "recent-files-obsidian": {},
-            "table-editor-obsidian": {}
-          },
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "hotkey",
-        {
-          "_index": 5,
-          "name": {
-            "hotkeysplus-obsidian": {},
-            "leader-hotkeys-obsidian": {}
-          },
-          "author": {},
-          "description": {
-            "hotkeysplus-obsidian": {},
-            "leader-hotkeys-obsidian": {},
-            "mrj-jump-to-link": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "improv",
-        {
-          "_index": 67,
-          "name": {},
-          "author": {},
-          "description": {
-            "table-editor-obsidian": {}
           },
           "tags": {}
         }
@@ -464,7 +225,7 @@
       [
         "integr",
         {
-          "_index": 55,
+          "_index": 28,
           "name": {},
           "author": {},
           "description": {
@@ -474,158 +235,37 @@
         }
       ],
       [
-        "jame",
+        "interfac",
         {
-          "_index": 45,
+          "_index": 11,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "johan",
+        {
+          "_index": 2,
           "name": {},
           "author": {
-            "note-refactor-obsidian": {}
+            "notebook-navigator": {}
           },
           "description": {},
           "tags": {}
         }
       ],
       [
-        "jump",
+        "keyboard",
         {
-          "_index": 24,
-          "name": {
-            "mrj-jump-to-link": {}
-          },
-          "author": {},
-          "description": {
-            "mrj-jump-to-link": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "languag",
-        {
-          "_index": 39,
-          "name": {
-            "nldates-obsidian": {}
-          },
-          "author": {},
-          "description": {
-            "nldates-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "leader",
-        {
-          "_index": 12,
-          "name": {
-            "leader-hotkeys-obsidian": {}
-          },
-          "author": {},
-          "description": {
-            "leader-hotkeys-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "ledger",
-        {
-          "_index": 20,
-          "name": {
-            "ledger-obsidian": {}
-          },
-          "author": {},
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "liam",
-        {
-          "_index": 1,
-          "name": {},
-          "author": {
-            "calendar": {}
-          },
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "link",
-        {
-          "_index": 25,
-          "name": {
-            "mrj-jump-to-link": {}
-          },
-          "author": {},
-          "description": {
-            "mrj-jump-to-link": {},
-            "mrj-text-expand": {},
-            "nldates-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "list",
-        {
-          "_index": 64,
+          "_index": 18,
           "name": {},
           "author": {},
           "description": {
-            "recent-files-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "lynch",
-        {
-          "_index": 46,
-          "name": {},
-          "author": {
-            "note-refactor-obsidian": {}
-          },
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "manipul",
-        {
-          "_index": 69,
-          "name": {},
-          "author": {},
-          "description": {
-            "table-editor-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "mrjackphil",
-        {
-          "_index": 26,
-          "name": {},
-          "author": {
-            "mrj-jump-to-link": {},
-            "mrj-text-expand": {}
-          },
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "natur",
-        {
-          "_index": 38,
-          "name": {
-            "nldates-obsidian": {}
-          },
-          "author": {},
-          "description": {
-            "nldates-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
@@ -633,24 +273,13 @@
       [
         "navig",
         {
-          "_index": 28,
-          "name": {},
-          "author": {},
-          "description": {
-            "mrj-jump-to-link": {},
-            "table-editor-obsidian": {}
+          "_index": 1,
+          "name": {
+            "notebook-navigator": {}
           },
-          "tags": {}
-        }
-      ],
-      [
-        "new",
-        {
-          "_index": 49,
-          "name": {},
           "author": {},
           "description": {
-            "note-refactor-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
@@ -658,308 +287,131 @@
       [
         "note",
         {
-          "_index": 43,
-          "name": {
-            "note-refactor-obsidian": {}
-          },
+          "_index": 22,
+          "name": {},
           "author": {},
           "description": {
-            "note-refactor-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "olehov",
+        "notebook",
         {
-          "_index": 54,
-          "name": {},
-          "author": {
-            "obsidian-git": {},
-            "url-into-selection": {}
+          "_index": 0,
+          "name": {
+            "notebook-navigator": {}
           },
+          "author": {},
           "description": {},
           "tags": {}
         }
       ],
       [
-        "open",
+        "option",
         {
-          "_index": 65,
+          "_index": 25,
           "name": {},
           "author": {},
           "description": {
-            "recent-files-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "ortega",
+        "pane",
         {
-          "_index": 7,
-          "name": {},
-          "author": {
-            "hotkeysplus-obsidian": {},
-            "nldates-obsidian": {}
-          },
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "page",
-        {
-          "_index": 31,
+          "_index": 10,
           "name": {},
           "author": {},
           "description": {
-            "mrj-jump-to-link": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "past",
-        {
-          "_index": 70,
-          "name": {
-            "url-into-selection": {}
-          },
-          "author": {},
-          "description": {
-            "url-into-selection": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "paste/transclud",
-        {
-          "_index": 35,
-          "name": {},
-          "author": {},
-          "description": {
-            "mrj-text-expand": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "plain",
+        "pin",
         {
           "_index": 21,
           "name": {},
           "author": {},
           "description": {
-            "ledger-obsidian": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "quickli",
+        "preview",
         {
-          "_index": 27,
+          "_index": 17,
           "name": {},
           "author": {},
           "description": {
-            "mrj-jump-to-link": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "recent",
+        "replac",
         {
-          "_index": 62,
-          "name": {
-            "recent-files-obsidian": {}
-          },
-          "author": {},
-          "description": {
-            "recent-files-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "refactor",
-        {
-          "_index": 44,
-          "name": {
-            "note-refactor-obsidian": {}
-          },
-          "author": {},
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "sainz",
-        {
-          "_index": 8,
-          "name": {},
-          "author": {
-            "hotkeysplus-obsidian": {},
-            "nldates-obsidian": {}
-          },
-          "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "search",
-        {
-          "_index": 34,
+          "_index": 4,
           "name": {},
           "author": {},
           "description": {
-            "mrj-text-expand": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "select",
-        {
-          "_index": 72,
-          "name": {
-            "url-into-selection": {}
-          },
-          "author": {},
-          "description": {
-            "url-into-selection": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "simpl",
+        "sanneblad",
         {
           "_index": 3,
           "name": {},
-          "author": {},
-          "description": {
-            "calendar": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "split",
-        {
-          "_index": 50,
-          "name": {},
-          "author": {},
-          "description": {
-            "note-refactor-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "support",
-        {
-          "_index": 16,
-          "name": {},
-          "author": {},
-          "description": {
-            "leader-hotkeys-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "tabl",
-        {
-          "_index": 66,
-          "name": {
-            "table-editor-obsidian": {}
-          },
-          "author": {},
-          "description": {
-            "table-editor-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "text",
-        {
-          "_index": 22,
-          "name": {
-            "mrj-text-expand": {}
-          },
-          "author": {},
-          "description": {
-            "ledger-obsidian": {},
-            "url-into-selection": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "thing",
-        {
-          "_index": 11,
-          "name": {},
-          "author": {},
-          "description": {
-            "hotkeysplus-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "tmux",
-        {
-          "_index": 18,
-          "name": {},
-          "author": {},
-          "description": {
-            "leader-hotkeys-obsidian": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "toni",
-        {
-          "_index": 13,
-          "name": {},
           "author": {
-            "leader-hotkeys-obsidian": {},
-            "ledger-obsidian": {},
-            "recent-files-obsidian": {},
-            "table-editor-obsidian": {}
+            "notebook-navigator": {}
           },
           "description": {},
           "tags": {}
         }
       ],
       [
-        "url",
+        "tag",
         {
-          "_index": 71,
-          "name": {
-            "url-into-selection": {}
-          },
+          "_index": 15,
+          "name": {},
           "author": {},
           "description": {
-            "url-into-selection": {}
+            "notebook-navigator": {}
           },
           "tags": {}
         }
       ],
       [
-        "us",
+        "tree",
         {
-          "_index": 32,
+          "_index": 14,
           "name": {},
           "author": {},
           "description": {
-            "mrj-jump-to-link": {}
+            "notebook-navigator": {}
+          },
+          "tags": {}
+        }
+      ],
+      [
+        "two",
+        {
+          "_index": 9,
+          "name": {},
+          "author": {},
+          "description": {
+            "notebook-navigator": {}
           },
           "tags": {}
         }
@@ -967,23 +419,11 @@
       [
         "version",
         {
-          "_index": 56,
+          "_index": 29,
           "name": {},
           "author": {},
           "description": {
             "obsidian-git": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "vim",
-        {
-          "_index": 19,
-          "name": {},
-          "author": {},
-          "description": {
-            "leader-hotkeys-obsidian": {}
           },
           "tags": {}
         }
@@ -991,36 +431,12 @@
       [
         "vinzent",
         {
-          "_index": 52,
+          "_index": 27,
           "name": {},
           "author": {
             "obsidian-git": {}
           },
           "description": {},
-          "tags": {}
-        }
-      ],
-      [
-        "widget",
-        {
-          "_index": 4,
-          "name": {},
-          "author": {},
-          "description": {
-            "calendar": {}
-          },
-          "tags": {}
-        }
-      ],
-      [
-        "word",
-        {
-          "_index": 30,
-          "name": {},
-          "author": {},
-          "description": {
-            "mrj-jump-to-link": {}
-          },
           "tags": {}
         }
       ]
@@ -1029,76 +445,16 @@
   },
   "plugins": [
     {
-      "id": "calendar",
-      "name": "Calendar",
-      "author": "Liam Cain",
-      "description": "Simple calendar widget."
-    },
-    {
-      "id": "hotkeysplus-obsidian",
-      "name": "Hotkeys++",
-      "author": "Argentina Ortega Sainz",
-      "description": "Additional hotkeys to do common things."
-    },
-    {
-      "id": "leader-hotkeys-obsidian",
-      "name": "Leader Hotkeys",
-      "author": "Tony Grosinger",
-      "description": "Add leader hotkey support to any command (like tmux or vim)."
-    },
-    {
-      "id": "ledger-obsidian",
-      "name": "Ledger",
-      "author": "Tony Grosinger",
-      "description": "Plain text accounting."
-    },
-    {
-      "id": "mrj-jump-to-link",
-      "name": "Jump to link",
-      "author": "MrJackphil",
-      "description": "Quickly navigate between links, or jump to any word on the page using hotkeys."
-    },
-    {
-      "id": "mrj-text-expand",
-      "name": "Text expand",
-      "author": "MrJackphil",
-      "description": "Search and paste/transclude links to found files."
-    },
-    {
-      "id": "nldates-obsidian",
-      "name": "Natural Language Dates",
-      "author": "Argentina Ortega Sainz",
-      "description": "Create date-links based on natural language."
-    },
-    {
-      "id": "note-refactor-obsidian",
-      "name": "Note Refactor",
-      "author": "James Lynch",
-      "description": "Extract note content into new notes and split notes."
+      "id": "notebook-navigator",
+      "name": "Notebook Navigator",
+      "author": "Johan Sanneblad",
+      "description": "Replace the default file explorer with a clean two-pane interface featuring folder tree, tag browsing, file previews, keyboard navigation, drag-and-drop, pinned notes, and customizable display options."
     },
     {
       "id": "obsidian-git",
       "name": "Git",
-      "author": "Vinzent, (Denis Olehov)",
+      "author": "Vinzent",
       "description": "Integrate Git version control with automatic backup and other advanced features."
-    },
-    {
-      "id": "recent-files-obsidian",
-      "name": "Recent Files",
-      "author": "Tony Grosinger",
-      "description": "Display a list of recently opened files."
-    },
-    {
-      "id": "table-editor-obsidian",
-      "name": "Advanced Tables",
-      "author": "Tony Grosinger",
-      "description": "Improved table navigation, formatting, and manipulation."
-    },
-    {
-      "id": "url-into-selection",
-      "name": "Paste URL into selection",
-      "author": "Denis Olehov",
-      "description": "Paste URL \"into\" selected text."
     }
   ]
 }

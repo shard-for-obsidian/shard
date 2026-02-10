@@ -1,5 +1,3 @@
-#!/usr/bin/env tsx
-
 /**
  * Generate plugins.json from markdown files with OCI version data
  *
@@ -30,7 +28,7 @@ import {
 const nodeFetchAdapter = new NodeFetchAdapter();
 
 
-async function generatePluginsJson(): Promise<void> {
+export async function generatePluginsJson(): Promise<void> {
   console.log("🔨 Generating plugins.json from markdown files...\n");
 
   const pluginsDir = path.join(process.cwd(), "content/plugins");
@@ -55,7 +53,15 @@ async function generatePluginsJson(): Promise<void> {
 
     // Parse frontmatter and markdown body
     const { data, content } = matter(fileContent);
-    const frontmatter = data as PluginFrontmatter;
+
+    // Normalize frontmatter: support both old format (id, registryUrl) and
+    // new sync format (url) — derive id from filename if missing
+    const rawFrontmatter = data as Record<string, unknown>;
+    const frontmatter = {
+      ...rawFrontmatter,
+      id: rawFrontmatter.id ?? path.basename(file, ".md"),
+      registryUrl: rawFrontmatter.registryUrl ?? rawFrontmatter.url,
+    } as PluginFrontmatter;
 
     console.log(`📦 Processing: ${frontmatter.name} (${frontmatter.id})`);
 
@@ -143,13 +149,15 @@ async function generatePluginsJson(): Promise<void> {
     };
 
     // Build plugin object with merged frontmatter
+    // Use markdown body as description if not in frontmatter
+    const bodyText = content.trim();
     const plugin: MarketplacePlugin = {
       id: mergedFrontmatter.id,
       registryUrl: mergedFrontmatter.registryUrl,
       name: mergedFrontmatter.name,
-      author: mergedFrontmatter.author,
-      description: mergedFrontmatter.description,
-      introduction: content.trim(),
+      author: mergedFrontmatter.author ?? "",
+      description: mergedFrontmatter.description ?? bodyText,
+      introduction: bodyText,
       versions,
     };
 
@@ -189,8 +197,11 @@ async function generatePluginsJson(): Promise<void> {
   console.log(`   ${plugins.reduce((sum, p) => sum + (p.versions?.length || 0), 0)} version(s) total`);
 }
 
-// Run the script
-generatePluginsJson().catch((error) => {
-  console.error("❌ Failed to generate plugins.json:", error);
-  process.exit(1);
-});
+// Run standalone when executed directly
+const isMainModule = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, "/"));
+if (isMainModule) {
+  generatePluginsJson().catch((error) => {
+    console.error("Failed to generate plugins.json:", error);
+    process.exit(1);
+  });
+}

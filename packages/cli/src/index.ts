@@ -17,6 +17,7 @@ import { verify } from "./commands/verify.js";
 import { registryRouteMap } from "./commands/registry/index.js";
 import { configRouteMap } from "./commands/config/index.js";
 import { completionRouteMap } from "./commands/completion/index.js";
+import { marketplaceRouteMap } from "./commands/marketplace/index.js";
 
 /**
  * Build the application context with shared services
@@ -63,6 +64,7 @@ const routes = buildRouteMap({
     verify,
     registry: registryRouteMap,
     config: configRouteMap,
+    marketplace: marketplaceRouteMap,
     completion: completionRouteMap,
   },
   docs: {

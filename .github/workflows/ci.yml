@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Type Check, Lint & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Type check
+        run: pnpm ts-check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test with coverage
+        run: pnpm -r test:coverage
+
+      - name: Coverage report (lib)
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: lib
+          working-directory: ./packages/lib
+
+      - name: Coverage report (cli)
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: cli
+          working-directory: ./packages/cli

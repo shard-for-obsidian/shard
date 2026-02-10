@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * Build Lunr.js search index from plugins.json
  */
@@ -22,7 +20,7 @@ interface MarketplaceIndex {
 	generatedAt: string;
 }
 
-async function buildSearchIndex() {
+export async function buildSearchIndex() {
 	console.log('🔨 Building search index...\n');
 
 	const staticDir = path.join(process.cwd(), 'static');
@@ -72,7 +70,10 @@ async function buildSearchIndex() {
 	console.log(`   Index size: ${(JSON.stringify(searchData).length / 1024).toFixed(1)} KB`);
 }
 
-buildSearchIndex().catch((error) => {
-	console.error('❌ Failed to build search index:', error);
-	process.exit(1);
-});
+const isMainModule = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, "/"));
+if (isMainModule) {
+  buildSearchIndex().catch((error) => {
+    console.error("Failed to build search index:", error);
+    process.exit(1);
+  });
+}

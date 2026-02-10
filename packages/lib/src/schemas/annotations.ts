@@ -15,8 +15,8 @@ export const PluginAnnotationsSchema = z.object({
   "vnd.obsidianmd.plugin.description": z.string(),
   /** Plugin author */
   "vnd.obsidianmd.plugin.author": z.string(),
-  /** VCS source URL (e.g., git+https://github.com/owner/repo.git) */
-  "vnd.obsidianmd.plugin.source": z.string().regex(/^git\+https:\/\//),
+  /** Source URL (e.g., https://github.com/owner/repo) */
+  "vnd.obsidianmd.plugin.source": z.string().url(),
   /** Publication timestamp (ISO 8601) */
   "vnd.obsidianmd.plugin.published-at": z.string().datetime(),
   /** Plugin introduction from community-plugins.json (required) */
@@ -35,6 +35,8 @@ export const PluginAnnotationsSchema = z.object({
   "org.opencontainers.image.source": z.string().url(),
   /** OCI standard: Plugin title */
   "org.opencontainers.image.title": z.string(),
+  /** OCI standard: Plugin description */
+  "org.opencontainers.image.description": z.string().optional(),
   /** OCI standard: Creation timestamp (RFC 3339) */
   "org.opencontainers.image.created": z.string().datetime(),
 });

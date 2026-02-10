@@ -19,8 +19,8 @@ export {
 
 // Transform utilities
 export {
-  repoToVcsUrl,
-  vcsUrlToGitHubUrl,
+  repoToGitHubUrl,
+  ghcrUrlToGitHubRepo,
   manifestToAnnotations,
   manifestToAnnotationsLegacy,
   annotationsToMarketplacePlugin,

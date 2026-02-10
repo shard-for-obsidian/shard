@@ -66,7 +66,8 @@ export async function pullCommand(opts: PullOptions): Promise<PullResult> {
   // Step 5: Download and extract each layer
   for (const layer of manifest.layers) {
     // Extract filename from annotation
-    const filename = layer.annotations?.["vnd.obsidianmd.layer.filename"];
+    const filename = layer.annotations?.["org.opencontainers.image.title"]
+      ?? layer.annotations?.["vnd.obsidianmd.layer.filename"];
     if (!filename) {
       throw new Error(
         `Layer ${layer.digest} missing required filename annotation`,

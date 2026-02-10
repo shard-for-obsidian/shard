@@ -1,36 +1,19 @@
 import { describe, it, expect, test } from "vitest";
 import {
-  repoToVcsUrl,
-  vcsUrlToGitHubUrl,
+  repoToGitHubUrl,
   ghcrUrlToGitHubRepo,
   manifestToAnnotations,
   annotationsToMarketplacePlugin,
 } from "../transforms.js";
 
-describe("repoToVcsUrl", () => {
-  it("should convert owner/repo to VCS URL", () => {
-    const result = repoToVcsUrl("owner/repo");
-    expect(result).toBe("git+https://github.com/owner/repo.git");
+describe("repoToGitHubUrl", () => {
+  it("should convert owner/repo to GitHub URL", () => {
+    const result = repoToGitHubUrl("owner/repo");
+    expect(result).toBe("https://github.com/owner/repo");
   });
 
   it("should throw on invalid repo format", () => {
-    expect(() => repoToVcsUrl("invalid")).toThrow();
-  });
-});
-
-describe("vcsUrlToGitHubUrl", () => {
-  it("should extract GitHub URL from VCS URL", () => {
-    const result = vcsUrlToGitHubUrl("git+https://github.com/owner/repo.git");
-    expect(result).toBe("https://github.com/owner/repo");
-  });
-
-  it("should handle URL without .git suffix", () => {
-    const result = vcsUrlToGitHubUrl("git+https://github.com/owner/repo");
-    expect(result).toBe("https://github.com/owner/repo");
-  });
-
-  it("should throw on invalid VCS URL", () => {
-    expect(() => vcsUrlToGitHubUrl("https://github.com/owner/repo")).toThrow();
+    expect(() => repoToGitHubUrl("invalid")).toThrow();
   });
 });
 
@@ -105,13 +88,13 @@ describe("manifestToAnnotations", () => {
     expect(result["vnd.obsidianmd.plugin.name"]).toBe("Test Plugin");
     expect(result["vnd.obsidianmd.plugin.version"]).toBe("1.0.0");
     expect(result["vnd.obsidianmd.plugin.source"]).toBe(
-      "git+https://github.com/owner/repo.git",
+      "https://github.com/owner/repo",
     );
     expect(result["vnd.obsidianmd.plugin.published-at"]).toBe(publishedAt);
     expect(result["vnd.obsidianmd.plugin.min-app-version"]).toBe("1.0.0");
   });
 
-  it("should include introduction field from community plugin", () => {
+  it("should use community plugin description as introduction", () => {
     const manifest = {
       id: "test-plugin",
       name: "Test Plugin",
@@ -121,21 +104,30 @@ describe("manifestToAnnotations", () => {
       author: "Test Author",
     };
 
-    const communityPluginWithIntro = {
-      ...communityPlugin,
-      introduction: "# Test Plugin\n\nThis is a detailed introduction.",
-    };
-
     const result = manifestToAnnotations(
       manifest,
-      communityPluginWithIntro,
+      communityPlugin,  // description: "A test plugin"
       "ghcr.io/owner/repo",
       "2026-02-09T10:00:00Z"
     );
 
-    expect(result["vnd.obsidianmd.plugin.introduction"]).toBe(
-      "# Test Plugin\n\nThis is a detailed introduction.",
+    expect(result["vnd.obsidianmd.plugin.introduction"]).toBe("A test plugin");
+  });
+
+  it("should include org.opencontainers.image.description from manifest", () => {
+    const manifest = {
+      id: "test-plugin",
+      name: "Test Plugin",
+      version: "1.0.0",
+      minAppVersion: "1.0.0",
+      description: "A test plugin",
+      author: "Test Author",
+    };
+
+    const result = manifestToAnnotations(
+      manifest, communityPlugin, "ghcr.io/owner/repo", "2026-02-09T10:00:00Z"
     );
+    expect(result["org.opencontainers.image.description"]).toBe("A test plugin");
   });
 
   it("should serialize funding-url as JSON when it's an object", () => {
@@ -334,7 +326,7 @@ describe("annotationsToMarketplacePlugin", () => {
       "vnd.obsidianmd.plugin.version": "1.0.0",
       "vnd.obsidianmd.plugin.description": "A test plugin",
       "vnd.obsidianmd.plugin.author": "Test Author",
-      "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
+      "vnd.obsidianmd.plugin.source": "https://github.com/owner/repo",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
       "vnd.obsidianmd.plugin.introduction": "Test plugin introduction",
       "vnd.obsidianmd.plugin.is-desktop-only": "false",
@@ -362,7 +354,7 @@ describe("annotationsToMarketplacePlugin", () => {
       "vnd.obsidianmd.plugin.version": "1.0.0",
       "vnd.obsidianmd.plugin.description": "A test plugin",
       "vnd.obsidianmd.plugin.author": "Test Author",
-      "vnd.obsidianmd.plugin.source": "git+https://github.com/owner/repo.git",
+      "vnd.obsidianmd.plugin.source": "https://github.com/owner/repo",
       "vnd.obsidianmd.plugin.published-at": "2026-02-07T10:00:00Z",
       "vnd.obsidianmd.plugin.introduction": "Test plugin introduction",
       "vnd.obsidianmd.plugin.is-desktop-only": "false",
@@ -424,10 +416,10 @@ describe("manifestToAnnotations - integration tests", () => {
     expect(annotations["vnd.obsidianmd.plugin.description"]).toBe("Backup your vault with git");
     expect(annotations["vnd.obsidianmd.plugin.author"]).toBe("denolehov");
     expect(annotations["vnd.obsidianmd.plugin.author-url"]).toBe("https://github.com/denolehov");
-    expect(annotations["vnd.obsidianmd.plugin.source"]).toBe("git+https://github.com/denolehov/obsidian-git.git");
+    expect(annotations["vnd.obsidianmd.plugin.source"]).toBe("https://github.com/denolehov/obsidian-git");
     expect(annotations["vnd.obsidianmd.plugin.published-at"]).toBe(publishedAt);
     expect(annotations["vnd.obsidianmd.plugin.introduction"]).toBe(
-      "# Obsidian Git\n\nSimple plugin to backup your Obsidian.md vault with git."
+      "Backup your vault with git"
     );
     expect(annotations["vnd.obsidianmd.plugin.funding-url"]).toBe("https://github.com/sponsors/denolehov");
     expect(annotations["vnd.obsidianmd.plugin.is-desktop-only"]).toBe("false");
@@ -506,7 +498,7 @@ describe("manifestToAnnotations - integration tests", () => {
     expect(annotations["vnd.obsidianmd.plugin.is-desktop-only"]).toBe("true");
   });
 
-  it("should handle plugin without optional introduction field", () => {
+  it("should use community plugin description as introduction", () => {
     const communityPlugin = {
       id: "test-plugin",
       name: "Test Plugin",
@@ -532,8 +524,8 @@ describe("manifestToAnnotations - integration tests", () => {
       "2024-01-15T10:00:00Z"
     );
 
-    // Introduction should be empty string when not present
-    expect(annotations["vnd.obsidianmd.plugin.introduction"]).toBe("");
+    // Introduction should be from communityPlugin.description
+    expect(annotations["vnd.obsidianmd.plugin.introduction"]).toBe("Test description");
   });
 
   it("should correctly transform repository URL from namespace with nested path", () => {
@@ -568,7 +560,7 @@ describe("manifestToAnnotations - integration tests", () => {
     expect(annotations["org.opencontainers.image.source"]).toBe(
       "https://github.com/shard-for-obsidian/shard"
     );
-    expect(annotations["vnd.obsidianmd.plugin.source"]).toBe("git+https://github.com/owner/repo.git");
+    expect(annotations["vnd.obsidianmd.plugin.source"]).toBe("https://github.com/owner/repo");
   });
 
   it("should ensure all required annotations are present", () => {
@@ -615,6 +607,7 @@ describe("manifestToAnnotations - integration tests", () => {
       "org.opencontainers.image.title",
       "org.opencontainers.image.source",
       "org.opencontainers.image.created",
+      "org.opencontainers.image.description",
     ];
 
     // Verify all required fields are present

@@ -7,18 +7,15 @@ const OciAnnotationsSchema = z
   .object({
     'org.opencontainers.image.title': z.string().optional(),
     'org.opencontainers.image.description': z.string().optional(),
-    'org.opencontainers.image.version': z.string().optional(),
     'org.opencontainers.image.created': z.string().optional(),
-    'org.opencontainers.image.authors': z.string().optional(),
-    'org.opencontainers.image.url': z.string().optional(),
     'org.opencontainers.image.source': z.string().optional(),
     'org.opencontainers.image.licenses': z.string().optional(),
     'vnd.obsidianmd.plugin.id': z.string(),
     'vnd.obsidianmd.plugin.name': z.string(),
     'vnd.obsidianmd.plugin.author': z.string(),
     'vnd.obsidianmd.plugin.description': z.string(),
-    'vnd.obsidianmd.plugin.repo': z.string(),
-    'vnd.obsidianmd.plugin.minAppVersion': z.string().optional(),
+    'vnd.obsidianmd.plugin.source': z.string().optional(),
+    'vnd.obsidianmd.plugin.min-app-version': z.string().optional(),
   })
   .passthrough();
 
@@ -58,14 +55,16 @@ export function ociAnnotationsToFrontmatter(
   };
 
   // Add optional fields
-  if (validated['org.opencontainers.image.source']) {
+  if (validated['vnd.obsidianmd.plugin.source']) {
+    frontmatter.repository = validated['vnd.obsidianmd.plugin.source'];
+  } else if (validated['org.opencontainers.image.source']) {
     frontmatter.repository = validated['org.opencontainers.image.source'];
   }
   if (validated['org.opencontainers.image.licenses']) {
     frontmatter.license = validated['org.opencontainers.image.licenses'];
   }
-  if (validated['vnd.obsidianmd.plugin.minAppVersion']) {
-    frontmatter.minObsidianVersion = validated['vnd.obsidianmd.plugin.minAppVersion'];
+  if (validated['vnd.obsidianmd.plugin.min-app-version']) {
+    frontmatter.minObsidianVersion = validated['vnd.obsidianmd.plugin.min-app-version'];
   }
 
   return frontmatter;

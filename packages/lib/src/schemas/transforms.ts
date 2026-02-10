@@ -3,34 +3,16 @@ import type { PluginAnnotations } from "./annotations.js";
 import type { MarketplacePlugin } from "./marketplace.js";
 
 /**
- * Convert GitHub repo format to VCS URL
+ * Convert GitHub repo format to GitHub URL
  * @param repo - Repository in "owner/repo" format
- * @returns VCS URL in "git+https://github.com/owner/repo.git" format
+ * @returns GitHub URL in "https://github.com/owner/repo" format
  * @throws Error if repo format is invalid
  */
-export function repoToVcsUrl(repo: string): string {
+export function repoToGitHubUrl(repo: string): string {
   if (!repo.includes("/")) {
     throw new Error(`Invalid repo format: ${repo}. Expected "owner/repo"`);
   }
-  return `git+https://github.com/${repo}.git`;
-}
-
-/**
- * Extract GitHub URL from VCS URL
- * @param vcsUrl - VCS URL in "git+https://..." format
- * @returns GitHub URL in "https://github.com/owner/repo" format
- * @throws Error if VCS URL format is invalid
- */
-export function vcsUrlToGitHubUrl(vcsUrl: string): string {
-  if (!vcsUrl.startsWith("git+")) {
-    throw new Error(
-      `Invalid VCS URL format: ${vcsUrl}. Expected "git+https://..."`,
-    );
-  }
-
-  // Remove "git+" prefix and optional ".git" suffix
-  const url = vcsUrl.slice(4).replace(/\.git$/, "");
-  return url;
+  return `https://github.com/${repo}`;
 }
 
 /**
@@ -84,8 +66,9 @@ export function manifestToAnnotationsLegacy(
     "vnd.obsidianmd.plugin.name": manifest.name,
     "vnd.obsidianmd.plugin.version": manifest.version,
     "vnd.obsidianmd.plugin.description": manifest.description,
+    "org.opencontainers.image.description": manifest.description,
     "vnd.obsidianmd.plugin.author": manifest.author,
-    "vnd.obsidianmd.plugin.source": repoToVcsUrl(ownerRepo),
+    "vnd.obsidianmd.plugin.source": repoToGitHubUrl(ownerRepo),
     "vnd.obsidianmd.plugin.is-desktop-only": String(manifest.isDesktopOnly ?? false),
     "vnd.obsidianmd.plugin.min-app-version": manifest.minAppVersion,
     "org.opencontainers.image.source": ghcrUrlToGitHubRepo(registryUrl),
@@ -129,10 +112,11 @@ export function manifestToAnnotations(
     "vnd.obsidianmd.plugin.name": manifest.name,
     "vnd.obsidianmd.plugin.version": manifest.version,
     "vnd.obsidianmd.plugin.description": manifest.description,
+    "org.opencontainers.image.description": manifest.description,
     "vnd.obsidianmd.plugin.author": manifest.author,
-    "vnd.obsidianmd.plugin.source": repoToVcsUrl(communityPlugin.repo),
+    "vnd.obsidianmd.plugin.source": repoToGitHubUrl(communityPlugin.repo),
     "vnd.obsidianmd.plugin.published-at": publishedAt,
-    "vnd.obsidianmd.plugin.introduction": communityPlugin.introduction ?? "",
+    "vnd.obsidianmd.plugin.introduction": communityPlugin.description,
     "vnd.obsidianmd.plugin.is-desktop-only": String(manifest.isDesktopOnly ?? false),
     "vnd.obsidianmd.plugin.min-app-version": manifest.minAppVersion,
     "org.opencontainers.image.source": ghcrUrlToGitHubRepo(registryUrl),
@@ -184,10 +168,10 @@ export function annotationsToMarketplacePlugin(
       annotations["vnd.obsidianmd.plugin.min-app-version"];
   }
 
-  // Extract GitHub URL from source
+  // Source is already a GitHub URL
   const source = annotations["vnd.obsidianmd.plugin.source"];
   if (source) {
-    plugin.repository = vcsUrlToGitHubUrl(source);
+    plugin.repository = source;
   }
 
   return plugin;
