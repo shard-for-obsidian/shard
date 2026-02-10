@@ -1,5 +1,15 @@
 # shard-cli
 
+## 0.4.4
+
+### Patch Changes
+
+- 567c23f: - **Annotation format updates**: Replace VCS-style source URLs (`git+https://...git`) with plain GitHub URLs, remove redundant `vnd.obsidianmd.layer.filename` layer annotations in favor of OCI-standard `org.opencontainers.image.title`, fix config media type to use shared constant, populate `introduction` from community-plugins.json description, add `org.opencontainers.image.description`
+  - **New `shard marketplace sync` command**: Fetches an OCI manifest and generates a marketplace content markdown file from its annotations, with `--overwrite` flag and interactive prompt
+  - **Build pipeline refactor**: Fold `generate-plugins-json` and `build-search-index` into a Vite plugin that runs at build time, remove standalone `marketplace:generate` script, simplify root package.json scripts
+- Updated dependencies [567c23f]
+  - @shard-for-obsidian/lib@0.3.3
+
 ## 0.4.3
 
 ### Patch Changes

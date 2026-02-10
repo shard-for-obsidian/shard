@@ -1,6 +1,6 @@
 {
   "name": "@shard-for-obsidian/cli",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Shard CLI tool to push and pull plugins from GHCR",
   "type": "module",
   "author": "Andrew Gillis",
