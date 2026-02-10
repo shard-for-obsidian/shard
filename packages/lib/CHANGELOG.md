@@ -1,5 +1,11 @@
 # shard-lib
 
+## 0.3.2
+
+### Patch Changes
+
+- 2ec495d: Update namespace behavior to treat it as a container. Move to treating the manifest annotations as source of truth.
+
 ## 0.3.1
 
 ### Patch Changes
