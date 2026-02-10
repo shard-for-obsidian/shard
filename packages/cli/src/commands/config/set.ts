@@ -1,5 +1,6 @@
 import { buildCommand } from "@stricli/core";
 import type { AppContext } from "../../infrastructure/context.js";
+import { normalizeNamespace } from "../../lib/namespace.js";
 
 /**
  * Flags for the set command
@@ -39,6 +40,11 @@ async function setCommandHandler(
         // If JSON parsing fails, keep as string
         parsedValue = value;
       }
+    }
+
+    // Special handling for namespace: normalize and validate
+    if (key === "namespace" && typeof parsedValue === "string") {
+      parsedValue = normalizeNamespace(parsedValue);
     }
 
     await config.set(key, parsedValue);
@@ -100,6 +106,9 @@ export const set = buildCommand({
   },
   docs: {
     brief: "Set a configuration value",
-    customUsage: [],
+    customUsage: [
+      "shard config set namespace ghcr.io/owner/repo",
+      "shard config set token ghp_xxxxx",
+    ],
   },
 });

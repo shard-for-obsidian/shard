@@ -2,12 +2,13 @@ import { buildCommand } from "@stricli/core";
 import type { AppContext } from "../infrastructure/context.js";
 import { PluginConverter } from "../lib/converter.js";
 import { resolveAuthToken } from "../lib/auth.js";
+import { DEFAULT_NAMESPACE } from "../lib/namespace.js";
 
 /**
  * Flags for the convert command
  */
 export interface ConvertFlags {
-  namespace: string;
+  namespace?: string;
   token?: string;
   json?: boolean;
   verbose?: boolean;
@@ -60,16 +61,22 @@ async function convertCommandHandler(
       this.process.exit(1);
     }
 
-    // Step 2: Create converter
+    // Step 2: Resolve namespace
+    const namespace =
+      flags.namespace ??
+      ((await config.get("namespace")) as string) ??
+      DEFAULT_NAMESPACE;
+
+    // Step 3: Create converter
     const converter = new PluginConverter(adapter);
 
-    // Step 3: Convert plugin from GitHub releases (always uses latest version)
+    // Step 4: Convert plugin from GitHub releases (always uses latest version)
     logger.info(`Converting plugin "${pluginId}"...`);
     logger.info("Using latest version");
 
     const convertResult = await converter.convertPlugin({
       pluginId,
-      namespace: flags.namespace,
+      namespace,
       token,
     });
 
@@ -82,7 +89,7 @@ async function convertCommandHandler(
       logger.info(`  - styles.css: ${convertResult.stylesCss.length} bytes`);
     }
 
-    // Step 4: Push to OCI registry
+    // Step 5: Push to OCI registry
     logger.info(`\nPushing to ${convertResult.repository}...`);
     const pushResult = await converter.pushToRegistry({
       repository: convertResult.repository,
@@ -103,7 +110,7 @@ async function convertCommandHandler(
     logger.info(`Digest: ${pushResult.digest}`);
     logger.info(`Tags: ${pushResult.tags.join(", ")}`);
 
-    // Step 5: JSON output if requested
+    // Step 6: JSON output if requested
     if (flags.json) {
       const result: ConvertResult = {
         pluginId: convertResult.pluginId,
@@ -142,8 +149,8 @@ export const convert = buildCommand({
       namespace: {
         kind: "parsed",
         parse: String,
-        brief: "Target OCI namespace (e.g., ghcr.io/owner/)",
-        optional: false,
+        brief: "Target OCI namespace (defaults to config or community-plugins)",
+        optional: true,
       },
       token: {
         kind: "parsed",
@@ -170,8 +177,8 @@ export const convert = buildCommand({
   docs: {
     brief: "Convert a legacy plugin to OCI format",
     customUsage: [
-      "shard convert obsidian-git --namespace ghcr.io/owner/",
-      "shard convert calendar --namespace ghcr.io/owner/",
+      "shard convert obsidian-git",
+      "shard convert calendar --namespace ghcr.io/custom/",
     ],
   },
 });

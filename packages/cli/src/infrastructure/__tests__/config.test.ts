@@ -58,4 +58,13 @@ describe("ConfigService", () => {
     const all = await config.list();
     expect(all).toEqual({});
   });
+
+  it("should get and set namespace", async () => {
+    await config.set(
+      "namespace",
+      "ghcr.io/shard-for-obsidian/shard/community-plugins",
+    );
+    const value = await config.get("namespace");
+    expect(value).toBe("ghcr.io/shard-for-obsidian/shard/community-plugins");
+  });
 });
