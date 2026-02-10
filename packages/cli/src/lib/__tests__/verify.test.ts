@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { FetchAdapter, ManifestOCI } from "@shard-for-obsidian/lib";
-import { verifyPlugin, type VerifyPluginOptions } from "../verify.js";
+import { verifyPlugin } from "../verify.js";
 import { computeFileHash } from "../hash.js";
 
 describe("verifyPlugin", () => {
